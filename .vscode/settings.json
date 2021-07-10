@@ -1,0 +1,38 @@
+{
+    "files.exclude": {
+        "src/react-app-env.d.ts": true,
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.formatOnSave": true,
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
+    },
+    "[scss]": {
+        "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter",
+    },
+    "scss.completion.completePropertyWithSemicolon": true,
+    "scss.completion.triggerPropertyValueCompletion": true,
+    "scss.lint.duplicateProperties": "error",
+    "scss.lint.float": "warning",
+    "scss.lint.important": "warning",
+    "scss.lint.propertyIgnoredDueToDisplay": "error",
+    "scss.lint.unknownAtRules": "error",
+    "scss.lint.unknownProperties": "error",
+    "scssFormatter.singleQuote": true,
+    "scssFormatter.printWidth": 80,
+    "css.lint.duplicateProperties": "error",
+    "css.lint.float": "warning",
+    "css.lint.important": "warning",
+    "css.lint.propertyIgnoredDueToDisplay": "error",
+    "css.lint.unknownAtRules": "error",
+    "css.lint.unknownProperties": "error",
+    "cssvar.files": [
+        "src/styles/color.css"
+    ]
+}
