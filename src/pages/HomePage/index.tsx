@@ -1,4 +1,4 @@
-import styles from './HomePage.module.css'
+import styles from './style.module.css'
 import { Button } from 'components/Button'
 
 export const HomePage = () => {
