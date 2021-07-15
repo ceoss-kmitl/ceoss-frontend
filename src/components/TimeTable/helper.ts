@@ -6,6 +6,7 @@ export interface Day {
 
 export interface Subject {
   id: string
+  code: string
   name: string
   section: number
   startSlot: number
@@ -13,8 +14,7 @@ export interface Subject {
   type: 'LECTURE' | 'LAB' | 'EDITING'
 }
 
-export interface Column {
-  name: string
+export interface Column extends Partial<Subject> {
   colSpan: number
 }
 
@@ -33,7 +33,7 @@ export function createColumnList(subjectList: Subject[]) {
     if (subject) {
       const spanRange = subject.endSlot - subject.startSlot
       columnList.push({
-        name: subject.name,
+        ...subject,
         colSpan: spanRange,
       })
       span += spanRange

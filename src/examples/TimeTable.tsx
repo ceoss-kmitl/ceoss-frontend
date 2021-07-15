@@ -7,6 +7,7 @@ interface Day {
 
 interface Subject {
   id: string
+  code: string
   name: string
   section: number
   startSlot: number
@@ -19,8 +20,9 @@ const data: Day[] = [
     subjectList: [
       {
         id: '124',
-        name: 'test',
-        section: 203,
+        code: '01076001',
+        name: 'INTRODUCTION TO COMPUTER ENGINEERING',
+        section: 1,
         startSlot: 7,
         endSlot: 19,
         type: 'LECTURE',
@@ -29,7 +31,17 @@ const data: Day[] = [
     overlapSubjectList: [],
   },
   {
-    subjectList: [],
+    subjectList: [
+      {
+        id: '123',
+        code: '01076001',
+        name: 'INTRODUCTION TO COMPUTER ENGINEERING',
+        section: 1,
+        startSlot: 15,
+        endSlot: 27,
+        type: 'LAB',
+      },
+    ],
     overlapSubjectList: [],
   },
   {
@@ -59,7 +71,6 @@ export const DemoTimeTable = () => {
     <main
       style={{
         width: '100%',
-        minWidth: '1024px',
         margin: '2rem auto',
         padding: '2rem',
       }}

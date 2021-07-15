@@ -1,6 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@200;400;600&display=swap');
+@import '~antd/dist/antd.css';
 @import './color.css';
 @import './utils.css';
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@200;400;600&display=swap');
 
 body {
     margin: 0;
