@@ -1,0 +1,22 @@
+.table {
+    width: 100%;
+    background: white;
+    border-radius: 6px;
+    border-collapse: collapse;
+    border-style: hidden;
+    table-layout: fixed;
+
+    td,
+    th {
+        border: 1px solid var(--gray200);
+        font-weight: 400;
+    }
+}
+
+.timeHeader {
+    height: 60px;
+}
+
+.dayHeader {
+    height: 80px;
+}
