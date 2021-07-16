@@ -53,15 +53,6 @@ const MOCK_DATA: IDay[] = [
     dayInWeek: DAY_IN_WEEK.WEDNESDAY,
     subjectList: [
       {
-        id: 'W-1',
-        code: '01125001',
-        name: 'COMPUTER PROGRAMMING',
-        section: 43,
-        startSlot: 7,
-        endSlot: 19,
-        type: SUBJECT_TYPE.LAB,
-      },
-      {
         id: 'W-2',
         code: '01296065',
         name: 'PROGRAMMING FUNDAMENTAL',
@@ -71,6 +62,16 @@ const MOCK_DATA: IDay[] = [
         type: SUBJECT_TYPE.LECTURE,
       },
       {
+        id: 'W-1',
+        code: '01125001',
+        name: 'COMPUTER PROGRAMMING',
+        section: 43,
+        startSlot: 7,
+        endSlot: 19,
+        type: SUBJECT_TYPE.LAB,
+      },
+
+      {
         id: 'W-3',
         code: '01296065',
         name: 'PROGRAMMING FUNDAMENTAL',
@@ -78,6 +79,15 @@ const MOCK_DATA: IDay[] = [
         startSlot: 26,
         endSlot: 36,
         type: SUBJECT_TYPE.LAB,
+      },
+      {
+        id: 'W-21',
+        code: '01296065',
+        name: 'PROGRAMMING FUNDAMENTAL',
+        section: 1,
+        startSlot: 1,
+        endSlot: 6,
+        type: SUBJECT_TYPE.LECTURE,
       },
     ],
   },

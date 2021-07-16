@@ -10,9 +10,10 @@ export const dayInWeek = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา']
 export function useTimeTable(dayList: IDay[]) {
   const tableSlot = []
   const MAX_SLOT = 52 // 13 hours x 4 slot each hours (08:00 - 20:00)
+  const sortedDayList = sortBySubjectStartTime(dayList)
 
   for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-    const { subjectList } = dayList[dayIndex]
+    const { subjectList } = sortedDayList[dayIndex]
     const daySlot: (ISlot | null)[] = []
     let subjectIndex = 0
     let curSlot = 1
@@ -103,6 +104,10 @@ export function useSubjectSlot(data: ISlot) {
   }
 }
 
+// ------------------
+// Utilities function
+// ------------------
+
 function generateTimeSlot(start: number, end: number) {
   const slots = []
   for (let i = start; i <= end; i++) {
@@ -110,4 +115,11 @@ function generateTimeSlot(start: number, end: number) {
     slots.push(time)
   }
   return slots
+}
+
+function sortBySubjectStartTime(dayList: IDay[]) {
+  return dayList.map((day) => ({
+    ...day,
+    subjectList: [...day.subjectList].sort((a, b) => a.startSlot - b.startSlot),
+  }))
 }
