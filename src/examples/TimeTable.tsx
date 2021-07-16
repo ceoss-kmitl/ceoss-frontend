@@ -1,7 +1,36 @@
 import { TimeTable } from 'components/TimeTable'
+import { useState } from 'react'
 import { IDay, DAY_IN_WEEK, SUBJECT_TYPE } from 'types/TimeTable'
 
-const data: IDay[] = [
+export const DemoTimeTable = () => {
+  const [data, setData] = useState(MOCK_DATA)
+
+  return (
+    <main
+      style={{
+        width: '100%',
+        margin: '2rem auto',
+        padding: '2rem',
+      }}
+    >
+      <TimeTable
+        data={data}
+        onOverlapSubjectClick={(subject) => {
+          setData(
+            data.map((d) => {
+              return {
+                ...d,
+                subjectList: d.subjectList.filter((s) => s.id !== subject.id),
+              }
+            })
+          )
+        }}
+      />
+    </main>
+  )
+}
+
+const MOCK_DATA: IDay[] = [
   {
     dayInWeek: DAY_IN_WEEK.MONDAY,
     subjectList: [
@@ -41,11 +70,30 @@ const data: IDay[] = [
         endSlot: 22,
         type: SUBJECT_TYPE.LECTURE,
       },
+      {
+        id: 'W-3',
+        code: '01296065',
+        name: 'PROGRAMMING FUNDAMENTAL',
+        section: 101,
+        startSlot: 26,
+        endSlot: 36,
+        type: SUBJECT_TYPE.LAB,
+      },
     ],
   },
   {
     dayInWeek: DAY_IN_WEEK.THURSDAY,
-    subjectList: [],
+    subjectList: [
+      {
+        id: 'THUR-1',
+        code: '07035001',
+        name: 'MIRACLE SUBJECT',
+        section: 224236,
+        startSlot: 36,
+        endSlot: 48,
+        type: SUBJECT_TYPE.LAB,
+      },
+    ],
   },
   {
     dayInWeek: DAY_IN_WEEK.FRIDAY,
@@ -53,24 +101,19 @@ const data: IDay[] = [
   },
   {
     dayInWeek: DAY_IN_WEEK.SATURDAY,
-    subjectList: [],
+    subjectList: Array(4)
+      .fill({
+        code: '01125001',
+        name: 'COMPUTER PROGRAMMING',
+        section: 43,
+        startSlot: 7,
+        endSlot: 19,
+        type: SUBJECT_TYPE.LAB,
+      })
+      .map((d, i) => ({ ...d, id: `SAT-${i}` })),
   },
   {
     dayInWeek: DAY_IN_WEEK.SUNDAY,
     subjectList: [],
   },
 ]
-
-export const DemoTimeTable = () => {
-  return (
-    <main
-      style={{
-        width: '100%',
-        margin: '2rem auto',
-        padding: '2rem',
-      }}
-    >
-      <TimeTable data={data} />
-    </main>
-  )
-}

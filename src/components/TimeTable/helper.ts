@@ -37,7 +37,10 @@ export function useTimeTable(dayList: IDay[]) {
       else if (currentSubject.startSlot < curSlot) {
         const prevDaySlot = daySlot.pop()!
         const prevFirstSubject = prevDaySlot.subjectList[0]
-        const slotSpan = currentSubject.endSlot - prevFirstSubject.startSlot + 1
+        const slotSpan = Math.max(
+          currentSubject.endSlot - prevFirstSubject.startSlot + 1,
+          prevDaySlot.slotSpan
+        )
         const newEndSlot = Math.max(currentSubject.endSlot + 1, curSlot)
         daySlot.push({
           slotSpan,
@@ -72,7 +75,7 @@ export function useSubjectSlot(data: ISlot) {
     let curSlot = 1
 
     while (curSlot <= MAX_SLOT) {
-      const currentSubject = data.subjectList[i] || {}
+      const currentSubject = data.subjectList[i]
       const relativeStartSlot = currentSubject.startSlot - data.startSlot + 1
       const relativeEndSlot = currentSubject.endSlot - data.startSlot + 1
 
@@ -94,7 +97,10 @@ export function useSubjectSlot(data: ISlot) {
     }
     subjectSlot.push(slot)
   }
-  return subjectSlot
+  return {
+    subjectSlotList: subjectSlot,
+    slotHeight: `${((100 / data.subjectList.length) * 60) / 100}px`,
+  }
 }
 
 function generateTimeSlot(start: number, end: number) {

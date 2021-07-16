@@ -1,6 +1,7 @@
 import css from 'classnames'
 import style from './style.module.scss'
 import { Fragment } from 'react'
+import { BiTime } from 'react-icons/bi'
 import { timeSlot, dayInWeek } from './helper'
 
 export const OutlineTable: React.FC = () => {
@@ -8,7 +9,9 @@ export const OutlineTable: React.FC = () => {
     <table className={css(style.table, 'shadow')}>
       <thead className={style.timeHeader}>
         <tr>
-          <th colSpan={4}>O</th>
+          <th colSpan={4}>
+            <BiTime size={20} style={{ marginBottom: '-6px' }} />
+          </th>
           {timeSlot.map((slot) => (
             <th key={slot} colSpan={4}>
               {slot}

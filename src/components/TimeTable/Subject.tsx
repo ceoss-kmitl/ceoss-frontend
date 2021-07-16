@@ -1,17 +1,22 @@
 import css from 'classnames'
 import style from './Subject.module.scss'
 import { Tooltip } from 'antd'
+import { FiAlertTriangle } from 'react-icons/fi'
 import { useSubjectSlot } from './helper'
-import { ISlot, SUBJECT_TYPE } from 'types/TimeTable'
+import { ISlot, ISubject, SUBJECT_TYPE } from 'types/TimeTable'
 
 interface IProps {
   data: ISlot
+  onSubjectClick: (subject: ISubject) => void
+  onOverlapSubjectClick: (subject: ISubject) => void
 }
 
-export const Subject: React.FC<IProps> = ({ data }) => {
-  const subjectSlotList = useSubjectSlot(data)
-
-  console.log(JSON.stringify(subjectSlotList, null, 2))
+export const Subject: React.FC<IProps> = ({
+  data,
+  onSubjectClick,
+  onOverlapSubjectClick,
+}) => {
+  const { subjectSlotList, slotHeight } = useSubjectSlot(data)
 
   return (
     <td colSpan={data.slotSpan}>
@@ -21,35 +26,54 @@ export const Subject: React.FC<IProps> = ({ data }) => {
             {subjectSlotList.map((subject, i) => (
               <tr key={i}>
                 {subject.map((slot, j) => {
-                  const isOverlap = subject.length > 1
+                  const isOverlap = data.subjectList.length > 1
                   return slot ? (
+                    // IF #1: Has subject
                     <td key={j} colSpan={slot.slotSpan}>
-                      <Tooltip
-                        title={`${slot.subject.code} ${slot.subject.name} กลุ่ม ${slot.subject.section}`}
-                      >
-                        <div
-                          className={css(
-                            style.subject,
-                            style[slot.subject.type || SUBJECT_TYPE.LECTURE],
-                            { [style.OVERLAP]: isOverlap }
-                          )}
-                          style={{
-                            height: `${
-                              ((100 / data.subjectList.length) * 60) / 100
-                            }px`,
-                          }}
+                      {isOverlap ? (
+                        //IF #2: Has subject BUT overlap
+                        <Tooltip
+                          title={`${slot.subject.code} ${slot.subject.name} กลุ่ม ${slot.subject.section}`}
+                          color="#1F2937"
                         >
-                          {!isOverlap && (
+                          <div
+                            className={css(style.subject, style.OVERLAP)}
+                            style={{ height: slotHeight }}
+                            onClick={() => onOverlapSubjectClick(slot.subject)}
+                          >
+                            <div className={style.name}>
+                              <FiAlertTriangle className={style.icon} />
+                              {slot.subject.name}
+                            </div>
+                          </div>
+                        </Tooltip>
+                      ) : (
+                        //IF #2: Has OK subject
+                        <Tooltip
+                          title={`${slot.subject.code} ${slot.subject.name} กลุ่ม ${slot.subject.section}`}
+                          color="#1F2937"
+                        >
+                          <div
+                            className={css(
+                              style.subject,
+                              style[slot.subject.type || SUBJECT_TYPE.LECTURE]
+                            )}
+                            style={{ height: slotHeight }}
+                            onClick={() => onSubjectClick(slot.subject)}
+                          >
                             <div>
                               {slot.subject.code}
                               {` กลุ่ม ${slot.subject.section}`}
                             </div>
-                          )}
-                          <div className={style.name}>{slot.subject.name}</div>
-                        </div>
-                      </Tooltip>
+                            <div className={style.name}>
+                              {slot.subject.name}
+                            </div>
+                          </div>
+                        </Tooltip>
+                      )}
                     </td>
                   ) : (
+                    // IF #1: No subject
                     <td key={j} colSpan={1} />
                   )
                 })}

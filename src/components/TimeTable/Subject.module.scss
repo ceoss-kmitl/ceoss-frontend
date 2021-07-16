@@ -50,7 +50,20 @@
     background: var(--red70);
 
     &::before {
+        color: white;
         background: var(--red500);
+        overflow: hidden;
+        white-space: nowrap;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: width 0.2s;
+    }
+
+    &:hover::before {
+        content: 'คลิกเพื่อนำออก';
+        width: 100%;
+        cursor: pointer;
     }
 }
 
@@ -62,14 +75,16 @@
     }
 }
 
-.tooltip {
-    white-space: nowrap;
-    width: 400px;
-}
-
 .name {
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.icon {
+    margin-right: 0.5rem;
+    margin-bottom: -4px;
+    font-size: 18px;
+    color: var(--red600);
 }
