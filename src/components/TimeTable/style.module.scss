@@ -5,7 +5,7 @@
 .table,
 .tableSubject {
     width: 100%;
-    background: white;
+    background: none;
     border-radius: 6px;
     border-collapse: collapse;
     border-style: hidden;
@@ -23,7 +23,6 @@
 
     .dayHeader {
         height: 80px;
-        width: 60px;
     }
 
     .dayRow {
@@ -49,6 +48,7 @@
     background: none;
     top: 0;
     left: 0;
+    height: 620px;
 
     td,
     th {

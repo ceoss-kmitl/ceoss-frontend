@@ -1,13 +1,19 @@
 import style from './style.module.scss'
 import { OutlineTable } from './OutlineTable'
 import { Subject } from './Subject'
-import { Day, timeSlot, createColumnList } from './helper'
+import { timeSlot, useTimeTable } from './helper'
+import { IDay } from 'types/TimeTable'
 
 interface IProps {
-  data: Day[]
+  /**
+   * 7 days. Start with Monday. End with Sunday
+   */
+  data: IDay[]
 }
 
 export const TimeTable: React.FC<IProps> = ({ data }) => {
+  const tableSlotList = useTimeTable(data)
+
   return (
     <div className={style.tableWrapper}>
       <OutlineTable />
@@ -22,13 +28,14 @@ export const TimeTable: React.FC<IProps> = ({ data }) => {
             ))}
           </tr>
         </thead>
+        {/* Render Subject here */}
         <tbody>
-          {data.map((day, i) => (
+          {tableSlotList.map((day, i) => (
             <tr key={i} className={style.dayRow}>
-              <th className={style.dayHeader} colSpan={4} />
-              {createColumnList(day.subjectList).map((col, j) => {
-                return col ? (
-                  <Subject key={j} data={col} />
+              <th className={style.dayHeader} colSpan={4}></th>
+              {day.map((slot, j) => {
+                return slot ? (
+                  <Subject key={j} data={slot} />
                 ) : (
                   <td key={j} colSpan={1} />
                 )

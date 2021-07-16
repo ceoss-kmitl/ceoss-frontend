@@ -1,68 +1,63 @@
 import { TimeTable } from 'components/TimeTable'
+import { IDay, DAY_IN_WEEK, SUBJECT_TYPE } from 'types/TimeTable'
 
-interface Day {
-  subjectList: Subject[]
-  overlapSubjectList: Subject[][]
-}
-
-interface Subject {
-  id: string
-  code: string
-  name: string
-  section: number
-  startSlot: number
-  endSlot: number
-  type: 'LECTURE' | 'LAB' | 'EDITING'
-}
-
-const data: Day[] = [
+const data: IDay[] = [
   {
+    dayInWeek: DAY_IN_WEEK.MONDAY,
     subjectList: [
       {
-        id: '124',
+        id: 'M-1',
         code: '01076001',
         name: 'INTRODUCTION TO COMPUTER ENGINEERING',
         section: 1,
+        startSlot: 1,
+        endSlot: 12,
+        type: SUBJECT_TYPE.LECTURE,
+      },
+    ],
+  },
+  {
+    dayInWeek: DAY_IN_WEEK.TUESDAY,
+    subjectList: [],
+  },
+  {
+    dayInWeek: DAY_IN_WEEK.WEDNESDAY,
+    subjectList: [
+      {
+        id: 'W-1',
+        code: '01125001',
+        name: 'COMPUTER PROGRAMMING',
+        section: 43,
         startSlot: 7,
         endSlot: 19,
-        type: 'LECTURE',
+        type: SUBJECT_TYPE.LAB,
       },
-    ],
-    overlapSubjectList: [],
-  },
-  {
-    subjectList: [
       {
-        id: '123',
-        code: '01076001',
-        name: 'INTRODUCTION TO COMPUTER ENGINEERING',
+        id: 'W-2',
+        code: '01296065',
+        name: 'PROGRAMMING FUNDAMENTAL',
         section: 1,
-        startSlot: 15,
-        endSlot: 27,
-        type: 'LAB',
+        startSlot: 10,
+        endSlot: 22,
+        type: SUBJECT_TYPE.LECTURE,
       },
     ],
-    overlapSubjectList: [],
   },
   {
+    dayInWeek: DAY_IN_WEEK.THURSDAY,
     subjectList: [],
-    overlapSubjectList: [],
   },
   {
+    dayInWeek: DAY_IN_WEEK.FRIDAY,
     subjectList: [],
-    overlapSubjectList: [],
   },
   {
+    dayInWeek: DAY_IN_WEEK.SATURDAY,
     subjectList: [],
-    overlapSubjectList: [],
   },
   {
+    dayInWeek: DAY_IN_WEEK.SUNDAY,
     subjectList: [],
-    overlapSubjectList: [],
-  },
-  {
-    subjectList: [],
-    overlapSubjectList: [],
   },
 ]
 

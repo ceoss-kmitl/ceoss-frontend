@@ -1,6 +1,15 @@
+.wrapper {
+    height: 100%;
+}
+
+.table {
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
+}
+
 .subject {
     background: gainsboro;
-    height: 60px;
     font-size: 14px;
     display: flex;
     flex-direction: column;
@@ -37,8 +46,20 @@
     }
 }
 
+.OVERLAP {
+    background: var(--red70);
+
+    &::before {
+        background: var(--red500);
+    }
+}
+
 .EDITING {
-    background: var(--green100);
+    background: var(--orange100);
+
+    &::before {
+        background: var(--oragne400);
+    }
 }
 
 .tooltip {
