@@ -56,7 +56,8 @@ export const Subject: React.FC<IProps> = ({
                           <div
                             className={css(
                               style.subject,
-                              style[slot.subject.type || SUBJECT_TYPE.LECTURE]
+                              style[slot.subject.type || SUBJECT_TYPE.LECTURE],
+                              { [style.EDITING]: slot.subject.isEditing }
                             )}
                             style={{ height: slotHeight }}
                             onClick={() => onSubjectClick(slot.subject)}

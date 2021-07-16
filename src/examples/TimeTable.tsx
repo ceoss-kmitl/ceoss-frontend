@@ -92,6 +92,7 @@ const MOCK_DATA: IDay[] = [
         startSlot: 36,
         endSlot: 48,
         type: SUBJECT_TYPE.LAB,
+        isEditing: true, // This will be yellow color!
       },
     ],
   },

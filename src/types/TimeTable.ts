@@ -26,6 +26,7 @@ export interface ISubject {
   startSlot: number
   endSlot: number
   type: SUBJECT_TYPE
+  isEditing?: boolean
 }
 
 export interface ISlot {
