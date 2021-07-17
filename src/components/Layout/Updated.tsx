@@ -1,6 +1,6 @@
 import style from './Updated.module.scss'
 import { useState } from 'react'
-import { Menu, Button, Popconfirm, notification } from 'antd'
+import { Button, Popconfirm, Divider, notification } from 'antd'
 import { FcSynchronize } from 'react-icons/fc'
 
 export const Updated = () => {
@@ -30,11 +30,9 @@ export const Updated = () => {
   }
 
   return (
-    <Menu.ItemGroup
-      key="10"
-      title="ข้อมูลตั้งแต่วันที่"
-      className={style.title}
-    >
+    <div className={style.wrapper}>
+      <Divider />
+      <span className={style.title}>ข้อมูลตั้งแต่วันที่</span>
       <time className={style.time}>
         {date}
         <Popconfirm
@@ -54,6 +52,6 @@ export const Updated = () => {
           />
         </Popconfirm>
       </time>
-    </Menu.ItemGroup>
+    </div>
   )
 }

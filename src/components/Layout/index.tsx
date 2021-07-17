@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fi'
 
 const { Header, Sider, Content } = Layout
-const { SubMenu, Item, Divider } = Menu
+const { SubMenu, Item } = Menu
 
 interface IProps {
   children: React.ReactNode
@@ -53,7 +53,6 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
               เอกสาร TA
             </Item>
 
-            <Divider />
             <SubMenu
               key="5"
               title="เมนูการจัดการ"
@@ -73,7 +72,6 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
                 ข้อมูลห้องเรียน
               </Item>
             </SubMenu>
-            <Divider />
 
             <Updated />
           </Menu>

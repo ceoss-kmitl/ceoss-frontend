@@ -12,10 +12,11 @@ function App() {
       <Switch>
         <Layout>
           <Route exact path="/" component={HomePage} />
+
+          {/* Start Example */}
+          <Route exact path="/demo/time-table" component={DemoTimeTable} />
+          {/* End Example */}
         </Layout>
-        {/* Start Example */}
-        <Route exact path="/demo/time-table" component={DemoTimeTable} />
-        {/* End Example */}
       </Switch>
     </BrowserRouter>
   )
