@@ -3,7 +3,12 @@ import { FiLogOut } from 'react-icons/fi'
 
 export const Logout = () => {
   return (
-    <Tooltip title="ออกจากระบบ" placement="bottomRight" arrowPointAtCenter>
+    <Tooltip
+      title="ออกจากระบบ"
+      placement="bottomRight"
+      arrowPointAtCenter
+      color="#1F2937"
+    >
       <Button
         shape="circle"
         type="text"

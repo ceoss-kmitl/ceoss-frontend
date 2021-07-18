@@ -5,7 +5,7 @@ import { Updated } from './Updated'
 import { Logout } from './Logout'
 import { pathList, subPathList } from './helper'
 import { NavLink, useLocation } from 'react-router-dom'
-import { Layout, Menu, Divider } from 'antd'
+import { Layout, Menu } from 'antd'
 import { FiServer } from 'react-icons/fi'
 
 const { Header, Sider, Content } = Layout
@@ -23,7 +23,7 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
       <Header className={css(style.header, 'shadow')}>
         <Logo />
         <div className={style.headerText}>
-          คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์ {pathname}
+          คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์
         </div>
         <Logout />
       </Header>
@@ -61,7 +61,6 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
                 </Item>
               ))}
             </SubMenu>
-            <Divider />
 
             <Updated />
           </Menu>

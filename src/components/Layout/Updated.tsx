@@ -1,6 +1,6 @@
 import style from './Updated.module.scss'
 import { useState } from 'react'
-import { Button, Popconfirm, notification } from 'antd'
+import { Button, Divider, Popconfirm, notification } from 'antd'
 import { FcSynchronize } from 'react-icons/fc'
 
 export const Updated = () => {
@@ -30,27 +30,30 @@ export const Updated = () => {
   }
 
   return (
-    <div className={style.wrapper}>
-      <span className={style.title}>ข้อมูลตั้งแต่วันที่</span>
-      <time className={style.time}>
-        {date}
-        <Popconfirm
-          title="อัปเดตข้อมูล"
-          visible={showConfirm}
-          onConfirm={mockLoading}
-          onCancel={() => setShowConfirm(false)}
-          okText="ตกลง"
-          cancelText="ยกเลิก"
-        >
-          <Button
-            shape="circle"
-            type="text"
-            icon={<FcSynchronize />}
-            onClick={() => setShowConfirm(true)}
-            loading={isLoading}
-          />
-        </Popconfirm>
-      </time>
-    </div>
+    <>
+      <Divider />
+      <div className={style.wrapper}>
+        <span className={style.title}>ข้อมูลตั้งแต่วันที่</span>
+        <time className={style.time}>
+          {date}
+          <Popconfirm
+            title="อัปเดตข้อมูล"
+            visible={showConfirm}
+            onConfirm={mockLoading}
+            onCancel={() => setShowConfirm(false)}
+            okText="ตกลง"
+            cancelText="ยกเลิก"
+          >
+            <Button
+              shape="circle"
+              type="text"
+              icon={<FcSynchronize />}
+              onClick={() => setShowConfirm(true)}
+              loading={isLoading}
+            />
+          </Popconfirm>
+        </time>
+      </div>
+    </>
   )
 }
