@@ -2,6 +2,7 @@ import css from 'classnames'
 import style from './style.module.scss'
 import { Logo } from './Logo'
 import { Updated } from './Updated'
+import { Logout } from './Logout'
 import { Link } from 'react-router-dom'
 import { Layout, Menu, Divider } from 'antd'
 import {
@@ -27,6 +28,7 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
         <div className={style.headerText}>
           คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์
         </div>
+        <Logout />
       </Header>
 
       <Layout>
