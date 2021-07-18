@@ -2,6 +2,7 @@ import css from 'classnames'
 import style from './style.module.scss'
 import { Logo } from './Logo'
 import { Updated } from './Updated'
+import { Link } from 'react-router-dom'
 import { Layout, Menu, Divider } from 'antd'
 import {
   FiCalendar,
@@ -36,28 +37,36 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
               className={style.item}
               icon={<FiCalendar className={style.icon} />}
             >
-              จัดการภาระงาน
+              <Link to="/workload" className={style.link}>
+                จัดการภาระงาน
+              </Link>
             </Item>
             <Item
               key="2"
               className={style.item}
               icon={<FiMonitor className={style.icon} />}
             >
-              จัดห้องอัตโนมัติ
+              <Link to="/automatic-room" className={style.link}>
+                จัดห้องอัตโนมัติ
+              </Link>
             </Item>
             <Item
               key="3"
               className={style.item}
               icon={<FiBook className={style.icon} />}
             >
-              หนังสือสอนชดเชย
+              <Link to="/compensation-book" className={style.link}>
+                หนังสือสอนชดเชย
+              </Link>
             </Item>
             <Item
               key="4"
               className={style.item}
               icon={<FiFileText className={style.icon} />}
             >
-              เอกสาร TA
+              <Link to="/assistant-document" className={style.link}>
+                เอกสาร TA
+              </Link>
             </Item>
 
             <SubMenu
@@ -67,16 +76,24 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
               icon={<FiServer className={style.icon} />}
             >
               <Item key="6" className={style.item}>
-                ข้อมูลอาจารย์
+                <Link to="/menu/teacher" className={style.link}>
+                  ข้อมูลอาจารย์
+                </Link>
               </Item>
               <Item key="7" className={style.item}>
-                ข้อมูลวิชา
+                <Link to="/menu/subject" className={style.link}>
+                  ข้อมูลวิชา
+                </Link>
               </Item>
               <Item key="8" className={style.item}>
-                ข้อมูล TA
+                <Link to="/menu/assistant" className={style.link}>
+                  ข้อมูล TA
+                </Link>
               </Item>
               <Item key="9" className={style.item}>
-                ข้อมูลห้องเรียน
+                <Link to="/menu/room" className={style.link}>
+                  ข้อมูลห้องเรียน
+                </Link>
               </Item>
             </SubMenu>
             <Divider />
