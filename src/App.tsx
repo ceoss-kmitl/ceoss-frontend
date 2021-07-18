@@ -16,31 +16,24 @@ import { DemoTimeTable } from 'examples/TimeTable'
 function App() {
   return (
     <BrowserRouter>
-      <Switch>
-        <Redirect exact from="/" to="/workload" />
-        <Layout>
-          <Route exact path="/workload" component={WorkloadPage} />
-          <Route exact path="/automatic-room" component={AutomaticRoomPage} />
-          <Route
-            exact
-            path="/compensation-book"
-            component={CompensationBookPage}
-          />
-          <Route
-            exact
-            path="/assistant-document"
-            component={AssistantDocumentPage}
-          />
-          <Route exact path="/menu/teacher" component={MenuTeacherPage} />
-          <Route exact path="/menu/subject" component={MenuSubjectPage} />
-          <Route exact path="/menu/assistant" component={MenuAssistantPage} />
-          <Route exact path="/menu/room" component={MenuRoomPage} />
+      <Layout>
+        <Switch>
+          <Route path="/workload" component={WorkloadPage} />
+          <Route path="/automatic-room" component={AutomaticRoomPage} />
+          <Route path="/compensation-book" component={CompensationBookPage} />
+          <Route path="/assistant-document" component={AssistantDocumentPage} />
+          <Route path="/menu/teacher" component={MenuTeacherPage} />
+          <Route path="/menu/subject" component={MenuSubjectPage} />
+          <Route path="/menu/assistant" component={MenuAssistantPage} />
+          <Route path="/menu/room" component={MenuRoomPage} />
 
           {/* Start Example */}
-          <Route exact path="/demo/time-table" component={DemoTimeTable} />
+          <Route path="/demo/time-table" component={DemoTimeTable} />
           {/* End Example */}
-        </Layout>
-      </Switch>
+
+          <Redirect to="/workload" />
+        </Switch>
+      </Layout>
     </BrowserRouter>
   )
 }

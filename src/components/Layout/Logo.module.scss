@@ -3,6 +3,7 @@
     align-items: center;
     font-size: 24px;
     font-weight: 600;
+    user-select: none;
 
     span:last-child {
         color: var(--orange600);
