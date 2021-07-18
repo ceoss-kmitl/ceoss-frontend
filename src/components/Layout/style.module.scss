@@ -9,9 +9,17 @@ $siderItemHeight: 48px;
         top: 0;
         left: 0;
         width: 100%;
+        padding: 0 24px;
         z-index: 1;
         background: white;
         height: $headerHeight;
+        display: flex;
+
+        .headerText {
+            margin: 0 auto;
+            font-size: 18px;
+            font-weight: bold;
+        }
     }
 
     .sider {
@@ -63,6 +71,10 @@ $siderItemHeight: 48px;
 
             :global(.ant-menu-submenu-title:hover) {
                 color: var(--orange600);
+            }
+
+            &:global(.ant-menu-title-content) {
+                color: inherit;
             }
         }
 

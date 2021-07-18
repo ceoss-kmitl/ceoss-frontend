@@ -1,6 +1,6 @@
 import style from './Updated.module.scss'
 import { useState } from 'react'
-import { Button, Popconfirm, Divider, notification } from 'antd'
+import { Button, Popconfirm, notification } from 'antd'
 import { FcSynchronize } from 'react-icons/fc'
 
 export const Updated = () => {
@@ -31,7 +31,6 @@ export const Updated = () => {
 
   return (
     <div className={style.wrapper}>
-      <Divider />
       <span className={style.title}>ข้อมูลตั้งแต่วันที่</span>
       <time className={style.time}>
         {date}

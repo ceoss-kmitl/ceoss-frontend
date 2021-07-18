@@ -1,7 +1,8 @@
 import css from 'classnames'
 import style from './style.module.scss'
+import { Logo } from './Logo'
 import { Updated } from './Updated'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, Divider } from 'antd'
 import {
   FiCalendar,
   FiMonitor,
@@ -20,7 +21,13 @@ interface IProps {
 const MyLayout: React.FC<IProps> = ({ children }) => {
   return (
     <Layout className={style.layout}>
-      <Header className={css(style.header, 'shadow')}>Header</Header>
+      <Header className={css(style.header, 'shadow')}>
+        <Logo />
+        <div className={style.headerText}>
+          คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์
+        </div>
+      </Header>
+
       <Layout>
         <Sider className={css(style.sider, 'shadow')} theme="light" width={220}>
           <Menu mode="inline" defaultSelectedKeys={['1']}>
@@ -72,6 +79,7 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
                 ข้อมูลห้องเรียน
               </Item>
             </SubMenu>
+            <Divider />
 
             <Updated />
           </Menu>
