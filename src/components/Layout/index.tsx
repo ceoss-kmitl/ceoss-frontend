@@ -1,8 +1,7 @@
 import css from 'classnames'
 import style from './style.module.scss'
-import { Logo } from './Logo'
+import { MyHeader } from './MyHeader'
 import { Updated } from './Updated'
-import { Logout } from './Logout'
 import { pathList, subPathList } from './helper'
 import { NavLink, useLocation } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
@@ -21,11 +20,7 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
   return (
     <Layout className={style.layout}>
       <Header className={css(style.header, 'shadow')}>
-        <Logo />
-        <div className={style.headerText}>
-          คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์
-        </div>
-        <Logout />
+        <MyHeader />
       </Header>
 
       <Layout>

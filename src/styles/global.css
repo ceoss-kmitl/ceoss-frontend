@@ -24,3 +24,8 @@ code {
 *::before {
     box-sizing: border-box;
 }
+
+::selection {
+    background: var(--orange600);
+    color: white;
+}
