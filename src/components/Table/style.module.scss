@@ -1,0 +1,25 @@
+$border-radius: 6px;
+
+.table {
+    border-radius: $border-radius;
+
+    :global(.ant-table) {
+        border-radius: $border-radius;
+        overflow: hidden;
+    }
+
+    :global(.ant-table-content) {
+        padding: 0 1rem;
+    }
+
+    :global(.ant-table-thead) {
+        :global(.ant-table-cell) {
+            background: white;
+            color: var(--gray400);
+
+            &::before {
+                display: none;
+            }
+        }
+    }
+}

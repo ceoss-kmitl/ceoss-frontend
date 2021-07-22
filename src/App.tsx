@@ -3,6 +3,7 @@ import { HomePage } from 'pages/HomePage'
 
 // Start Example
 import { DemoTimeTable } from 'examples/TimeTable'
+import { DemoTable } from 'examples/Table'
 // End Example
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
         <Route exact path="/" component={HomePage} />
         {/* Start Example */}
         <Route exact path="/demo/time-table" component={DemoTimeTable} />
+        <Route path="/demo/table" component={DemoTable} />
         {/* End Example */}
       </Switch>
     </BrowserRouter>
