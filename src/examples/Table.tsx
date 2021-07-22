@@ -24,7 +24,7 @@ const MOCK_COLUMN: IColumn[] = [
     selectList: ['อาจารย์', 'ศาสตราจารย์', 'admin'],
     editable: true,
   },
-  { text: 'ชื่อ-สกุล', dataIndex: 'name', editable: true },
+  { text: 'ชื่อ-สกุล', dataIndex: 'name' },
   {
     text: 'ผู้บริหาร',
     dataIndex: 'isExecutive',

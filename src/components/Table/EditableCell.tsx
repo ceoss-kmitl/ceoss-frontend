@@ -1,28 +1,40 @@
-import { Form, Input, InputNumber } from 'antd'
+import { Input, InputNumber, Form, Typography, Checkbox, Select } from 'antd'
+import { IColumn } from './helper'
 
-interface IProps extends React.HTMLAttributes<HTMLElement> {
+interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean
-  title: string
   dataIndex: string
-  inputType: 'number' | 'text'
+  title: any
+  type: IColumn['type']
+  record: any
+  index: number
   children: React.ReactNode
 }
 
-export const EditableCell: React.FC<IProps> = ({
+export const EditableCell: React.FC<EditableCellProps> = ({
   editing,
   dataIndex,
   title,
-  inputType,
+  type,
+  index,
   children,
-  ...restProps
+  ...props
 }) => {
-  const inputNode = inputType === 'number' ? <InputNumber /> : <Input />
+  const cell = () => {
+    switch (type) {
+      case 'checkbox':
+        return <Checkbox />
+      case 'select':
+        return <Select />
+      default:
+        return <Input />
+    }
+  }
 
   return (
-    <td {...restProps}>
+    <td {...props}>
       {editing ? (
         <Form.Item
-          data-eiei="eiei"
           name={dataIndex}
           style={{ margin: 0 }}
           rules={[
@@ -32,7 +44,7 @@ export const EditableCell: React.FC<IProps> = ({
             },
           ]}
         >
-          {inputNode}
+          {cell()}
         </Form.Item>
       ) : (
         children
