@@ -12,7 +12,7 @@ interface IProps {
 
 const MyTable: React.FC<IProps> = ({ columnList, data, editor }) => {
   const dataWithKey = addKey(data)
-  const antdColumn = convertToAntdColumn(columnList)
+  const antdColumn = convertToAntdColumn(columnList, editor)
   const editableColumn = editor
     ? [
         ...antdColumn,
@@ -22,13 +22,12 @@ const MyTable: React.FC<IProps> = ({ columnList, data, editor }) => {
             const editable = editor.isEditing(record)
             return editable ? (
               <span>
-                <a
-                  href="javascript:;"
+                <span
                   onClick={() => editor.setEditingKey(-1)}
                   style={{ marginRight: 8 }}
                 >
                   Save
-                </a>
+                </span>
                 <Popconfirm
                   title="Sure to cancel?"
                   onConfirm={() => editor.setEditingKey(-1)}
@@ -48,6 +47,8 @@ const MyTable: React.FC<IProps> = ({ columnList, data, editor }) => {
         },
       ]
     : antdColumn
+
+  console.log(editableColumn)
 
   return (
     <Form form={editor?.form} component={false}>

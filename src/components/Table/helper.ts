@@ -47,7 +47,7 @@ export function addKey(data: any[]) {
 
 export function convertToAntdColumn(
   columnList: IColumn[],
-  editor?: ReturnType<typeof useTableEditor>
+  editor: ReturnType<typeof useTableEditor> | undefined
 ) {
   if (!editor) return columnList.map((col) => ({ ...col, title: col.text }))
 
@@ -59,8 +59,9 @@ export function convertToAntdColumn(
       ...col,
       title: col.text,
       onCell: (record: any) => ({
-        type: col.type,
+        inputType: col.type,
         dataIndex: col.dataIndex,
+        record: record,
         title: col.text,
         editing: editor.isEditing(record),
       }),
