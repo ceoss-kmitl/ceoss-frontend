@@ -11,6 +11,7 @@ import { MenuRoomPage } from 'pages/Menu/RoomPage'
 
 // Start Example
 import { DemoTimeTable } from 'examples/TimeTable'
+import { DemoTable } from 'examples/Table'
 // End Example
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
 
           {/* Start Example */}
           <Route path="/demo/time-table" component={DemoTimeTable} />
+          <Route path="/demo/table" component={DemoTable} />
           {/* End Example */}
 
           <Redirect to="/workload" />

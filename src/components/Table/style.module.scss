@@ -1,0 +1,79 @@
+$border-radius: 6px;
+
+.table {
+    border-radius: $border-radius;
+
+    :global(.ant-table) {
+        border-radius: $border-radius;
+        overflow: hidden;
+    }
+
+    :global(.ant-table-content) {
+        padding: 0 1rem;
+    }
+
+    :global(.ant-table-thead) {
+        :global(.ant-table-cell) {
+            background: white;
+            color: var(--gray400);
+
+            &::before {
+                display: none;
+            }
+        }
+    }
+
+    .buttonWraper {
+        min-width: 104px;
+    }
+
+    .button {
+        &Edit {
+            color: var(--orange600);
+            background: white;
+
+            &:hover,
+            &:focus {
+                color: var(--orange600);
+                background: var(--orange100);
+            }
+        }
+
+        &Delete,
+        &Cancel {
+            color: var(--red600);
+            background: white;
+
+            &:hover,
+            &:focus {
+                color: var(--red600);
+                background: var(--red70);
+            }
+        }
+
+        &Save {
+            color: var(--green500);
+            background: white;
+
+            &:hover,
+            &:focus {
+                color: var(--green500);
+                background: var(--green100);
+            }
+        }
+    }
+
+    .editingRow {
+        background: var(--orange50);
+
+        &:global(.ant-table-row):hover > td {
+            background: inherit;
+        }
+
+        :global(.ant-form-item-explain) {
+            position: absolute;
+            top: 100%;
+            font-size: 12px;
+        }
+    }
+}
