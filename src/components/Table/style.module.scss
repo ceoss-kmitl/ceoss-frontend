@@ -23,11 +23,21 @@ $border-radius: 6px;
         }
     }
 
-    .buttonWraper {
+    .headerActionCell {
         min-width: 104px;
     }
 
+    .buttonWrapper {
+        display: flex;
+    }
+
     .button {
+        & {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         &Edit {
             color: var(--orange600);
             background: white;

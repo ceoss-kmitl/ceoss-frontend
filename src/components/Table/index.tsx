@@ -28,16 +28,16 @@ const MyTable: React.FC<IProps> = ({ use }) => {
     {
       title: '',
       align: 'right' as any,
-      onHeaderCell: () => ({ className: style.buttonWraper }),
+      onHeaderCell: () => ({ className: style.headerActionCell }),
       render: (_: any, record: IRecord) => {
         const editable = $.isEditing(record)
         return editable ? (
-          <span key="save-cancel">
+          <span key="save-cancel" className={style.buttonWrapper}>
             <Button
               type="text"
               shape="circle"
               icon={<FiCheck />}
-              className={style.buttonSave}
+              className={css(style.button, style.buttonSave)}
               onClick={() => {
                 if (record.key === EditingStatus.NewlyAdded) {
                   $.event('add', { ...record, ...$.form.getFieldsValue() })
@@ -50,18 +50,18 @@ const MyTable: React.FC<IProps> = ({ use }) => {
               type="text"
               shape="circle"
               icon={<FiX />}
-              className={style.buttonCancel}
+              className={css(style.button, style.buttonCancel)}
               onClick={$.stopEditing}
               style={{ marginLeft: '0.5rem' }}
             />
           </span>
         ) : (
-          <span key="edit-delete">
+          <span key="edit-delete" className={style.buttonWrapper}>
             <Button
               type="text"
               shape="circle"
               icon={<FiEdit />}
-              className={style.buttonEdit}
+              className={css(style.button, style.buttonEdit)}
               disabled={$.isEditable()}
               onClick={() => $.startEditing(record)}
             />
@@ -69,7 +69,7 @@ const MyTable: React.FC<IProps> = ({ use }) => {
               type="text"
               shape="circle"
               icon={<FiTrash2 />}
-              className={style.buttonDelete}
+              className={css(style.button, style.buttonDelete)}
               style={{ marginLeft: '0.5rem' }}
               disabled={$.isEditable()}
               onClick={() => $.event('delete', record)}
