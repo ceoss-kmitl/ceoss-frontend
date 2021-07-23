@@ -1,3 +1,20 @@
 :root {
     --very-blue: lightskyblue;
+
+    --blue100: #dbeafe;
+    --blue500: #3b82f6;
+
+    --gray100: #f3f4f6;
+    --gray200: #e5e7eb;
+    --gray800: #1f2937;
+
+    --green100: #d1fae5;
+    --green500: #10b981;
+
+    --orange100: #ffedd5;
+    --oragne400: #fb923c;
+
+    --red70: #fcebeb;
+    --red500: #ef4444;
+    --red600: #dc2626;
 }
