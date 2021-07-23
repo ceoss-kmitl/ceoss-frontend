@@ -1,0 +1,17 @@
+.logo {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 600;
+    user-select: none;
+
+    span:last-child {
+        color: var(--orange600);
+    }
+}
+
+.headerText {
+    margin: 0 auto;
+    font-size: 18px;
+    font-weight: bold;
+}

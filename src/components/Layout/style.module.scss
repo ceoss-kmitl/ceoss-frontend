@@ -1,0 +1,92 @@
+$headerHeight: 64px;
+$siderWidth: 220px;
+$siderFontSize: 14px;
+$siderItemHeight: 48px;
+
+.layout {
+    .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 0 24px;
+        z-index: 1;
+        background: white;
+        height: $headerHeight;
+        display: flex;
+        align-items: center;
+    }
+
+    .sider {
+        overflow: auto;
+        height: calc(100vh - #{$headerHeight});
+        position: fixed;
+        left: 0;
+        margin-top: $headerHeight;
+        user-select: none;
+
+        .item {
+            height: $siderItemHeight;
+            font-size: $siderFontSize;
+
+            &:global(.ant-menu-item-selected) {
+                background: var(--orange100);
+                color: var(--gray800);
+            }
+
+            &:hover,
+            &:active {
+                background: var(--orange100);
+                color: var(--orange600);
+            }
+
+            &::after {
+                border: 2px solid var(--orange600);
+            }
+
+            .link {
+                color: inherit;
+            }
+        }
+
+        .submenu {
+            font-size: $siderFontSize;
+
+            &:global(.ant-menu-submenu-selected) {
+                color: var(--orange600);
+            }
+
+            &:hover,
+            &:active {
+                :global(.ant-menu-submenu-title),
+                :global(.ant-menu-submenu-arrow) {
+                    color: var(--orange600);
+                }
+
+                :global(.ant-menu-submenu-title:active) {
+                    background: var(--orange100);
+                }
+            }
+
+            :global(.ant-menu-submenu-title:hover) {
+                color: var(--orange600);
+            }
+
+            span:global(.ant-menu-title-content) {
+                color: inherit;
+            }
+        }
+
+        .icon {
+            color: var(--orange600);
+            font-size: 18px;
+        }
+    }
+
+    .content {
+        min-height: calc(100vh - #{$headerHeight});
+        margin-top: $headerHeight;
+        margin-left: $siderWidth;
+        padding: 1rem;
+    }
+}
