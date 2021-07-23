@@ -1,7 +1,42 @@
-import { Table, IColumn, useTableEditor } from 'components/Table'
+import { useState } from 'react'
+import { Table, IColumn, useTable } from 'components/Table'
 
 export const DemoTable = () => {
-  const editor = useTableEditor(MOCK_DATA)
+  const [data, setData] = useState(MOCK_DATA)
+
+  const table = useTable({
+    initialData: data,
+    columnList: MOCK_COLUMN,
+    onAdd: mockAddData,
+    onEdit: mockEditData,
+    onDelete: mockDeleteData,
+  })
+
+  function mockAddData(record: any) {
+    const { key, ...rest } = record
+    console.log('add', rest)
+    setData([
+      { ...rest, id: `MOCK-${Math.random()}-${Math.random()}` },
+      ...data,
+    ])
+  }
+
+  function mockEditData(record: any) {
+    const { key, ...rest } = record
+    console.log('edit', rest)
+    setData(
+      data.map((each) => {
+        if (each.id === record.id) {
+          return { ...each, ...rest }
+        }
+        return each
+      })
+    )
+  }
+
+  function mockDeleteData(record: any) {
+    setData(data.filter((each) => each.id !== record.id))
+  }
 
   return (
     <main
@@ -11,7 +46,8 @@ export const DemoTable = () => {
         padding: '2rem',
       }}
     >
-      <Table columnList={MOCK_COLUMN} data={MOCK_DATA} editor={editor} />
+      <button onClick={() => table.addRow({})}>Add row</button>
+      <Table use={table} />
     </main>
   )
 }
@@ -23,23 +59,33 @@ const MOCK_COLUMN: IColumn[] = [
     type: 'select',
     selectList: ['อาจารย์', 'ศาสตราจารย์', 'admin'],
     editable: true,
+    width: '20%',
   },
-  { text: 'ชื่อ-สกุล', dataIndex: 'name' },
+  {
+    text: 'ชื่อ-สกุล',
+    dataIndex: 'name',
+    type: 'text',
+    editable: true,
+    width: '60%',
+  },
   {
     text: 'ผู้บริหาร',
     dataIndex: 'isExecutive',
     type: 'checkbox',
     editable: true,
+    width: '20%',
   },
 ]
 
 const MOCK_DATA: any[] = [
   {
+    id: 'eDvc-4X',
     title: 'อาจารย์',
     name: 'คณัฐ ตังติสาานนท์',
     isExecutive: true,
   },
   {
+    id: 'zeBq-oL',
     title: 'ศาสตราจารย์',
     name: 'บีม อิอิซ่า',
     isExecutive: false,
