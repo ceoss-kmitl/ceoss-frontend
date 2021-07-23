@@ -14,7 +14,6 @@ export const DemoTable = () => {
 
   function mockAddData(record: any) {
     const { key, ...rest } = record
-    console.log('add', rest)
     setData([
       { ...rest, id: `MOCK-${Math.random()}-${Math.random()}` },
       ...data,
@@ -23,7 +22,6 @@ export const DemoTable = () => {
 
   function mockEditData(record: any) {
     const { key, ...rest } = record
-    console.log('edit', rest)
     setData(
       data.map((each) => {
         if (each.id === record.id) {
@@ -64,9 +62,9 @@ const MOCK_COLUMN: IColumn[] = [
   {
     text: 'ชื่อ-สกุล',
     dataIndex: 'name',
-    type: 'text',
     editable: true,
     width: '60%',
+    placeholder: 'ชื่อ-สกุล',
   },
   {
     text: 'ผู้บริหาร',

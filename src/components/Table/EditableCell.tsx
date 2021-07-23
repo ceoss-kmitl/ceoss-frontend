@@ -1,37 +1,25 @@
 import React from 'react'
-import {
-  Input,
-  InputNumber,
-  Form,
-  Typography,
-  Checkbox,
-  Select,
-  FormInstance,
-} from 'antd'
-import { IColumn } from './helper'
+import { Input, Form, Checkbox, Select } from 'antd'
+import { IColumn, IRecord } from './helper'
 
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+interface IProps {
   editing: boolean
   dataIndex: string
-  title: any
   inputType: IColumn['type']
+  record: IRecord
   selectList: string[]
-  record: any
-  index: number
+  placeholder: string
   children: React.ReactNode
-  form: FormInstance
 }
 
-export const EditableCell: React.FC<EditableCellProps> = ({
+export const EditableCell: React.FC<IProps> = ({
   editing,
   dataIndex,
-  title,
   inputType,
   record,
-  index,
   selectList,
+  placeholder,
   children,
-  form,
   ...props
 }) => {
   const editableCell = () => {
@@ -43,7 +31,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
           <Select options={selectList.map((option) => ({ value: option }))} />
         )
       default:
-        return <Input />
+        return <Input placeholder={placeholder} />
     }
   }
 
@@ -52,7 +40,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
       case 'checkbox':
         return (
           <Checkbox
-            checked={record[dataIndex]}
+            checked={record[dataIndex] as boolean}
             style={{ pointerEvents: 'none' }}
           />
         )
@@ -70,7 +58,7 @@ export const EditableCell: React.FC<EditableCellProps> = ({
           rules={[
             {
               required: true,
-              message: `Please Input ${title}!`,
+              message: '',
             },
           ]}
           valuePropName={inputType === 'checkbox' ? 'checked' : 'value'}

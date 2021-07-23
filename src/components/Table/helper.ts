@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Form } from 'antd'
+import { useState, useEffect } from 'react'
+import { Form, FormInstance } from 'antd'
 
 interface IBaseColumn {
   text: string
@@ -11,6 +11,7 @@ interface IBaseColumn {
 
 interface ITextColumn extends IBaseColumn {
   type?: 'text'
+  placeholder?: string
 }
 
 interface ICheckboxColumn extends IBaseColumn {
@@ -46,10 +47,39 @@ export enum EditingStatus {
   NewlyAdded = -2,
 }
 
+export type IRealUseTable = {
+  addRow: (record: Omit<IRecord, 'key'>) => void
+  $: {
+    form: FormInstance<any>
+    startEditing: (record: IRecord) => void
+    stopEditing: () => void
+    isEditable: () => boolean
+    isEditing: (record: IRecord) => boolean
+    event: (
+      type: IEditorAction['type'],
+      payload: IEditorAction['payload']
+    ) => void
+    tableData: IRecord[]
+    columnList: IColumn[]
+  }
+}
+
+interface IUseTable {
+  /**
+   * Add new empty row to table
+   */
+  addRow: (record?: Omit<IRecord, 'key'>) => void
+
+  /**
+   * *Private data. Do not use it*
+   */
+  $?: unknown
+}
+
 /**
  * Custom hooks to use with `<Table />` component
  */
-export function useTable(config: ITableConfig) {
+export function useTable(config: ITableConfig): IUseTable {
   const [form] = Form.useForm()
   const [action, setAction] = useState<IEditorAction | null>(null)
   const [editingKey, setEditingKey] = useState(EditingStatus.NotEditing)
@@ -64,7 +94,6 @@ export function useTable(config: ITableConfig) {
     payload: IEditorAction['payload']
   ) => {
     setAction({ type, payload })
-    stopEditing()
   }
 
   const startEditing = (record: IRecord) => {
@@ -80,36 +109,61 @@ export function useTable(config: ITableConfig) {
     setEditingKey(EditingStatus.NotEditing)
   }
 
+  const handleAction = async () => {
+    try {
+      switch (action?.type) {
+        case 'add':
+          await form.validateFields()
+          config?.onAdd?.(action.payload)
+          form.resetFields()
+          setEditingKey(EditingStatus.NotEditing)
+          break
+        case 'edit':
+          await form.validateFields()
+          config?.onEdit?.(action.payload)
+          form.resetFields()
+          setEditingKey(EditingStatus.NotEditing)
+          break
+        case 'delete':
+          config?.onDelete?.(action.payload)
+          form.resetFields()
+          setEditingKey(EditingStatus.NotEditing)
+          break
+      }
+    } catch (error) {}
+  }
+
   useEffect(() => {
-    switch (action?.type) {
-      case 'add':
-        config?.onAdd?.(action.payload)
-        form.resetFields()
-        break
-      case 'edit':
-        config?.onEdit?.(action.payload)
-        form.resetFields()
-        break
-      case 'delete':
-        config?.onDelete?.(action.payload)
-        form.resetFields()
-        break
-    }
+    handleAction()
   }, [action])
 
   useEffect(() => {
     setTableData(config.initialData)
-    console.log('rerender')
   }, [config.initialData])
 
-  const addRow = (record: Omit<IRecord, 'key'>) => {
+  const addRow = (record = {}) => {
     if (editingKey !== EditingStatus.NotEditing) return
+    const { columnList } = config as ITableConfig
+
+    const newRow = columnList.reduce(
+      (acc, cur) => ({
+        ...acc,
+        [cur.dataIndex]:
+          cur.type === 'checkbox'
+            ? false
+            : cur.type === 'select'
+            ? cur.selectList[0]
+            : '',
+      }),
+      {}
+    )
 
     setTableData((prev) => [
-      { ...record, key: EditingStatus.NewlyAdded },
+      { ...newRow, ...record, key: EditingStatus.NewlyAdded },
       ...prev,
     ])
     setEditingKey(EditingStatus.NewlyAdded)
+    form.setFieldsValue(newRow)
   }
 
   return {
@@ -139,7 +193,8 @@ export function convertToAntdData(data: IRecord[]) {
 }
 
 /**
- * Add `EditableCellProps` to column that editable
+ * Add `EditableCellProps` to column that editable.
+ * The `onCell` is kinda flexible use it carefully
  */
 export function convertToAntdColumn(
   columnList: IColumn[],
@@ -158,6 +213,7 @@ export function convertToAntdColumn(
         dataIndex: col.dataIndex,
         record: record,
         title: col.text,
+        placeholder: (col as any).placeholder,
         editing: isEditing(record),
       }),
     }

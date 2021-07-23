@@ -6,6 +6,7 @@ import { EditableCell } from './EditableCell'
 import {
   IColumn,
   IRecord,
+  IRealUseTable,
   EditingStatus,
   useTable,
   convertToAntdData,
@@ -17,7 +18,8 @@ interface IProps {
   use: ReturnType<typeof useTable>
 }
 
-const MyTable: React.FC<IProps> = ({ use: { $ } }) => {
+const MyTable: React.FC<IProps> = ({ use }) => {
+  const { $ } = use as IRealUseTable
   const dataWithKey = convertToAntdData($.tableData)
   const antdColumn = convertToAntdColumn($.columnList, $.isEditing)
 
