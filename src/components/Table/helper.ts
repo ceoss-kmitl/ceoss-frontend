@@ -14,6 +14,12 @@ interface ITextColumn extends IBaseColumn {
   placeholder?: string
 }
 
+interface INumberColumn extends IBaseColumn {
+  type: 'number'
+  min?: number
+  max?: number
+}
+
 interface ICheckboxColumn extends IBaseColumn {
   type: 'checkbox'
 }
@@ -23,7 +29,11 @@ interface ISelectColumn extends IBaseColumn {
   selectList: string[]
 }
 
-export type IColumn = ITextColumn | ICheckboxColumn | ISelectColumn
+export type IColumn =
+  | ITextColumn
+  | INumberColumn
+  | ICheckboxColumn
+  | ISelectColumn
 
 export type IRecord = Record<string, string | number | boolean> & {
   key?: number

@@ -1,5 +1,7 @@
 import React from 'react'
-import { Input, Form, Checkbox, Select } from 'antd'
+import { Form, Checkbox } from 'antd'
+import { Input } from 'components/Input'
+import { Select } from 'components/Select'
 import { IColumn, IRecord } from './helper'
 
 interface IProps {
@@ -8,6 +10,8 @@ interface IProps {
   inputType: IColumn['type']
   record: IRecord
   selectList: string[]
+  min: number
+  max: number
   placeholder: string
   children: React.ReactNode
 }
@@ -18,12 +22,16 @@ export const EditableCell: React.FC<IProps> = ({
   inputType,
   record,
   selectList,
+  min,
+  max,
   placeholder,
   children,
   ...props
 }) => {
   const editableCell = () => {
     switch (inputType) {
+      case 'number':
+        return <Input type="number" min={min} max={max} />
       case 'checkbox':
         return <Checkbox />
       case 'select':
@@ -31,7 +39,7 @@ export const EditableCell: React.FC<IProps> = ({
           <Select options={selectList.map((option) => ({ value: option }))} />
         )
       default:
-        return <Input placeholder={placeholder} />
+        return <Input type="text" placeholder={placeholder} />
     }
   }
 
