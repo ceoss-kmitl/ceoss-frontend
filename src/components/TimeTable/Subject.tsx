@@ -2,8 +2,7 @@ import css from 'classnames'
 import style from './Subject.module.scss'
 import { Tooltip } from 'antd'
 import { FiAlertTriangle } from 'react-icons/fi'
-import { useSubjectSlot } from './helper'
-import { ISlot, ISubject, SUBJECT_TYPE } from 'types/TimeTable'
+import { ISlot, ISubject, SUBJECT_TYPE, useSubjectSlot } from './helper'
 
 interface IProps {
   data: ISlot

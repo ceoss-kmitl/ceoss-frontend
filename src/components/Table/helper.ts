@@ -35,6 +35,7 @@ interface ITableConfig {
   onAdd?: (record: IRecord) => void
   onEdit?: (record: IRecord) => void
   onDelete?: (record: IRecord) => void
+  editable?: boolean
 }
 
 interface IEditorAction {
@@ -61,12 +62,13 @@ export type IRealUseTable = {
     ) => void
     tableData: IRecord[]
     columnList: IColumn[]
+    enableEdit: boolean
   }
 }
 
 interface IUseTable {
   /**
-   * Add new empty row to table
+   * Add new row to table
    */
   addRow: (record?: Omit<IRecord, 'key'>) => void
 
@@ -141,9 +143,12 @@ export function useTable(config: ITableConfig): IUseTable {
     setTableData(config.initialData)
   }, [config.initialData])
 
+  // Public methods
   const addRow = (record = {}) => {
     if (editingKey !== EditingStatus.NotEditing) return
     const { columnList } = config as ITableConfig
+    const editable = config.editable ?? true
+    if (!editable) return
 
     const newRow = columnList.reduce(
       (acc, cur) => ({
@@ -167,6 +172,7 @@ export function useTable(config: ITableConfig): IUseTable {
   }
 
   return {
+    // public data
     addRow,
     // Private data using inside component only!
     $: {
@@ -178,6 +184,7 @@ export function useTable(config: ITableConfig): IUseTable {
       event,
       tableData,
       columnList: config.columnList,
+      enableEdit: config.editable ?? true,
     },
   }
 }

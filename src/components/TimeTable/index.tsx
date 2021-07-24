@@ -1,8 +1,7 @@
 import style from './style.module.scss'
 import { OutlineTable } from './OutlineTable'
 import { Subject } from './Subject'
-import { timeSlot, useTimeTable } from './helper'
-import { IDay, ISubject } from 'types/TimeTable'
+import { IDay, ISubject, timeSlot, useTimeTable } from './helper'
 
 interface IProps {
   /**
@@ -64,3 +63,6 @@ export const TimeTable: React.FC<IProps> = ({
     </div>
   )
 }
+
+export { DAY_IN_WEEK, SUBJECT_TYPE } from './helper'
+export type { IDay }

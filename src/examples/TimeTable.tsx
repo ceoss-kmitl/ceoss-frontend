@@ -1,6 +1,10 @@
-import { TimeTable } from 'components/TimeTable'
 import { useState } from 'react'
-import { IDay, DAY_IN_WEEK, SUBJECT_TYPE } from 'types/TimeTable'
+import {
+  IDay,
+  DAY_IN_WEEK,
+  SUBJECT_TYPE,
+  TimeTable,
+} from 'components/TimeTable'
 
 export const DemoTimeTable = () => {
   const [data, setData] = useState(MOCK_DATA)

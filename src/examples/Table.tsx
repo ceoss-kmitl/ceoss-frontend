@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react'
-import { Table, IColumn, useTable } from 'components/Table'
+import { IColumn, Table, useTable } from 'components/Table'
 
 export const DemoTable = () => {
   const [data, setData] = useState(MOCK_DATA)
