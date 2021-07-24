@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react'
-import { Table, IColumn, useTable } from 'components/Table'
+import { IColumn, Table, useTable } from 'components/Table'
 
 export const DemoTable = () => {
   const [data, setData] = useState(MOCK_DATA)
@@ -64,15 +64,24 @@ const MOCK_COLUMN: IColumn[] = [
     text: 'ชื่อ-สกุล',
     dataIndex: 'name',
     editable: true,
-    width: '60%',
+    width: '50%',
     placeholder: 'ชื่อ-สกุล',
+  },
+  {
+    text: 'อายุ',
+    dataIndex: 'age',
+    type: 'number',
+    editable: true,
+    width: '20%',
+    min: 10,
+    max: 30,
   },
   {
     text: 'ผู้บริหาร',
     dataIndex: 'isExecutive',
     type: 'checkbox',
     editable: true,
-    width: '20%',
+    width: '10%',
   },
 ]
 
@@ -81,12 +90,14 @@ const MOCK_DATA: any[] = [
     id: 'eDvc-4X',
     title: 'อาจารย์',
     name: 'คณัฐ ตังติสาานนท์',
+    age: 28,
     isExecutive: true,
   },
   {
     id: 'zeBq-oL',
     title: 'ศาสตราจารย์',
     name: 'บีม อิอิซ่า',
+    age: 19,
     isExecutive: false,
   },
 ]

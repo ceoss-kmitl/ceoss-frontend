@@ -23,9 +23,10 @@ const MyTable: React.FC<IProps> = ({ use }) => {
   const dataWithKey = convertToAntdData($.tableData)
   const antdColumn = convertToAntdColumn($.columnList, $.isEditing)
 
-  const editableColumn = [
-    ...antdColumn,
-    {
+  const editableColumn: any[] = [...antdColumn]
+
+  if ($.enableEdit) {
+    editableColumn.push({
       title: '',
       align: 'right' as any,
       onHeaderCell: () => ({ className: style.headerActionCell }),
@@ -77,8 +78,8 @@ const MyTable: React.FC<IProps> = ({ use }) => {
           </span>
         )
       },
-    },
-  ]
+    })
+  }
 
   return (
     <Form form={$.form} component={false}>
