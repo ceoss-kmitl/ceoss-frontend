@@ -10,7 +10,6 @@ interface IModalConfig {
   description?: string
   okText?: string
   cancelText?: string
-  width?: string
   icon?: React.ReactNode
   onOk?: () => void
   onAsyncOk?: () => Promise<void>
@@ -89,7 +88,6 @@ const MyModal = {
         />
       ),
       ...defaultConfig,
-      width: config?.width ?? defaultConfig.width,
     }),
   warning: (config?: Partial<IModalConfig>) =>
     Modal.confirm({
@@ -103,7 +101,6 @@ const MyModal = {
         />
       ),
       ...defaultConfig,
-      width: config?.width ?? defaultConfig.width,
     }),
   error: (config?: Partial<IModalConfig>) =>
     Modal.confirm({
@@ -117,7 +114,6 @@ const MyModal = {
         />
       ),
       ...defaultConfig,
-      width: config?.width ?? defaultConfig.width,
     }),
 }
 
