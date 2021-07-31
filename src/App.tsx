@@ -10,6 +10,7 @@ import { MenuAssistantPage } from 'pages/Menu/AssistantPage'
 import { MenuRoomPage } from 'pages/Menu/RoomPage'
 
 // Start Example
+import { DemoHttp } from 'examples/Http'
 import { DemoTimeTable } from 'examples/TimeTable'
 import { DemoTable } from 'examples/Table'
 // End Example
@@ -29,6 +30,7 @@ function App() {
           <Route path="/menu/room" component={MenuRoomPage} />
 
           {/* Start Example */}
+          <Route path="/demo/http" component={DemoHttp} />
           <Route path="/demo/time-table" component={DemoTimeTable} />
           <Route path="/demo/table" component={DemoTable} />
           {/* End Example */}

@@ -26,6 +26,6 @@ http.interceptors.response.use(
         message: 'Request did not reach the destination',
       })
     }
-    return Promise.reject(err.response.data.error)
+    return Promise.reject(err.response.data)
   }
 )
