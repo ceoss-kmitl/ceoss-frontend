@@ -1,13 +1,17 @@
 import { useDemoHttp } from 'examples/useDemoHttp'
 
 export const DemoHttp = () => {
-  const { data, error, isLoading, loadData } = useDemoHttp()
+  const { data, error, isLoading, getAllAccount, getErrorAccount } =
+    useDemoHttp()
 
   return (
     <main>
       <h1>Loading : {`${isLoading}`}</h1>
-      <button onClick={loadData} disabled={isLoading}>
-        Random Data or Error
+      <button onClick={getAllAccount} disabled={isLoading}>
+        Get all account
+      </button>
+      <button onClick={getErrorAccount} disabled={isLoading}>
+        Get error account
       </button>
       <hr />
       <h2>[ Data ]</h2>

@@ -1,6 +1,6 @@
 import Axios from 'axios'
 
-const baseURL = process.env.API_URL || 'http://localhost:5050/api'
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5050/api'
 
 export const http = Axios.create({
   baseURL,
