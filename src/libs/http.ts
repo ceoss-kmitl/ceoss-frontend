@@ -1,6 +1,6 @@
 import Axios from 'axios'
 
-const baseURL = process.env.API_URL || 'http://localhost:5050/api'
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5050/api'
 
 export const http = Axios.create({
   baseURL,
@@ -26,6 +26,6 @@ http.interceptors.response.use(
         message: 'Request did not reach the destination',
       })
     }
-    return Promise.reject(err.response.data.error)
+    return Promise.reject(err.response.data)
   }
 )

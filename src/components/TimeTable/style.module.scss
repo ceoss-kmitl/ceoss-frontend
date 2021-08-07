@@ -1,0 +1,57 @@
+.tableWrapper {
+    position: relative;
+}
+
+.table,
+.tableSubject {
+    width: 100%;
+    background: white;
+    border-radius: 6px;
+    border-collapse: collapse;
+    border-style: hidden;
+    table-layout: fixed;
+
+    td,
+    th {
+        border: 1px solid var(--gray200);
+        font-weight: 400;
+    }
+
+    .timeHeader {
+        height: 60px;
+    }
+
+    .dayHeader {
+        height: 80px;
+    }
+
+    .dayRow {
+        position: relative;
+    }
+
+    .slotStart {
+        border-right: none;
+    }
+
+    .slot {
+        border-right: none;
+        border-left: none;
+    }
+
+    .slotEnd {
+        border-left: none;
+    }
+}
+
+.tableSubject {
+    position: absolute;
+    background: none;
+    top: 0;
+    left: 0;
+    height: 620px;
+
+    td,
+    th {
+        border: none;
+    }
+}
