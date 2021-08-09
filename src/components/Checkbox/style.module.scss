@@ -1,0 +1,23 @@
+.checkbox {
+    :global(.ant-checkbox) {
+        :global(.ant-checkbox-inner) {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+        }
+    }
+
+    :global(.ant-checkbox-checked) {
+        :global(.ant-checkbox-inner) {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+        }
+    }
+
+    &:hover {
+        :global(.ant-checkbox-checked)::after {
+            border-radius: 6px;
+        }
+    }
+}
