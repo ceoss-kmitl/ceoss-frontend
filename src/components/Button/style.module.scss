@@ -1,0 +1,68 @@
+.button {
+    &:global(.ant-btn) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 6px;
+        border: none;
+        color: white;
+        background: var(--orange500);
+
+        &:focus {
+            color: white;
+            background: var(--orange500);
+        }
+
+        &:hover,
+        &:focus:hover,
+        &:active {
+            color: white;
+            background: var(--orange400);
+        }
+
+        &.blue {
+            background: var(--blue500);
+
+            &:hover,
+            &:focus:hover,
+            &:active {
+                background: var(--blue400);
+            }
+
+            &:focus {
+                background: var(--blue500);
+            }
+        }
+
+        &.green {
+            background: var(--green500);
+
+            &:hover,
+            &:focus:hover,
+            &:active {
+                background: var(--green400);
+            }
+
+            &:focus {
+                background: var(--green500);
+            }
+        }
+
+        &.white {
+            color: var(--gray500);
+            background: white;
+
+            &:hover,
+            &:focus:hover,
+            &:active {
+                color: var(--gray500);
+                background: white;
+            }
+
+            &:focus {
+                color: var(--gray500);
+                background: white;
+            }
+        }
+    }
+}
