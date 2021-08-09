@@ -40,11 +40,30 @@ export type IRecord = Record<string, string | number | boolean> & {
 }
 
 interface ITableConfig {
+  /**
+   * Data to show in table
+   */
   data: IRecord[]
+  /**
+   * Column header of table
+   */
   columnList: IColumn[]
+  /**
+   * Function that run when add
+   */
   onAdd?: (record: IRecord) => void
+  /**
+   * Function that run when edit
+   */
   onEdit?: (record: IRecord) => void
+  /**
+   * Function that run when delete
+   */
   onDelete?: (record: IRecord) => void
+  /**
+   * Show edit/delete button in the last column.
+   * Default is `true`
+   */
   editable?: boolean
 }
 
@@ -123,21 +142,24 @@ export function useTable(config: ITableConfig): IUseTable {
 
   const handleAction = async () => {
     try {
+      const payload = { ...action?.payload }
+      delete payload.key
+
       switch (action?.type) {
         case 'add':
           await form.validateFields()
-          config?.onAdd?.(action.payload)
+          config?.onAdd?.(payload)
           form.resetFields()
           setEditingKey(EditingStatus.NotEditing)
           break
         case 'edit':
           await form.validateFields()
-          config?.onEdit?.(action.payload)
+          config?.onEdit?.(payload)
           form.resetFields()
           setEditingKey(EditingStatus.NotEditing)
           break
         case 'delete':
-          config?.onDelete?.(action.payload)
+          config?.onDelete?.(payload)
           form.resetFields()
           setEditingKey(EditingStatus.NotEditing)
           break
