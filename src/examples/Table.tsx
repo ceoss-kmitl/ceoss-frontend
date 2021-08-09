@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react'
 import { IColumn, Table, useTable } from 'components/Table'
 
@@ -6,7 +5,7 @@ export const DemoTable = () => {
   const [data, setData] = useState(MOCK_DATA)
 
   const table = useTable({
-    initialData: data,
+    data: data,
     columnList: MOCK_COLUMN,
     onAdd: mockAddData,
     onEdit: mockEditData,
@@ -14,19 +13,21 @@ export const DemoTable = () => {
   })
 
   function mockAddData(record: any) {
-    const { key, ...rest } = record
+    const newData = { ...record }
+    delete newData.key
     setData([
-      { ...rest, id: `MOCK-${Math.random()}-${Math.random()}` },
+      { ...newData, id: `MOCK-${Math.random()}-${Math.random()}` },
       ...data,
     ])
   }
 
   function mockEditData(record: any) {
-    const { key, ...rest } = record
+    const newData = { ...record }
+    delete newData.key
     setData(
       data.map((each) => {
         if (each.id === record.id) {
-          return { ...each, ...rest }
+          return { ...each, ...newData }
         }
         return each
       })
@@ -53,9 +54,9 @@ export const DemoTable = () => {
 
 const MOCK_COLUMN: IColumn[] = [
   {
+    type: 'select',
     text: 'ตำแหน่ง',
     dataIndex: 'title',
-    type: 'select',
     selectList: ['อาจารย์', 'ศาสตราจารย์', 'admin'],
     editable: true,
     width: '20%',
@@ -68,18 +69,18 @@ const MOCK_COLUMN: IColumn[] = [
     placeholder: 'ชื่อ-สกุล',
   },
   {
+    type: 'number',
     text: 'อายุ',
     dataIndex: 'age',
-    type: 'number',
     editable: true,
     width: '20%',
     min: 10,
     max: 30,
   },
   {
+    type: 'checkbox',
     text: 'ผู้บริหาร',
     dataIndex: 'isExecutive',
-    type: 'checkbox',
     editable: true,
     width: '10%',
   },
