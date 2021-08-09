@@ -13,19 +13,21 @@ export const DemoTable = () => {
   })
 
   function mockAddData(record: any) {
-    const { key, ...rest } = record
+    const newData = { ...record }
+    delete newData.key
     setData([
-      { ...rest, id: `MOCK-${Math.random()}-${Math.random()}` },
+      { ...newData, id: `MOCK-${Math.random()}-${Math.random()}` },
       ...data,
     ])
   }
 
   function mockEditData(record: any) {
-    const { key, ...rest } = record
+    const newData = { ...record }
+    delete newData.key
     setData(
       data.map((each) => {
         if (each.id === record.id) {
-          return { ...each, ...rest }
+          return { ...each, ...newData }
         }
         return each
       })
