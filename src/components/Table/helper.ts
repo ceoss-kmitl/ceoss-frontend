@@ -40,7 +40,7 @@ export type IRecord = Record<string, string | number | boolean> & {
 }
 
 interface ITableConfig {
-  initialData: IRecord[]
+  data: IRecord[]
   columnList: IColumn[]
   onAdd?: (record: IRecord) => void
   onEdit?: (record: IRecord) => void
@@ -95,7 +95,7 @@ export function useTable(config: ITableConfig): IUseTable {
   const [form] = Form.useForm()
   const [action, setAction] = useState<IEditorAction | null>(null)
   const [editingKey, setEditingKey] = useState(EditingStatus.NotEditing)
-  const [tableData, setTableData] = useState<IRecord[]>(config.initialData)
+  const [tableData, setTableData] = useState<IRecord[]>(config.data)
 
   const isEditing = (record: IRecord) => record.key === editingKey
 
@@ -150,8 +150,8 @@ export function useTable(config: ITableConfig): IUseTable {
   }, [action])
 
   useEffect(() => {
-    setTableData(config.initialData)
-  }, [config.initialData])
+    setTableData(config.data)
+  }, [config.data])
 
   // Public methods
   const addRow = (record = {}) => {
