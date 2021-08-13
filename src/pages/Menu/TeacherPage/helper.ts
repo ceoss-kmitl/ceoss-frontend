@@ -3,9 +3,6 @@ import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 import { IColumn } from 'components/Table'
 
-const delay = (second: number) =>
-  new Promise((resolve) => setTimeout(() => resolve(0), 1000 * second))
-
 export function useMenuTeacher() {
   const [data, setData] = useState<any[]>([])
   const [error, setError] = useState(null)
@@ -34,13 +31,11 @@ export function useMenuTeacher() {
       width: 400,
       onAsyncOk: async () => {
         try {
-          await delay(1.25)
           await http.post(`/teacher`, record)
           await getAllTeacher()
         } catch (err) {
-          await delay(1.25)
           await getAllTeacher()
-          throw Error()
+          throw err
         }
       },
     })
@@ -56,13 +51,11 @@ export function useMenuTeacher() {
       width: 400,
       onAsyncOk: async () => {
         try {
-          await delay(1.25)
           const { id, ...teacher } = record
           await http.put(`/teacher/${id}`, teacher)
           await getAllTeacher()
         } catch (err) {
-          await delay(1.25)
-          throw Error()
+          throw err
         }
       },
     })
@@ -79,12 +72,10 @@ export function useMenuTeacher() {
       finishFailText: 'ตกลง',
       onAsyncOk: async () => {
         try {
-          await delay(1.25)
           await http.delete(`/teacher/${record.id}`)
           await getAllTeacher()
         } catch (err) {
-          await delay(1.25)
-          throw Error()
+          throw err
         }
       },
     })
@@ -133,11 +124,4 @@ export const columnList: IColumn[] = [
     editable: true,
     width: '40%',
   },
-  // {
-  //   type: 'number',
-  //   text: 'TestError',
-  //   dataIndex: 'isRequired',
-  //   editable: true,
-  //   width: '10%',
-  // },
 ]

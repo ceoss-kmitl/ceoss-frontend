@@ -6,11 +6,10 @@ import style from './style.module.scss'
 
 export const MenuTeacherPage = () => {
   const { data, addTeacher, editTeacher, deleteTeacher } = useMenuTeacher()
-  console.log(data)
 
   const teacherTable = useTable({
-    data: data,
-    columnList: columnList,
+    data,
+    columnList,
     onAdd: addTeacher,
     onEdit: editTeacher,
     onDelete: deleteTeacher,
