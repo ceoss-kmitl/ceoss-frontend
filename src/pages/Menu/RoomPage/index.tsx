@@ -19,10 +19,10 @@ export const MenuRoomPage = () => {
   return (
     <div className={style.page}>
       <div className={style.topTable}>
-        <h1 className={style.head}>ข้อมูลอาจารย์</h1>
+        <h1 className={style.head}>ข้อมูลห้องเรียน</h1>
         <Button onClick={() => roomTable.addRow()}>
           <VscAdd className={style.iconAdd} />
-          เพิ่มอาจารย์
+          เพิ่มห้องเรียน
         </Button>
       </div>
       <Table use={roomTable} />

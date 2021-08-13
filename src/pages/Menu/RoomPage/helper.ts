@@ -85,11 +85,11 @@ export const columnList: IColumn[] = [
     placeholder: 'ชื่อห้อง',
   },
   {
+    type: 'number',
     text: 'จำนวนที่รองรับ (คน)',
     dataIndex: 'capacity',
     editable: true,
     width: '70%',
-    placeholder: '0',
   },
   //   {
   //     type: 'select',
