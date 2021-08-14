@@ -28,7 +28,8 @@ export const Text: React.FC<IProps> = ({
       italic={italic}
       delete={strike}
       className={css(
-        { [style.gray]: gray, [style.bold]: bold },
+        { [style.gray]: gray },
+        { [style.bold]: bold },
         style[size],
         className
       )}
