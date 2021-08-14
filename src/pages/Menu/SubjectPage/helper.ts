@@ -138,6 +138,7 @@ export const columnList: IColumn[] = [
     width: '55%',
   },
   {
+    type: 'credit',
     text: 'หน่วยกิต (ทฤษฎี-ปฏิบัติ-เพิ่มเติม)',
     dataIndex: 'credit',
     editable: true,
