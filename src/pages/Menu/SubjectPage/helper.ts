@@ -21,12 +21,12 @@ export function useMenuSubject() {
   }
 
   function extractCredit(input: string) {
-    const result = String(input).match(/\d{1}/g) || [0, 0, 0, 0]
+    const result = String(input).match(/\d{1}/g) || []
     return {
-      credit: Number(result[0]),
-      lectureHours: Number(result[1]),
-      labHours: Number(result[2]),
-      independentHours: Number(result[3]),
+      credit: Number(result[0] ?? 0),
+      lectureHours: Number(result[1] ?? 0),
+      labHours: Number(result[2] ?? 0),
+      independentHours: Number(result[3] ?? 0),
     }
   }
 
@@ -128,14 +128,16 @@ export const columnList: IColumn[] = [
   {
     text: 'รหัสวิชา',
     dataIndex: 'code',
+    placeholder: 'รหัสวิชา',
     editable: true,
-    width: '10%',
+    width: '15%',
   },
   {
     text: 'ชื่อวิชา',
     dataIndex: 'name',
+    placeholder: 'ชื่อวิชา',
     editable: true,
-    width: '55%',
+    width: '50%',
   },
   {
     type: 'credit',
