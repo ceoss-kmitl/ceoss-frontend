@@ -1,42 +1,120 @@
 import css from 'classnames'
 import style from './style.module.scss'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import loadingGif from './loading.gif'
 import { Modal, ModalFuncProps, Button } from 'antd'
 import { FiCheckCircle, FiAlertCircle } from 'react-icons/fi'
 import { VscError } from 'react-icons/vsc'
 
 interface IModalConfig {
-  title: string
+  title?: string
   description?: string
   okText?: string
   cancelText?: string
+  loadingText?: string
+  finishTitle?: string
+  finishText?: string
+  finishFailTitle?: string
+  finishFailText?: string
   icon?: React.ReactNode
+  width?: number
   onOk?: () => void
   onAsyncOk?: () => Promise<void>
   onCancel?: () => void
+  loader?: boolean
 }
 
 const defaultConfig: ModalFuncProps = {
   icon: null,
   centered: true,
   width: 305,
+  keyboard: false,
   okButtonProps: { style: { display: 'none' } },
 }
 
 const Template = ({
+  loader,
   title,
   description,
   okText,
   cancelText,
+  loadingText,
+  finishTitle,
+  finishText,
+  finishFailTitle,
+  finishFailText,
   icon,
   onOk = () => {},
   onCancel = Modal.destroyAll,
   onAsyncOk,
 }: IModalConfig) => {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(loader ?? false)
+  const [isError, setIsError] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    if (loader) {
+      handleAsyncOk()
+    }
+  }, [loader])
+
+  async function handleAsyncOk() {
+    if (onAsyncOk) {
+      setIsLoading(true)
+      try {
+        await onAsyncOk()
+        setIsError(false)
+      } catch (err) {
+        setIsError(true)
+      }
+      setIsLoading(false)
+    } else {
+      onOk()
+    }
+  }
 
   return (
     <main className={style.modal}>
+      {isLoading && (
+        <div className={css(style.overlayContentWrapper, style.loadingWrapper)}>
+          <img src={loadingGif} alt="loading icon" />
+          <div className={style.overlayContentText}>{loadingText}</div>
+        </div>
+      )}
+      {isError === false ? (
+        <div className={style.overlayContentWrapper}>
+          <FiCheckCircle
+            className={css(style.icon, style.success, style.overlayIcon)}
+          />
+          <div className={style.title}>{finishTitle}</div>
+          <div className={style.buttonWrapper}>
+            <Button
+              className={style.okButton}
+              type="primary"
+              size="large"
+              onClick={onCancel}
+            >
+              {finishText}
+            </Button>
+          </div>
+        </div>
+      ) : isError === true ? (
+        <div className={style.overlayContentWrapper}>
+          <VscError
+            className={css(style.icon, style.error, style.overlayIcon)}
+          />
+          <div className={style.title}>{finishFailTitle}</div>
+          <div className={style.buttonWrapper}>
+            <Button
+              className={style.okButton}
+              type="primary"
+              size="large"
+              onClick={onCancel}
+            >
+              {finishFailText}
+            </Button>
+          </div>
+        </div>
+      ) : null}
       {icon}
       <div className={style.title}>{title}</div>
       {description && <div className={style.description}>{description}</div>}
@@ -47,6 +125,7 @@ const Template = ({
             type="text"
             size="large"
             onClick={onCancel}
+            disabled={isLoading}
           >
             {cancelText}
           </Button>
@@ -56,15 +135,7 @@ const Template = ({
             className={style.okButton}
             type="primary"
             size="large"
-            onClick={async () => {
-              if (onAsyncOk) {
-                setIsLoading(true)
-                await onAsyncOk()
-                setIsLoading(false)
-              } else {
-                onOk()
-              }
-            }}
+            onClick={handleAsyncOk}
             loading={isLoading}
           >
             {okText}
@@ -83,11 +154,17 @@ const MyModal = {
           title="สำเร็จ"
           okText="ตกลง"
           onOk={Modal.destroyAll}
+          loadingText="กรุณารอสักครู่"
+          finishTitle="สำเร็จแล้ว"
+          finishText="ตกลง"
+          finishFailTitle="เกิดข้อผิดพลาด"
+          finishFailText="ตกลง"
           icon={<FiCheckCircle className={css(style.icon, style.success)} />}
           {...config}
         />
       ),
       ...defaultConfig,
+      width: config?.width || defaultConfig.width,
     }),
   warning: (config?: Partial<IModalConfig>) =>
     Modal.confirm({
@@ -96,11 +173,17 @@ const MyModal = {
           title="คำเตือน"
           okText="ยืนยัน"
           cancelText="ยกเลิก"
+          loadingText="กรุณารอสักครู่"
+          finishTitle="สำเร็จแล้ว"
+          finishText="ตกลง"
+          finishFailTitle="เกิดข้อผิดพลาด"
+          finishFailText="ตกลง"
           icon={<FiAlertCircle className={css(style.icon, style.warning)} />}
           {...config}
         />
       ),
       ...defaultConfig,
+      width: config?.width || defaultConfig.width,
     }),
   error: (config?: Partial<IModalConfig>) =>
     Modal.confirm({
@@ -109,11 +192,34 @@ const MyModal = {
           title="เกิดข้อผิดพลาด"
           okText="ปิด"
           onOk={Modal.destroyAll}
+          loadingText="กรุณารอสักครู่"
+          finishTitle="สำเร็จแล้ว"
+          finishText="ตกลง"
+          finishFailTitle="เกิดข้อผิดพลาด"
+          finishFailText="ตกลง"
           icon={<VscError className={css(style.icon, style.error)} />}
           {...config}
         />
       ),
       ...defaultConfig,
+      width: config?.width || defaultConfig.width,
+    }),
+  loading: (config?: Partial<IModalConfig>) =>
+    Modal.confirm({
+      content: (
+        <Template
+          loader
+          loadingText="กรุณารอสักครู่"
+          finishTitle="สำเร็จแล้ว"
+          finishText="ตกลง"
+          finishFailTitle="เกิดข้อผิดพลาด"
+          finishFailText="ตกลง"
+          icon={<FiCheckCircle className={css(style.icon, style.success)} />}
+          {...config}
+        />
+      ),
+      ...defaultConfig,
+      width: config?.width || defaultConfig.width,
     }),
 }
 

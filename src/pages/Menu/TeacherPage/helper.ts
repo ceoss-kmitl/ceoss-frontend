@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
-import { message } from 'antd'
 import { IColumn } from 'components/Table'
 
 export function useMenuTeacher() {
@@ -23,40 +22,61 @@ export function useMenuTeacher() {
   }
 
   async function addTeacher(record: any) {
-    try {
-      await http.post(`/teacher`, record)
-      await getAllTeacher()
-      message.success('เพิ่มข้อมูลอาจารย์สำเร็จ')
-    } catch (err) {
-      message.error('ไม่สามารถเพิ่มข้อมูลอาจารย์ได้')
-    }
+    Modal.loading({
+      loadingText: 'กำลังเพิ่มข้อมูลอาจารย์',
+      finishTitle: 'เพิ่มข้อมูลอาจารย์สำเร็จ!',
+      finishText: 'ตกลง',
+      finishFailTitle: 'ไม่สามารถเพิ่มข้อมูลอาจารย์ได้',
+      finishFailText: 'ตกลง',
+      width: 400,
+      onAsyncOk: async () => {
+        try {
+          await http.post(`/teacher`, record)
+          await getAllTeacher()
+        } catch (err) {
+          await getAllTeacher()
+          throw err
+        }
+      },
+    })
   }
 
   async function editTeacher(record: any) {
-    try {
-      const { id, ...teacher } = record
-      await http.put(`/teacher/${id}`, teacher)
-      await getAllTeacher()
-      message.success('แก้ไขข้อมูลอาจารย์สำเร็จ')
-    } catch (err) {
-      message.error('ไม่สามารถแก้ไขข้อมูลอาจารย์ได้')
-    }
+    Modal.loading({
+      loadingText: 'กำลังแก้ไขข้อมูลอาจารย์',
+      finishTitle: 'แก้ไขข้อมูลอาจารย์สำเร็จ!',
+      finishText: 'ตกลง',
+      finishFailTitle: 'ไม่สามารถแก้ไขข้อมูลอาจารย์ได้',
+      finishFailText: 'ตกลง',
+      width: 400,
+      onAsyncOk: async () => {
+        try {
+          const { id, ...teacher } = record
+          await http.put(`/teacher/${id}`, teacher)
+          await getAllTeacher()
+        } catch (err) {
+          throw err
+        }
+      },
+    })
   }
 
   async function deleteTeacher(record: any) {
-    console.log(record)
-    const deleteModal = Modal.warning({
+    Modal.warning({
+      width: 400,
       title: 'ยืนยันการลบ',
       description: 'คุณต้องการยืนยันการลบข้อมูลอาจารย์นี้หรือไม่',
+      finishTitle: 'ลบข้อมูลอาจารย์สำเร็จ!',
+      finishText: 'ตกลง',
+      finishFailTitle: 'ไม่สามารถลบข้อมูลอาจารย์ได้',
+      finishFailText: 'ตกลง',
       onAsyncOk: async () => {
         try {
           await http.delete(`/teacher/${record.id}`)
           await getAllTeacher()
-          message.success('ลบข้อมูลอาจารย์สำเร็จ')
         } catch (err) {
-          message.error('ไม่สามารถลบข้อมูลอาจารย์ได้')
+          throw err
         }
-        deleteModal.destroy()
       },
     })
   }
