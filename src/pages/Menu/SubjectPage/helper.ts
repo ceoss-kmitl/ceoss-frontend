@@ -79,8 +79,8 @@ export function useMenuSubject() {
       width: 400,
       onAsyncOk: async () => {
         try {
-          const { id, ...subjectWithOutId } = subject
-          await http.put(`/subject/${id}`, subjectWithOutId)
+          const { id, ...subjectData } = subject
+          await http.put(`/subject/${id}`, subjectData)
           await getAllSubject()
         } catch (err) {
           throw err

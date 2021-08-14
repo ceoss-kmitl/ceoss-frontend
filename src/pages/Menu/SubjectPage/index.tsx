@@ -1,8 +1,9 @@
+import style from './style.module.scss'
+import { VscAdd } from 'react-icons/vsc'
+import { Button } from 'components/Button'
+import { Text } from 'components/Text'
 import { Table, useTable } from 'components/Table'
 import { useMenuSubject, columnList } from './helper'
-import { Button } from 'components/Button'
-import { VscAdd } from 'react-icons/vsc'
-import style from './style.module.scss'
 
 export const MenuSubjectPage = () => {
   const { data, addSubject, editSubject, deleteSubject } = useMenuSubject()
@@ -18,7 +19,9 @@ export const MenuSubjectPage = () => {
   return (
     <div className={style.page}>
       <div className={style.topTable}>
-        <h1 className={style.head}>ข้อมูลวิชา</h1>
+        <Text size="head" bold>
+          ข้อมูลวิชา
+        </Text>
         <Button onClick={() => subjectTable.addRow()}>
           <VscAdd className={style.iconAdd} />
           เพิ่มวิชา
