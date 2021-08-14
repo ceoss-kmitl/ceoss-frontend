@@ -51,7 +51,7 @@ export const EditableCell: React.FC<IProps> = ({
           <Select options={selectList.map((option) => ({ value: option }))} />
         )
       case 'credit':
-        return <Input placeholder="- - - -" maxLength={4} pattern="\d" />
+        return <Input placeholder="- - - -" maxLength={4} />
       default:
         return <Input type="text" placeholder={placeholder} />
     }
