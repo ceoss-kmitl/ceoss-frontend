@@ -24,11 +24,14 @@ export const Text: React.FC<IProps> = ({
 }) => {
   return (
     <Typography.Text
-      strong={bold}
       underline={underline}
       italic={italic}
       delete={strike}
-      className={css({ [style.gray]: gray }, style[size], className)}
+      className={css(
+        { [style.gray]: gray, [style.bold]: bold },
+        style[size],
+        className
+      )}
     >
       {children}
     </Typography.Text>
