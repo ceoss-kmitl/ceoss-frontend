@@ -6,11 +6,10 @@ import style from './style.module.scss'
 
 export const MenuRoomPage = () => {
   const { data, addRoom, editRoom, deleteRoom } = useMenuRoom()
-  console.log(data)
 
   const roomTable = useTable({
-    data: data,
-    columnList: columnList,
+    data,
+    columnList,
     onAdd: addRoom,
     onEdit: editRoom,
     onDelete: deleteRoom,

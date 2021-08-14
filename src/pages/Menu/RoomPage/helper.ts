@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
-import { message } from 'antd'
 import { IColumn } from 'components/Table'
 
 export function useMenuRoom() {
@@ -23,40 +22,61 @@ export function useMenuRoom() {
   }
 
   async function addRoom(record: any) {
-    try {
-      await http.post(`/room`, record)
-      await getAllRoom()
-      message.success('เพิ่มข้อมูลห้องสำเร็จ')
-    } catch (err) {
-      message.error('ไม่สามารถเพิ่มข้อมูลห้องได้')
-    }
+    Modal.loading({
+      loadingText: 'กำลังเพิ่มข้อมูลห้องเรียน',
+      finishTitle: 'เพิ่มข้อมูลห้องเรียนสำเร็จ!',
+      finishText: 'ตกลง',
+      finishFailTitle: 'ไม่สามารถเพิ่มข้อมูลห้องเรียนได้',
+      finishFailText: 'ตกลง',
+      width: 400,
+      onAsyncOk: async () => {
+        try {
+          await http.post(`/room`, record)
+          await getAllRoom()
+        } catch (err) {
+          await getAllRoom()
+          throw err
+        }
+      },
+    })
   }
 
   async function editRoom(record: any) {
-    try {
-      const { id, ...room } = record
-      await http.put(`/room/${id}`, room)
-      await getAllRoom()
-      message.success('แก้ไขข้อมูลห้องสำเร็จ')
-    } catch (err) {
-      message.error('ไม่สามารถแก้ไขข้อมูลห้องได้')
-    }
+    Modal.loading({
+      loadingText: 'กำลังแก้ไขข้อมูลห้องเรียน',
+      finishTitle: 'แก้ไขข้อมูลห้องเรียนสำเร็จ!',
+      finishText: 'ตกลง',
+      finishFailTitle: 'ไม่สามารถแก้ไขข้อมูลห้องเรียนได้',
+      finishFailText: 'ตกลง',
+      width: 400,
+      onAsyncOk: async () => {
+        try {
+          const { id, ...room } = record
+          await http.put(`/room/${id}`, room)
+          await getAllRoom()
+        } catch (err) {
+          throw err
+        }
+      },
+    })
   }
 
   async function deleteRoom(record: any) {
-    console.log(record)
-    const deleteModal = Modal.warning({
+    Modal.warning({
+      width: 400,
       title: 'ยืนยันการลบ',
-      description: 'คุณต้องการยืนยันการลบข้อมูลห้องนี้หรือไม่',
+      description: 'คุณต้องการยืนยันการลบข้อมูลห้องเรียนนี้หรือไม่',
+      finishTitle: 'ลบข้อมูลห้องเรียนสำเร็จ!',
+      finishText: 'ตกลง',
+      finishFailTitle: 'ไม่สามารถลบข้อมูลห้องเรียนได้',
+      finishFailText: 'ตกลง',
       onAsyncOk: async () => {
         try {
           await http.delete(`/room/${record.id}`)
           await getAllRoom()
-          message.success('ลบข้อมูลห้องสำเร็จ')
         } catch (err) {
-          message.error('ไม่สามารถลบข้อมูลห้องได้')
+          throw err
         }
-        deleteModal.destroy()
       },
     })
   }
@@ -91,12 +111,4 @@ export const columnList: IColumn[] = [
     editable: true,
     width: '70%',
   },
-  //   {
-  //     type: 'select',
-  //     text: 'ขนาดห้อง',
-  //     dataIndex: '',
-  //     selectList: ['เล็ก', 'ใหญ่'],
-  //     editable: true,
-  //     width: '30%',
-  //   },
 ]
