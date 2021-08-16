@@ -15,6 +15,7 @@ import { DemoTimeTable } from 'examples/TimeTable'
 import { DemoTable } from 'examples/Table'
 import { DemoButton } from 'examples/Button'
 import { DemoModal } from 'examples/Modal'
+import { DemoText } from 'examples/Text'
 // End Example
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
           <Route path="/demo/table" component={DemoTable} />
           <Route path="/demo/button" component={DemoButton} />
           <Route path="/demo/modal" component={DemoModal} />
+          <Route path="/demo/text" component={DemoText} />
           {/* End Example */}
 
           <Redirect to="/workload" />

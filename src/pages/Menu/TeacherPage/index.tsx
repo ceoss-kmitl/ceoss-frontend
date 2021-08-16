@@ -1,6 +1,7 @@
 import { Table, useTable } from 'components/Table'
 import { useMenuTeacher, columnList } from './helper'
 import { Button } from 'components/Button'
+import { Text } from 'components/Text'
 import { VscAdd } from 'react-icons/vsc'
 import style from './style.module.scss'
 
@@ -18,7 +19,9 @@ export const MenuTeacherPage = () => {
   return (
     <div className={style.page}>
       <div className={style.topTable}>
-        <h1 className={style.head}>ข้อมูลอาจารย์</h1>
+        <Text size="head" bold>
+          ข้อมูลอาจารย์
+        </Text>
         <Button onClick={() => teacherTable.addRow()}>
           <VscAdd className={style.iconAdd} />
           เพิ่มอาจารย์

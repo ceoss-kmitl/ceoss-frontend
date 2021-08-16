@@ -4,6 +4,7 @@ import { Input } from 'components/Input'
 import { Select } from 'components/Select'
 import { Checkbox } from 'components/Checkbox'
 import { IColumn, IRecord } from './helper'
+import style from './style.module.scss'
 
 interface IProps {
   editing: boolean
@@ -29,6 +30,16 @@ export const EditableCell: React.FC<IProps> = ({
   children,
   ...props
 }) => {
+  function extractCredit(input: any) {
+    const result = String(input).match(/\d{1}/g) || ['0', '0', '0', '0']
+    return {
+      credit: result[0],
+      lectureHours: result[1],
+      labHours: result[2],
+      independentHours: result[3],
+    }
+  }
+
   const editableCell = () => {
     switch (inputType) {
       case 'number':
@@ -39,6 +50,8 @@ export const EditableCell: React.FC<IProps> = ({
         return (
           <Select options={selectList.map((option) => ({ value: option }))} />
         )
+      case 'credit':
+        return <Input placeholder="- - - -" maxLength={4} />
       default:
         return <Input type="text" placeholder={placeholder} />
     }
@@ -52,6 +65,21 @@ export const EditableCell: React.FC<IProps> = ({
             checked={record[dataIndex] as boolean}
             style={{ pointerEvents: 'none' }}
           />
+        )
+      case 'credit':
+        const result = extractCredit(record[dataIndex])
+
+        return (
+          <span className={style.creditSymbol}>
+            <span>{result.credit}</span>
+            <span>(</span>
+            <span>{result.lectureHours}</span>
+            <span>-</span>
+            <span>{result.labHours}</span>
+            <span>-</span>
+            <span>{result.independentHours}</span>
+            <span>)</span>
+          </span>
         )
       default:
         return children

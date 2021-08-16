@@ -29,11 +29,16 @@ interface ISelectColumn extends IBaseColumn {
   selectList: string[]
 }
 
+interface ICreditColumn extends IBaseColumn {
+  type: 'credit'
+}
+
 export type IColumn =
   | ITextColumn
   | INumberColumn
   | ICheckboxColumn
   | ISelectColumn
+  | ICreditColumn
 
 export type IRecord = Record<string, string | number | boolean> & {
   key?: number
