@@ -1,3 +1,14 @@
+import style from './style.module.scss'
+import { Text } from 'components/Text'
+import { BigSearch } from './BigSearch'
+
 export const WorkloadPage = () => {
-  return <h1>Workload page</h1>
+  return (
+    <div className={style.page}>
+      <Text size="head" bold>
+        จัดการภาระงาน
+      </Text>
+      <BigSearch />
+    </div>
+  )
 }
