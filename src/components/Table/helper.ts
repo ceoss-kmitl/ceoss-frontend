@@ -12,6 +12,7 @@ interface IBaseColumn {
 interface ITextColumn extends IBaseColumn {
   type?: 'text'
   pattern?: RegExp
+  maxLength?: number
   placeholder?: string
 }
 

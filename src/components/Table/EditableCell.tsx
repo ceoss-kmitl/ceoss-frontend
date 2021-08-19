@@ -15,6 +15,7 @@ interface IProps {
   selectList: string[]
   min: number
   max: number
+  maxLength: number
   placeholder: string
   title: string
   pattern: RegExp
@@ -29,6 +30,7 @@ export const EditableCell: React.FC<IProps> = ({
   selectList,
   min,
   max,
+  maxLength,
   placeholder,
   title,
   pattern,
@@ -58,7 +60,9 @@ export const EditableCell: React.FC<IProps> = ({
       case 'credit':
         return <Input placeholder="- - - -" maxLength={4} />
       default:
-        return <Input type="text" placeholder={placeholder} />
+        return (
+          <Input type="text" placeholder={placeholder} maxLength={maxLength} />
+        )
     }
   }
 
@@ -95,6 +99,11 @@ export const EditableCell: React.FC<IProps> = ({
   if (pattern)
     formRules.push({
       pattern,
+      message: `${title} ไม่ถูกต้อง`,
+    })
+  if (inputType === 'credit')
+    formRules.push({
+      pattern: /^\d{4}$/,
       message: `${title} ไม่ถูกต้อง`,
     })
 
