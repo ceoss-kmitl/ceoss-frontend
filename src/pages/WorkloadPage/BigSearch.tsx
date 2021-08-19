@@ -2,32 +2,36 @@ import css from 'classnames'
 import style from './style.module.scss'
 import { AutoComplete } from 'antd'
 import { FiSearch } from 'react-icons/fi'
+import { useBigSearch } from './helper'
 
-const mockData = [
-  'รศ.ดร.ธัญธร พรสวัสดิ์ชัย',
-  'ดร.บีม ซ่า',
-  'ดร.บีม ซ่า2',
-  'อ.อิอิ ไม่รู้',
-  'รศ.ดร.ธัญธร พรสวัสดิ์ชัย2',
-  'ดร.บีม ซ่า3',
-  'ดร.บีม ซ่า4',
-  'อ.อิอิ ไม่รู้2',
-]
+interface IProps {
+  onSearch: (id: string) => void
+}
 
-export const BigSearch = () => {
+export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
+  const { teacherList } = useBigSearch()
+
   return (
     <div className={css(style.myInput, 'shadow')}>
       <FiSearch className={style.searchIcon} />
       <AutoComplete
-        notFoundContent="ไม่พบรายชื่อดังกล่าว"
         defaultActiveFirstOption
-        options={mockData.map((v) => ({
-          value: v,
-          label: <h3>{v}</h3>,
+        options={teacherList.map((each) => ({
+          key: each.id,
+          value: each.value,
+          label: (
+            <div style={{ fontSize: 18, margin: '0.5rem' }}>{each.label}</div>
+          ),
         }))}
         filterOption={(inputValue, option) =>
           option?.value.includes(inputValue)
         }
+        notFoundContent={
+          <div style={{ fontSize: 18, margin: '0.5rem' }}>
+            ไม่พบรายชื่อดังกล่าว
+          </div>
+        }
+        onSelect={(_, option) => onSearch(option.key as string)}
       >
         <input placeholder="ค้นหาอาจารย์..." spellCheck={false} />
       </AutoComplete>
