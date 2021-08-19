@@ -15,6 +15,8 @@ interface IProps {
   min: number
   max: number
   placeholder: string
+  title: string
+  pattern: RegExp
   children: React.ReactNode
 }
 
@@ -27,6 +29,8 @@ export const EditableCell: React.FC<IProps> = ({
   min,
   max,
   placeholder,
+  title,
+  pattern,
   children,
   ...props
 }) => {
@@ -51,7 +55,7 @@ export const EditableCell: React.FC<IProps> = ({
           <Select options={selectList.map((option) => ({ value: option }))} />
         )
       case 'credit':
-        return <Input placeholder="- - - -" maxLength={4} />
+        return <Input placeholder="- - - -" maxLength={4} minLength={4} />
       default:
         return <Input type="text" placeholder={placeholder} />
     }
@@ -93,12 +97,14 @@ export const EditableCell: React.FC<IProps> = ({
           name={dataIndex}
           style={{ margin: 0 }}
           rules={[
+            { required: true, message: `กรุณากรอก ${title}` },
             {
-              required: true,
-              message: '',
+              pattern,
+              message: `${title} ไม่ถูกต้อง`,
             },
           ]}
           valuePropName={inputType === 'checkbox' ? 'checked' : 'value'}
+          hasFeedback
         >
           {editableCell()}
         </Form.Item>

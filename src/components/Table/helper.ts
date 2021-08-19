@@ -11,6 +11,7 @@ interface IBaseColumn {
 
 interface ITextColumn extends IBaseColumn {
   type?: 'text'
+  pattern?: RegExp
   placeholder?: string
 }
 
@@ -257,6 +258,7 @@ export function convertToAntdColumn(
         dataIndex: col.dataIndex,
         record: record,
         title: col.text,
+        pattern: (col as any).pattern,
         placeholder: (col as any).placeholder,
         editing: isEditing(record),
       }),
