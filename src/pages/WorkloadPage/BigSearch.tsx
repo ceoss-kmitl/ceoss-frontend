@@ -21,10 +21,9 @@ export const BigSearch = () => {
       <AutoComplete
         notFoundContent="ไม่พบรายชื่อดังกล่าว"
         defaultActiveFirstOption
-        dropdownRender={(menu) => <h1>ei</h1>}
         options={mockData.map((v) => ({
           value: v,
-          label: <div className={style.item}>{v}</div>,
+          label: <h3>{v}</h3>,
         }))}
         filterOption={(inputValue, option) =>
           option?.value.includes(inputValue)
