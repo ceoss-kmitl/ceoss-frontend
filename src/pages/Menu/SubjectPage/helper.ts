@@ -45,7 +45,11 @@ export function useMenuSubject() {
 
   async function addSubject(record: any) {
     const credit = extractCredit(record.credit)
-    const subject = { ...record, ...credit }
+    const subject = {
+      ...record,
+      ...credit,
+      name: String(record.name).toLocaleUpperCase(),
+    }
 
     Modal.loading({
       loadingText: 'กำลังเพิ่มข้อมูลวิชา',
@@ -68,7 +72,11 @@ export function useMenuSubject() {
 
   async function editSubject(record: any) {
     const credit = extractCredit(record.credit)
-    const subject = { ...record, ...credit }
+    const subject = {
+      ...record,
+      ...credit,
+      name: String(record.name).toLocaleUpperCase(),
+    }
 
     Modal.loading({
       loadingText: 'กำลังแก้ไขข้อมูลวิชา',
@@ -128,6 +136,8 @@ export const columnList: IColumn[] = [
   {
     text: 'รหัสวิชา',
     dataIndex: 'code',
+    pattern: /^\d{8}$/,
+    maxLength: 8,
     placeholder: 'รหัสวิชา',
     editable: true,
     width: '15%',
