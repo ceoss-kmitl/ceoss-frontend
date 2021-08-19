@@ -101,12 +101,7 @@ export const columnList: IColumn[] = [
     type: 'select',
     text: 'ตำแหน่ง',
     dataIndex: 'title',
-    selectList: [
-      'อาจารย์',
-      'รองศาสตราจารย์',
-      'ศาสตราจารย์',
-      'ผู้ช่วยศาสตราจารย์',
-    ],
+    selectList: ['อ.', 'ดร.', 'รศ.', 'รศ.ดร.', 'ศ.', 'ผศ.', 'ผศ.ดร.'],
     editable: true,
     width: '20%',
   },
@@ -122,6 +117,13 @@ export const columnList: IColumn[] = [
     text: 'ผู้บริหาร',
     dataIndex: 'isExecutive',
     editable: true,
-    width: '40%',
+    width: '20%',
+  },
+  {
+    type: 'status',
+    text: 'สถานะ',
+    dataIndex: 'isActive',
+    editable: true,
+    width: '20%',
   },
 ]

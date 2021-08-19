@@ -106,6 +106,7 @@ export const columnList: IColumn[] = [
   },
   {
     type: 'number',
+    min: 0,
     text: 'จำนวนที่รองรับ (คน)',
     dataIndex: 'capacity',
     editable: true,
