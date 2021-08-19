@@ -197,12 +197,11 @@ export function useTable(config: ITableConfig): IUseTable {
     const newRow = columnList.reduce(
       (acc, cur) => ({
         ...acc,
-        [cur.dataIndex]:
-          cur.type === 'checkbox'
-            ? false
-            : cur.type === 'select'
-            ? cur.selectList[0]
-            : '',
+        [cur.dataIndex]: ['checkbox', 'status'].includes(cur.type as any)
+          ? false
+          : cur.type === 'select'
+          ? cur.selectList[0]
+          : '',
       }),
       {}
     )
