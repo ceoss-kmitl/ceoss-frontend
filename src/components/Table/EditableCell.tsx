@@ -25,7 +25,7 @@ interface IProps {
 export const EditableCell: React.FC<IProps> = ({
   editing,
   dataIndex,
-  inputType,
+  inputType = 'text',
   record,
   selectList,
   min,
@@ -115,7 +115,7 @@ export const EditableCell: React.FC<IProps> = ({
           style={{ margin: 0 }}
           rules={formRules}
           valuePropName={inputType === 'checkbox' ? 'checked' : 'value'}
-          hasFeedback
+          hasFeedback={['text', 'credit'].includes(inputType)}
         >
           {editableCell()}
         </Form.Item>
