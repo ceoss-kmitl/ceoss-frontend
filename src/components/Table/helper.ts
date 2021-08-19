@@ -31,6 +31,10 @@ interface ISelectColumn extends IBaseColumn {
   selectList: string[]
 }
 
+interface IStatusColumn extends IBaseColumn {
+  type: 'status'
+}
+
 interface ICreditColumn extends IBaseColumn {
   type: 'credit'
 }
@@ -41,6 +45,7 @@ export type IColumn =
   | ICheckboxColumn
   | ISelectColumn
   | ICreditColumn
+  | IStatusColumn
 
 export type IRecord = Record<string, string | number | boolean> & {
   key?: number
