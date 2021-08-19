@@ -1,5 +1,6 @@
 import React from 'react'
 import { Form } from 'antd'
+import { Rule } from 'antd/lib/form'
 import { Input } from 'components/Input'
 import { Select } from 'components/Select'
 import { Checkbox } from 'components/Checkbox'
@@ -55,7 +56,7 @@ export const EditableCell: React.FC<IProps> = ({
           <Select options={selectList.map((option) => ({ value: option }))} />
         )
       case 'credit':
-        return <Input placeholder="- - - -" maxLength={4} minLength={4} />
+        return <Input placeholder="- - - -" maxLength={4} />
       default:
         return <Input type="text" placeholder={placeholder} />
     }
@@ -90,19 +91,20 @@ export const EditableCell: React.FC<IProps> = ({
     }
   }
 
+  const formRules: Rule[] = [{ required: true, message: `กรุณากรอก ${title}` }]
+  if (pattern)
+    formRules.push({
+      pattern,
+      message: `${title} ไม่ถูกต้อง`,
+    })
+
   return (
     <td {...props}>
       {editing ? (
         <Form.Item
           name={dataIndex}
           style={{ margin: 0 }}
-          rules={[
-            { required: true, message: `กรุณากรอก ${title}` },
-            {
-              pattern,
-              message: `${title} ไม่ถูกต้อง`,
-            },
-          ]}
+          rules={formRules}
           valuePropName={inputType === 'checkbox' ? 'checked' : 'value'}
           hasFeedback
         >
