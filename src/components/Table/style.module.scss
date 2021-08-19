@@ -98,3 +98,26 @@ $border-radius: 6px;
         font-size: 16px;
     }
 }
+
+$statusWidth: 80px;
+$statusHeight: 25px;
+
+.statusGreen {
+    display: flex;
+    justify-content: center;
+    color: white;
+    background: var(--green500);
+    width: $statusWidth;
+    height: $statusHeight;
+    border-radius: 10px;
+}
+
+.statusRed {
+    display: flex;
+    justify-content: center;
+    color: white;
+    background: var(--red500);
+    width: $statusWidth;
+    height: $statusHeight;
+    border-radius: 10px;
+}

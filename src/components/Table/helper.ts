@@ -31,6 +31,10 @@ interface ISelectColumn extends IBaseColumn {
   selectList: string[]
 }
 
+interface IStatusColumn extends IBaseColumn {
+  type: 'status'
+}
+
 interface ICreditColumn extends IBaseColumn {
   type: 'credit'
 }
@@ -41,6 +45,7 @@ export type IColumn =
   | ICheckboxColumn
   | ISelectColumn
   | ICreditColumn
+  | IStatusColumn
 
 export type IRecord = Record<string, string | number | boolean> & {
   key?: number
@@ -192,12 +197,11 @@ export function useTable(config: ITableConfig): IUseTable {
     const newRow = columnList.reduce(
       (acc, cur) => ({
         ...acc,
-        [cur.dataIndex]:
-          cur.type === 'checkbox'
-            ? false
-            : cur.type === 'select'
-            ? cur.selectList[0]
-            : '',
+        [cur.dataIndex]: ['checkbox', 'status'].includes(cur.type as any)
+          ? false
+          : cur.type === 'select'
+          ? cur.selectList[0]
+          : '',
       }),
       {}
     )

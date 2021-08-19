@@ -52,6 +52,7 @@ export const EditableCell: React.FC<IProps> = ({
       case 'number':
         return <Input type="number" min={min} max={max} />
       case 'checkbox':
+      case 'status':
         return <Checkbox />
       case 'select':
         return (
@@ -74,6 +75,12 @@ export const EditableCell: React.FC<IProps> = ({
             checked={record[dataIndex] as boolean}
             style={{ pointerEvents: 'none' }}
           />
+        )
+      case 'status':
+        return record[dataIndex] ? (
+          <div className={style.statusGreen}>ทำงาน</div>
+        ) : (
+          <div className={style.statusRed}>ไม่ทำงาน</div>
         )
       case 'credit':
         const result = extractCredit(record[dataIndex])
@@ -114,7 +121,9 @@ export const EditableCell: React.FC<IProps> = ({
           name={dataIndex}
           style={{ margin: 0 }}
           rules={formRules}
-          valuePropName={inputType === 'checkbox' ? 'checked' : 'value'}
+          valuePropName={
+            ['checkbox', 'status'].includes(inputType) ? 'checked' : 'value'
+          }
           hasFeedback={['text', 'credit'].includes(inputType)}
         >
           {editableCell()}
