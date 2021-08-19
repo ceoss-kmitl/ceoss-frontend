@@ -33,6 +33,7 @@ export function useBigSearch() {
 export function useWorkload() {
   const [workload, setWorkload] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isError, setIsError] = useState(false)
 
   async function getWorkloadByTeacherId(id: string) {
     setIsLoading(true)
@@ -44,11 +45,13 @@ export function useWorkload() {
         },
       })
       setWorkload(data)
+      setIsError(false)
     } catch (err) {
       setWorkload([])
+      setIsError(true)
     }
     setIsLoading(false)
   }
 
-  return { isLoading, workload, getWorkloadByTeacherId }
+  return { isLoading, isError, workload, getWorkloadByTeacherId }
 }
