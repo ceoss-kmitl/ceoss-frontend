@@ -22,6 +22,11 @@ export function useMenuRoom() {
   }
 
   async function addRoom(record: any) {
+    const room = {
+      ...record,
+      name: String(record.name).toLocaleUpperCase(),
+    }
+
     Modal.loading({
       loadingText: 'กำลังเพิ่มข้อมูลห้องเรียน',
       finishTitle: 'เพิ่มข้อมูลห้องเรียนสำเร็จ!',
@@ -31,7 +36,7 @@ export function useMenuRoom() {
       width: 400,
       onAsyncOk: async () => {
         try {
-          await http.post(`/room`, record)
+          await http.post(`/room`, room)
           await getAllRoom()
         } catch (err) {
           await getAllRoom()
@@ -42,6 +47,11 @@ export function useMenuRoom() {
   }
 
   async function editRoom(record: any) {
+    const room = {
+      ...record,
+      name: String(record.name).toLocaleUpperCase(),
+    }
+
     Modal.loading({
       loadingText: 'กำลังแก้ไขข้อมูลห้องเรียน',
       finishTitle: 'แก้ไขข้อมูลห้องเรียนสำเร็จ!',
@@ -51,8 +61,8 @@ export function useMenuRoom() {
       width: 400,
       onAsyncOk: async () => {
         try {
-          const { id, ...room } = record
-          await http.put(`/room/${id}`, room)
+          const { id, ...roomData } = room
+          await http.put(`/room/${id}`, roomData)
           await getAllRoom()
         } catch (err) {
           throw err
