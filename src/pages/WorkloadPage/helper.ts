@@ -1,10 +1,13 @@
-import { http } from 'libs/http'
 import { useState, useEffect } from 'react'
+import { http } from 'libs/http'
+import { Modal } from 'components/Modal'
+import { delay } from 'libs/delay'
 
 export function useBigSearch() {
   const [teacherList, setTeacherList] = useState<
     { id: string; value: string; label: string }[]
   >([])
+  const [isLoading, setIsLoading] = useState(true)
 
   function convertToOption(list: any[]) {
     return list.map((each) => ({
@@ -15,19 +18,26 @@ export function useBigSearch() {
   }
 
   async function getAllActiveTeacher() {
+    setIsLoading(true)
+    await delay(1)
     try {
       const { data } = await http.get('/teacher?is_active=true')
       setTeacherList(convertToOption(data))
     } catch (err) {
       setTeacherList([])
+      Modal.error({
+        title: 'เกิดข้อผิดพลาด',
+        description: 'ไม่สามารถเรียกดูรายชื่ออาจารย์ได้',
+      })
     }
+    setIsLoading(false)
   }
 
   useEffect(() => {
     getAllActiveTeacher()
   }, [])
 
-  return { teacherList }
+  return { teacherList, isLoading }
 }
 
 export function useWorkload() {
@@ -51,6 +61,10 @@ export function useWorkload() {
       setIsError(true)
     }
     setIsLoading(false)
+  }
+
+  function getCurrentAcademicYear() {
+    const today = new Date()
   }
 
   return { isLoading, isError, workload, getWorkloadByTeacherId }
