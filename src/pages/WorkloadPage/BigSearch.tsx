@@ -1,7 +1,8 @@
 import css from 'classnames'
 import style from './style.module.scss'
-import { AutoComplete, Spin } from 'antd'
-import { FiSearch, FiBox } from 'react-icons/fi'
+import { AutoComplete } from 'antd'
+import { FiSearch } from 'react-icons/fi'
+import { Loader } from 'components/Loader'
 import { useBigSearch } from './helper'
 
 interface IProps {
@@ -11,14 +12,7 @@ interface IProps {
 export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
   const { teacherList, isLoading } = useBigSearch()
 
-  if (isLoading)
-    return (
-      <Spin
-        size="large"
-        indicator={<FiBox className="spin" />}
-        tip="รอสักครู่..."
-      />
-    )
+  if (isLoading) return <Loader />
 
   return (
     <div className={css(style.myInput, 'shadow')}>
