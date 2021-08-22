@@ -46,6 +46,7 @@ const MOCK_DATA: IDay[] = [
         startSlot: 1,
         endSlot: 12,
         type: SUBJECT_TYPE.LECTURE,
+        workloadId: 'AA',
       },
     ],
   },
@@ -64,6 +65,7 @@ const MOCK_DATA: IDay[] = [
         startSlot: 10,
         endSlot: 22,
         type: SUBJECT_TYPE.LECTURE,
+        workloadId: 'AB',
       },
       {
         id: 'W-1',
@@ -73,6 +75,7 @@ const MOCK_DATA: IDay[] = [
         startSlot: 7,
         endSlot: 19,
         type: SUBJECT_TYPE.LAB,
+        workloadId: 'AC',
       },
 
       {
@@ -83,6 +86,7 @@ const MOCK_DATA: IDay[] = [
         startSlot: 26,
         endSlot: 36,
         type: SUBJECT_TYPE.LAB,
+        workloadId: 'AD',
       },
       {
         id: 'W-21',
@@ -92,6 +96,7 @@ const MOCK_DATA: IDay[] = [
         startSlot: 1,
         endSlot: 6,
         type: SUBJECT_TYPE.LECTURE,
+        workloadId: 'BE',
       },
     ],
   },
@@ -107,6 +112,7 @@ const MOCK_DATA: IDay[] = [
         endSlot: 48,
         type: SUBJECT_TYPE.LAB,
         isEditing: true, // This will be yellow color!
+        workloadId: 'SC',
       },
     ],
   },

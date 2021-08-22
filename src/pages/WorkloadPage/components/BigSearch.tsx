@@ -1,9 +1,11 @@
 import css from 'classnames'
-import style from './style.module.scss'
 import { AutoComplete } from 'antd'
 import { FiSearch } from 'react-icons/fi'
+
 import { Loader } from 'components/Loader'
-import { useBigSearch } from './helper'
+
+import style from './BigSearch.module.scss'
+import { useBigSearch } from './BigSearchHelper'
 
 interface IProps {
   onSearch: (id: string) => void
@@ -11,8 +13,6 @@ interface IProps {
 
 export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
   const { teacherList, isLoading } = useBigSearch()
-
-  if (isLoading) return <Loader />
 
   return (
     <div className={css(style.myInput, 'shadow')}>
@@ -31,9 +31,15 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
           option?.value.includes(inputValue)
         }
         notFoundContent={
-          <div style={{ fontSize: 18, margin: '0.5rem' }}>
-            ไม่พบรายชื่อดังกล่าว
-          </div>
+          isLoading ? (
+            <div className={style.loaderWrapper}>
+              <Loader />
+            </div>
+          ) : (
+            <div style={{ fontSize: 18, margin: '0.5rem' }}>
+              ไม่พบรายชื่อดังกล่าว
+            </div>
+          )
         }
         onSelect={(_, option) => onSearch(option.key as string)}
       >

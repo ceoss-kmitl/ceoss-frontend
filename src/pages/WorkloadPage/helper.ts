@@ -1,71 +1,116 @@
 import { useState, useEffect } from 'react'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
-import { delay } from 'libs/delay'
 
-export function useBigSearch() {
-  const [teacherList, setTeacherList] = useState<
-    { id: string; value: string; label: string }[]
-  >([])
-  const [isLoading, setIsLoading] = useState(true)
+export function useAcademicYear() {
+  const [currentAcademicYear, setCurrentAcademicYear] = useState(0)
+  const [academicYear, setAcademicYear] = useState(0)
+  const [semester, setSemester] = useState(0)
 
-  function convertToOption(list: any[]) {
-    return list.map((each) => ({
-      id: each.id,
-      value: `${each.title}${each.name}`,
-      label: `${each.title}${each.name}`,
-    }))
+  function getCurrentAcademicYear() {
+    const [day, month, year] = new Date()
+      .toLocaleDateString('th-TH')
+      .split('/')
+      .map((each) => Number(each))
+
+    const hasStartNewAcademicYear = day >= 1 && month >= 8
+    const academicYear = hasStartNewAcademicYear ? year : year - 1
+    const semester = month >= 8 ? 1 : 2
+
+    return { academicYear, semester }
   }
 
-  async function getAllActiveTeacher() {
-    setIsLoading(true)
-    await delay(1)
-    try {
-      const { data } = await http.get('/teacher?is_active=true')
-      setTeacherList(convertToOption(data))
-    } catch (err) {
-      setTeacherList([])
-      Modal.error({
-        title: 'เกิดข้อผิดพลาด',
-        description: 'ไม่สามารถเรียกดูรายชื่ออาจารย์ได้',
-      })
+  function getAcademicYearOptionList() {
+    const academicYearOptionList = []
+    for (let i = 3; i >= 0; i--) {
+      const year = currentAcademicYear - i
+      academicYearOptionList.push({ label: year, value: year })
     }
-    setIsLoading(false)
+    return academicYearOptionList
+  }
+
+  function getSemesterOptionList() {
+    const semesterOptionList = []
+    for (let i = 1; i <= 2; i++) {
+      semesterOptionList.push({ label: i, value: i })
+    }
+    return semesterOptionList
   }
 
   useEffect(() => {
-    getAllActiveTeacher()
+    const current = getCurrentAcademicYear()
+    setCurrentAcademicYear(current.academicYear)
+    setAcademicYear(current.academicYear)
+    setSemester(current.semester)
   }, [])
 
-  return { teacherList, isLoading }
+  return {
+    academicYear,
+    semester,
+    setAcademicYear,
+    setSemester,
+    academicYearOptionList: getAcademicYearOptionList(),
+    semesterOptionList: getSemesterOptionList(),
+  }
 }
 
-export function useWorkload() {
+export function useWorkload(academicYear: number, semester: number) {
+  const [currentTeacherId, setCurrentTeacherId] = useState('')
   const [workload, setWorkload] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isError, setIsError] = useState(false)
+  const [isLoading, setIsLoading] = useState<boolean | null>(null)
 
   async function getWorkloadByTeacherId(id: string) {
+    if (!id) return
+
     setIsLoading(true)
     try {
       const { data } = await http.get(`/teacher/${id}/workload`, {
         params: {
-          academic_year: 2563,
-          semester: 1,
+          academic_year: academicYear,
+          semester,
         },
       })
       setWorkload(data)
-      setIsError(false)
+      setCurrentTeacherId(id)
     } catch (err) {
+      Modal.error({
+        title: 'เกิดข้อผิดพลาด',
+        description: 'ไม่สามารถเรียกดูภาระงานได้',
+      })
       setWorkload([])
-      setIsError(true)
+      setCurrentTeacherId('')
     }
     setIsLoading(false)
   }
 
-  function getCurrentAcademicYear() {
-    const today = new Date()
+  async function discardWorkload(id: string) {
+    Modal.warning({
+      title: 'ยืนยันการนำออก',
+      description: 'คุณต้องการนำภาระงานนี้ออกหรือไม่',
+      finishTitle: 'นำภาระงานออกสำเร็จ',
+      finishFailTitle: 'ไม่สามารถนำภาระงานออกได้',
+      width: 340,
+      onAsyncOk: async () => {
+        setIsLoading(true)
+        try {
+          await http.delete(`/workload/${id}`)
+          await getWorkloadByTeacherId(currentTeacherId)
+        } catch (err) {
+          setIsLoading(false)
+          throw err
+        }
+      },
+    })
   }
 
-  return { isLoading, isError, workload, getWorkloadByTeacherId }
+  useEffect(() => {
+    getWorkloadByTeacherId(currentTeacherId)
+  }, [academicYear, semester])
+
+  return {
+    isLoading,
+    workload,
+    getWorkloadByTeacherId,
+    discardWorkload,
+  }
 }
