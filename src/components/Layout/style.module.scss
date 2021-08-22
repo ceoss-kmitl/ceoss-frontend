@@ -1,6 +1,6 @@
 $headerHeight: 64px;
 $siderWidth: 220px;
-$siderFontSize: 14px;
+$siderFontSize: 15px;
 $siderItemHeight: 48px;
 
 .layout {
@@ -19,6 +19,15 @@ $siderItemHeight: 48px;
 
     .sider {
         overflow: auto;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* Internet Explorer 10+ */
+
+        /* Chrome */
+        &::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
         height: calc(100vh - #{$headerHeight});
         position: fixed;
         left: 0;
@@ -87,6 +96,6 @@ $siderItemHeight: 48px;
         min-height: calc(100vh - #{$headerHeight});
         margin-top: $headerHeight;
         margin-left: $siderWidth;
-        padding: 1rem;
+        padding: 2rem 5rem;
     }
 }

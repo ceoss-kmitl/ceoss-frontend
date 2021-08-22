@@ -33,7 +33,7 @@
     "css.lint.propertyIgnoredDueToDisplay": "error",
     "css.lint.unknownAtRules": "error",
     "css.lint.unknownProperties": "error",
-    "cssvar.files": [
+    "cssVariables.lookupFiles": [
         "src/styles/color.css"
     ]
 }

@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'Noto Sans Thai UI';
+    src: local('Noto Sans Thai UI'),
+        url('./fonts/NotoSansThaiUI-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Noto Sans Thai UI';
+    font-weight: 600;
+    src: local('Noto Sans Thai UI'),
+        url('./fonts/NotoSansThaiUI-SemiBold.ttf') format('truetype');
+}

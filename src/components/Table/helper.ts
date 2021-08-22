@@ -11,6 +11,8 @@ interface IBaseColumn {
 
 interface ITextColumn extends IBaseColumn {
   type?: 'text'
+  pattern?: RegExp
+  maxLength?: number
   placeholder?: string
 }
 
@@ -29,22 +31,51 @@ interface ISelectColumn extends IBaseColumn {
   selectList: string[]
 }
 
+interface IStatusColumn extends IBaseColumn {
+  type: 'status'
+}
+
+interface ICreditColumn extends IBaseColumn {
+  type: 'credit'
+}
+
 export type IColumn =
   | ITextColumn
   | INumberColumn
   | ICheckboxColumn
   | ISelectColumn
+  | ICreditColumn
+  | IStatusColumn
 
 export type IRecord = Record<string, string | number | boolean> & {
   key?: number
 }
 
 interface ITableConfig {
-  initialData: IRecord[]
+  /**
+   * Data to show in table
+   */
+  data: IRecord[]
+  /**
+   * Column header of table
+   */
   columnList: IColumn[]
+  /**
+   * Function that run when add
+   */
   onAdd?: (record: IRecord) => void
+  /**
+   * Function that run when edit
+   */
   onEdit?: (record: IRecord) => void
+  /**
+   * Function that run when delete
+   */
   onDelete?: (record: IRecord) => void
+  /**
+   * Show edit/delete button in the last column.
+   * Default is `true`
+   */
   editable?: boolean
 }
 
@@ -95,7 +126,7 @@ export function useTable(config: ITableConfig): IUseTable {
   const [form] = Form.useForm()
   const [action, setAction] = useState<IEditorAction | null>(null)
   const [editingKey, setEditingKey] = useState(EditingStatus.NotEditing)
-  const [tableData, setTableData] = useState<IRecord[]>(config.initialData)
+  const [tableData, setTableData] = useState<IRecord[]>(config.data)
 
   const isEditing = (record: IRecord) => record.key === editingKey
 
@@ -123,21 +154,24 @@ export function useTable(config: ITableConfig): IUseTable {
 
   const handleAction = async () => {
     try {
+      const payload = { ...action?.payload }
+      delete payload.key
+
       switch (action?.type) {
         case 'add':
           await form.validateFields()
-          config?.onAdd?.(action.payload)
+          config?.onAdd?.(payload)
           form.resetFields()
           setEditingKey(EditingStatus.NotEditing)
           break
         case 'edit':
           await form.validateFields()
-          config?.onEdit?.(action.payload)
+          config?.onEdit?.(payload)
           form.resetFields()
           setEditingKey(EditingStatus.NotEditing)
           break
         case 'delete':
-          config?.onDelete?.(action.payload)
+          config?.onDelete?.(payload)
           form.resetFields()
           setEditingKey(EditingStatus.NotEditing)
           break
@@ -150,8 +184,8 @@ export function useTable(config: ITableConfig): IUseTable {
   }, [action])
 
   useEffect(() => {
-    setTableData(config.initialData)
-  }, [config.initialData])
+    setTableData(config.data)
+  }, [config.data])
 
   // Public methods
   const addRow = (record = {}) => {
@@ -163,12 +197,11 @@ export function useTable(config: ITableConfig): IUseTable {
     const newRow = columnList.reduce(
       (acc, cur) => ({
         ...acc,
-        [cur.dataIndex]:
-          cur.type === 'checkbox'
-            ? false
-            : cur.type === 'select'
-            ? cur.selectList[0]
-            : '',
+        [cur.dataIndex]: ['checkbox', 'status'].includes(cur.type as any)
+          ? false
+          : cur.type === 'select'
+          ? cur.selectList[0]
+          : '',
       }),
       {}
     )
@@ -230,6 +263,7 @@ export function convertToAntdColumn(
         dataIndex: col.dataIndex,
         record: record,
         title: col.text,
+        pattern: (col as any).pattern,
         placeholder: (col as any).placeholder,
         editing: isEditing(record),
       }),

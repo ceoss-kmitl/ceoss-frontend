@@ -10,4 +10,8 @@ const MySelect: React.FC<IProps> = ({ className, ...props }) => {
   return <Select className={css(style.select, className)} {...props} />
 }
 
+const { Option } = Select
+
 export { MySelect as Select }
+
+export { Option }
