@@ -15,7 +15,7 @@ export function useAcademicYear() {
 
     const hasStartNewAcademicYear = day >= 1 && month >= 8
     const academicYear = hasStartNewAcademicYear ? year : year - 1
-    const semester = month >= 8 ? 1 : 2
+    const semester = hasStartNewAcademicYear ? 1 : 2
 
     return { academicYear, semester }
   }
