@@ -22,9 +22,9 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
         defaultActiveFirstOption
         options={teacherList.map((each) => ({
           key: each.id,
-          value: each.value,
+          value: each.name,
           label: (
-            <div style={{ fontSize: 18, margin: '0.5rem' }}>{each.label}</div>
+            <div style={{ fontSize: 18, margin: '0.5rem' }}>{each.name}</div>
           ),
         }))}
         filterOption={(inputValue, option) =>

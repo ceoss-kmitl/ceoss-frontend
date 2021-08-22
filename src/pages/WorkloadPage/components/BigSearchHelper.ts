@@ -4,8 +4,7 @@ import { Modal } from 'components/Modal'
 
 interface ITeacherList {
   id: string
-  value: string
-  label: string
+  name: string
 }
 
 export function useBigSearch() {
@@ -15,8 +14,7 @@ export function useBigSearch() {
   function convertToOption(list: any[]) {
     return list.map((each) => ({
       id: each.id,
-      value: `${each.title}${each.name}`,
-      label: `${each.title}${each.name}`,
+      name: `${each.title}${each.name}`,
     }))
   }
 
