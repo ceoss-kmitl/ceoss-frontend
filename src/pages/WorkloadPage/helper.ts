@@ -64,8 +64,9 @@ export function useWorkload(academicYear: number, semester: number) {
 
     setIsLoading(true)
     try {
-      const { data } = await http.get(`/teacher/${id}/workload`, {
+      const { data } = await http.get(`/workload`, {
         params: {
+          teacher_id: id,
           academic_year: academicYear,
           semester,
         },
