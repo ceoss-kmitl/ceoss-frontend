@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 
-interface ITeacherList {
+interface ITeacher {
   id: string
   name: string
 }
 
 export function useBigSearch() {
-  const [teacherList, setTeacherList] = useState<ITeacherList[]>([])
+  const [teacherList, setTeacherList] = useState<ITeacher[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   function convertToOption(list: any[]) {
