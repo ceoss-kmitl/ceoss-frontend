@@ -4,11 +4,13 @@ import { Form, Input, InputNumber } from 'antd'
 import style from './style.module.scss'
 import { Button } from 'components/Button'
 import { FiSave } from 'react-icons/fi'
+import { Loader } from 'components/Loader'
 
 export const MenuSettingPage = () => {
   const { form, data, editSetting, isLoading } = useMenuSetting()
 
-  //   if (isLoading) return <Loader
+  if (isLoading) return <Loader />
+
   return (
     <Form
       className={style.page}
