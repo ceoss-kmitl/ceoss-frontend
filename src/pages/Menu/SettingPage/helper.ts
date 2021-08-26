@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
+import { Form } from 'antd'
 
 export function useMenuSetting() {
+  const [form] = Form.useForm()
   const [data, setData] = useState<any[]>([])
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -45,6 +47,7 @@ export function useMenuSetting() {
   }, [])
 
   return {
+    form,
     isLoading,
     data,
     error,

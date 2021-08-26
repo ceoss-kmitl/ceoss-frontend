@@ -6,9 +6,7 @@ import { Button } from 'components/Button'
 import { FiSave } from 'react-icons/fi'
 
 export const MenuSettingPage = () => {
-  const { data, editSetting } = useMenuSetting()
-
-  const [form] = Form.useForm()
+  const { form, data, editSetting } = useMenuSetting()
 
   const onFinish = (values: any) => {
     editSetting
