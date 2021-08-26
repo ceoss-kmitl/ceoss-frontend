@@ -50,6 +50,10 @@ export const subPathList: IPath[] = [
     path: '/menu/room',
     text: 'ข้อมูลห้องเรียน',
   },
+  {
+    path: '/menu/setting',
+    text: 'การตั้งค่า',
+  },
 ]
 
 export function useWebScrap() {
