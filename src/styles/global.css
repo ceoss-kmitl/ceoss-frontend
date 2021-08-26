@@ -29,3 +29,7 @@ code {
     background: var(--orange600);
     color: white;
 }
+
+.ant-spin {
+    color: var(--orange400);
+}

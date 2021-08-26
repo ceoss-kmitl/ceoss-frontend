@@ -1,0 +1,57 @@
+.page {
+    display: flex;
+    flex-direction: column;
+}
+.timeTableHeader {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.headerRight {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+
+    &Label {
+        margin-right: 0.5rem;
+    }
+
+    // antd-select
+    & > div {
+        margin-right: 1rem;
+    }
+}
+
+.timeTableFooter {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.label {
+    margin-right: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.labelIcon {
+    $size: 12px;
+    width: $size;
+    height: $size;
+    margin-right: 0.5rem;
+    display: inline-block;
+    border-radius: 50%;
+
+    &.green {
+        background: var(--green500);
+    }
+
+    &.blue {
+        background: var(--blue500);
+    }
+
+    &.red {
+        background: var(--red500);
+    }
+}
