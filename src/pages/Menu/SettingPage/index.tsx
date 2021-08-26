@@ -33,7 +33,7 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ตำแหน่งคณบดี
           </Text>
-          <Form.Item name="deanName">
+          <Form.Item name="deanName" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </div>
@@ -41,7 +41,7 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ตำแหน่งหัวหน้าภาควิชา
           </Text>
-          <Form.Item name="headName">
+          <Form.Item name="headName" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </div>
@@ -54,7 +54,7 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ภาคทฤษฎี
           </Text>
-          <Form.Item name="lecturePayRate">
+          <Form.Item name="lecturePayRate" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </div>
@@ -62,7 +62,7 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ภาคปฏิบัติ
           </Text>
-          <Form.Item name="labPayRate">
+          <Form.Item name="labPayRate" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </div>
@@ -75,7 +75,7 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             หลักสูตรปกติ
           </Text>
-          <Form.Item name="normalClaimLimit">
+          <Form.Item name="normalClaimLimit" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </div>
@@ -83,7 +83,7 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             หลักสูตรนานาชาติ
           </Text>
-          <Form.Item name="interClaimLimit">
+          <Form.Item name="interClaimLimit" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </div>
@@ -96,7 +96,7 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ลิงค์เว็บไซต์
           </Text>
-          <Form.Item name="webScrapUrl">
+          <Form.Item name="webScrapUrl" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
         </div>
