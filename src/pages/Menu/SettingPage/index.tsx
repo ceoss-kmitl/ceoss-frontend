@@ -15,7 +15,7 @@ export const MenuSettingPage = () => {
   }
 
   return (
-    <Form className={style.page} onFinish={onFinish}>
+    <Form className={style.page} form={form} onFinish={onFinish}>
       <div className={style.head}>
         <Text size="head" bold>
           การตั้งค่า
