@@ -1,24 +1,26 @@
 import { Text } from 'components/Text'
 import { useMenuSetting } from './helper'
-import { Form, Input } from 'antd'
+import { Form, Input, InputNumber } from 'antd'
 import style from './style.module.scss'
 import { Button } from 'components/Button'
 import { FiSave } from 'react-icons/fi'
 
 export const MenuSettingPage = () => {
-  const { form, data, editSetting } = useMenuSetting()
+  const { form, data, editSetting, isLoading } = useMenuSetting()
 
-  const onFinish = (values: any) => {
-    editSetting
-  }
-
+  //   if (isLoading) return <Loader
   return (
-    <Form className={style.page} form={form} onFinish={onFinish}>
+    <Form
+      className={style.page}
+      form={form}
+      onFinish={editSetting}
+      initialValues={data}
+    >
       <div className={style.head}>
         <Text size="head" bold>
           การตั้งค่า
         </Text>
-        <Button green>
+        <Button green htmlType="submit">
           <FiSave className={style.iconSave} />
           บันทึกการเปลี่ยนแปลง
         </Button>
@@ -53,7 +55,7 @@ export const MenuSettingPage = () => {
             ภาคทฤษฎี
           </Text>
           <Form.Item name="lecturePayRate" rules={[{ required: true }]}>
-            <Input />
+            <InputNumber />
           </Form.Item>
         </div>
         <div className={style.subTopic2}>
@@ -61,7 +63,7 @@ export const MenuSettingPage = () => {
             ภาคปฏิบัติ
           </Text>
           <Form.Item name="labPayRate" rules={[{ required: true }]}>
-            <Input />
+            <InputNumber />
           </Form.Item>
         </div>
       </div>
@@ -74,7 +76,7 @@ export const MenuSettingPage = () => {
             หลักสูตรปกติ
           </Text>
           <Form.Item name="normalClaimLimit" rules={[{ required: true }]}>
-            <Input />
+            <InputNumber />
           </Form.Item>
         </div>
         <div className={style.subTopic2}>
@@ -82,7 +84,7 @@ export const MenuSettingPage = () => {
             หลักสูตรนานาชาติ
           </Text>
           <Form.Item name="interClaimLimit" rules={[{ required: true }]}>
-            <Input />
+            <InputNumber />
           </Form.Item>
         </div>
       </div>

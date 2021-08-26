@@ -5,7 +5,7 @@ import { Form } from 'antd'
 
 export function useMenuSetting() {
   const [form] = Form.useForm()
-  const [data, setData] = useState<any[]>([])
+  const [data, setData] = useState<any>({})
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -17,12 +17,13 @@ export function useMenuSetting() {
       setError(null)
     } catch (err) {
       setError(err)
-      setData([])
+      setData({})
     }
     setIsLoading(false)
   }
 
   async function editSetting(record: any) {
+    console.log(record)
     Modal.loading({
       loadingText: 'กำลังแก้ไขการตั้งค่า',
       finishTitle: 'แก้ไขการตั้งค่าสำเร็จ!',
@@ -32,8 +33,7 @@ export function useMenuSetting() {
       width: 400,
       onAsyncOk: async () => {
         try {
-          const { id, ...settingData } = record
-          await http.put(`/setting/${id}`, settingData)
+          await http.put(`/setting`, record)
           await getCurrentSetting()
         } catch (err) {
           throw err
