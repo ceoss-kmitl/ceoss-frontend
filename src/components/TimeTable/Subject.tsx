@@ -61,7 +61,7 @@ export const Subject: React.FC<IProps> = ({
                             style={{ height: slotHeight }}
                             onClick={() => onSubjectClick(slot.subject)}
                           >
-                            <div>
+                            <div className={style.code}>
                               {slot.subject.code}
                               {` กลุ่ม ${slot.subject.section}`}
                             </div>

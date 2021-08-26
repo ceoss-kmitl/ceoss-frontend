@@ -30,6 +30,7 @@ export interface ISubject {
   endSlot: number
   type: SUBJECT_TYPE
   isEditing?: boolean
+  workloadId: string
 }
 
 export interface ISlot {
