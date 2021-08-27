@@ -35,16 +35,22 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ตำแหน่งคณบดี
           </Text>
-          <Form.Item name="deanName" rules={[{ required: true }]}>
-            <Input />
+          <Form.Item
+            name="deanName"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <Input className={style.inputWidth} />
           </Form.Item>
         </div>
         <div className={style.subTopic2}>
           <Text size="normal" bold>
             ตำแหน่งหัวหน้าภาควิชา
           </Text>
-          <Form.Item name="headName" rules={[{ required: true }]}>
-            <Input />
+          <Form.Item
+            name="headName"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <Input className={style.inputWidth} />
           </Form.Item>
         </div>
       </div>
@@ -56,16 +62,22 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ภาคทฤษฎี
           </Text>
-          <Form.Item name="lecturePayRate" rules={[{ required: true }]}>
-            <InputNumber />
+          <Form.Item
+            name="lecturePayRate"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <InputNumber className={style.inputNumber} />
           </Form.Item>
         </div>
         <div className={style.subTopic2}>
           <Text size="normal" bold>
             ภาคปฏิบัติ
           </Text>
-          <Form.Item name="labPayRate" rules={[{ required: true }]}>
-            <InputNumber />
+          <Form.Item
+            name="labPayRate"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <InputNumber className={style.inputNumber} />
           </Form.Item>
         </div>
       </div>
@@ -77,16 +89,22 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             หลักสูตรปกติ
           </Text>
-          <Form.Item name="normalClaimLimit" rules={[{ required: true }]}>
-            <InputNumber />
+          <Form.Item
+            name="normalClaimLimit"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <InputNumber className={style.inputNumber} />
           </Form.Item>
         </div>
         <div className={style.subTopic2}>
           <Text size="normal" bold>
             หลักสูตรนานาชาติ
           </Text>
-          <Form.Item name="interClaimLimit" rules={[{ required: true }]}>
-            <InputNumber />
+          <Form.Item
+            name="interClaimLimit"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <InputNumber className={style.inputNumber} />
           </Form.Item>
         </div>
       </div>
@@ -98,7 +116,10 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ลิงค์เว็บไซต์
           </Text>
-          <Form.Item name="webScrapUrl" rules={[{ required: true }]}>
+          <Form.Item
+            name="webScrapUrl"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
             <Input />
           </Form.Item>
         </div>
