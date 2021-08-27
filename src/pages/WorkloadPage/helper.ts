@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { getCurrentAcademicYear } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 
@@ -6,19 +7,6 @@ export function useAcademicYear() {
   const [currentAcademicYear, setCurrentAcademicYear] = useState(0)
   const [academicYear, setAcademicYear] = useState(0)
   const [semester, setSemester] = useState(0)
-
-  function getCurrentAcademicYear() {
-    const [day, month, year] = new Date()
-      .toLocaleDateString('th-TH')
-      .split('/')
-      .map((each) => Number(each))
-
-    const hasStartNewAcademicYear = day >= 1 && month >= 8
-    const academicYear = hasStartNewAcademicYear ? year : year - 1
-    const semester = hasStartNewAcademicYear ? 1 : 2
-
-    return { academicYear, semester }
-  }
 
   function getAcademicYearOptionList() {
     const academicYearOptionList = []
