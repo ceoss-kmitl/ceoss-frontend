@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { IconType } from 'react-icons/lib'
 import { FiCalendar, FiMonitor, FiBook, FiFileText } from 'react-icons/fi'
+import { getCurrentAcademicYear } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 
@@ -68,7 +69,13 @@ export function useWebScrap() {
       finishFailTitle: 'อัปเดตข้อมูลล้มเหลว',
       onAsyncOk: async () => {
         try {
-          const { data } = await http.get(`/web-scrap`)
+          const { academicYear, semester } = getCurrentAcademicYear()
+          const { data } = await http.get(`/web-scrap`, {
+            params: {
+              academic_year: academicYear,
+              semester,
+            },
+          })
           setDate(data)
         } catch (err) {
           throw err
