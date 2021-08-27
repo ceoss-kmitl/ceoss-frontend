@@ -7,6 +7,7 @@ import { Button } from 'components/Button'
 import { Loader } from 'components/Loader'
 
 import style from './style.module.scss'
+import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
 import { useAcademicYear, useWorkload } from './helper'
 
@@ -32,7 +33,10 @@ export const WorkloadPage = () => {
       <BigSearch onSearch={getWorkloadByTeacherId} />
 
       {isLoading === null ? (
-        <h1>eiei</h1>
+        <div className={style.monsterWrapper}>
+          <img src={monster} />
+          <span>เริ่มค้นหาอาจารย์เพื่อดูภาระงาน</span>
+        </div>
       ) : isLoading ? (
         <Loader />
       ) : (
