@@ -3,6 +3,7 @@ import style from './style.module.scss'
 import { Typography } from 'antd'
 
 interface IProps {
+  copyable?: boolean
   gray?: boolean
   bold?: boolean
   underline?: boolean
@@ -14,6 +15,7 @@ interface IProps {
 
 export const Text: React.FC<IProps> = ({
   children,
+  copyable = false,
   gray,
   bold,
   underline,
@@ -24,6 +26,7 @@ export const Text: React.FC<IProps> = ({
 }) => {
   return (
     <Typography.Text
+      copyable={copyable && { tooltips: ['คัดลอก', 'คัดลอกแล้ว'] }}
       underline={underline}
       italic={italic}
       delete={strike}

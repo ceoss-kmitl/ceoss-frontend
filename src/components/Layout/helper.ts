@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { IconType } from 'react-icons/lib'
 import { FiCalendar, FiMonitor, FiBook, FiFileText } from 'react-icons/fi'
 import { getCurrentAcademicYear } from 'libs/datetime'
@@ -58,7 +58,7 @@ export const subPathList: IPath[] = [
 ]
 
 export function useWebScrap() {
-  const [date, setDate] = useState('20 สิงหาคม 2563')
+  const [date, setDate] = useState<string | null>(null)
 
   async function triggerWebScrap() {
     Modal.warning({
@@ -83,6 +83,20 @@ export function useWebScrap() {
       },
     })
   }
+
+  async function getLastestUpdatedDate() {
+    try {
+      const { data } = await http.get('/web-scrap/updated-date')
+      setDate(data)
+    } catch (err) {
+      setDate('')
+      throw err
+    }
+  }
+
+  useEffect(() => {
+    getLastestUpdatedDate()
+  }, [])
 
   return { date, triggerWebScrap }
 }

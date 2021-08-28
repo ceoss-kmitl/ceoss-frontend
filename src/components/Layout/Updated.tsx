@@ -13,13 +13,21 @@ export const Updated = () => {
       <div className={style.wrapper}>
         <span className={style.title}>ข้อมูลตั้งแต่วันที่</span>
         <time className={style.time}>
-          {date}
-          <Button
-            shape="circle"
-            type="text"
-            icon={<FcSynchronize />}
-            onClick={triggerWebScrap}
-          />
+          {date === null ? (
+            <span className={style.text}>กำลังโหลด...</span>
+          ) : date.length ? (
+            <>
+              {date}
+              <Button
+                shape="circle"
+                type="text"
+                icon={<FcSynchronize />}
+                onClick={triggerWebScrap}
+              />
+            </>
+          ) : (
+            <span className={style.text}>เกิดข้อผิดพลาด</span>
+          )}
         </time>
       </div>
     </>
