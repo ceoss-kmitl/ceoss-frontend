@@ -44,10 +44,32 @@ export const MenuSettingPage = () => {
         </div>
         <div className={style.subTopic2}>
           <Text size="normal" bold>
+            ตำแหน่งรองคณบดี
+          </Text>
+          <Form.Item
+            name="viceDeanName"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <Input className={style.inputWidth} />
+          </Form.Item>
+        </div>
+        <div className={style.subTopic2}>
+          <Text size="normal" bold>
             ตำแหน่งหัวหน้าภาควิชา
           </Text>
           <Form.Item
             name="headName"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <Input className={style.inputWidth} />
+          </Form.Item>
+        </div>
+        <div className={style.subTopic2}>
+          <Text size="normal" bold>
+            ตำแหน่งผู้อำนวยการ SIIE
+          </Text>
+          <Form.Item
+            name="directorSIIEName"
             rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
           >
             <Input className={style.inputWidth} />
