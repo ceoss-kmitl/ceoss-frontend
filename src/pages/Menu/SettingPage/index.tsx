@@ -116,12 +116,9 @@ export const MenuSettingPage = () => {
           <Text size="normal" bold>
             ลิงค์เว็บไซต์
           </Text>
-          <Form.Item
-            name="webScrapUrl"
-            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
-          >
-            <Input />
-          </Form.Item>
+          <Text copyable className={style.webScrapUrl}>
+            {data.webScrapUrl}
+          </Text>
         </div>
       </div>
     </Form>
