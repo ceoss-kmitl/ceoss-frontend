@@ -82,10 +82,10 @@ export const MenuSettingPage = () => {
         </Text>
         <div className={style.subTopic1}>
           <Text size="normal" bold>
-            ภาคทฤษฎี
+            ภาคทฤษฎี (หลักสูตรปกติ)
           </Text>
           <Form.Item
-            name="lecturePayRate"
+            name="lecturePayRateNormal"
             rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
           >
             <InputNumber className={style.inputNumber} />
@@ -93,10 +93,54 @@ export const MenuSettingPage = () => {
         </div>
         <div className={style.subTopic2}>
           <Text size="normal" bold>
-            ภาคปฏิบัติ
+            ภาคปฏิบัติ (หลักสูตรปกติ)
           </Text>
           <Form.Item
-            name="labPayRate"
+            name="labPayRateNormal"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <InputNumber className={style.inputNumber} />
+          </Form.Item>
+        </div>
+        <div className={style.subTopic2}>
+          <Text size="normal" bold>
+            ภาคทฤษฎี (หลักสูตรนานาชาติ)
+          </Text>
+          <Form.Item
+            name="lecturePayRateInter"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <InputNumber className={style.inputNumber} />
+          </Form.Item>
+        </div>
+        <div className={style.subTopic2}>
+          <Text size="normal" bold>
+            ภาคปฏิบัติ (หลักสูตรนานาชาติ)
+          </Text>
+          <Form.Item
+            name="labPayRateInter"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <InputNumber className={style.inputNumber} />
+          </Form.Item>
+        </div>
+        <div className={style.subTopic2}>
+          <Text size="normal" bold>
+            ภาคทฤษฎี (อาจารย์ภายนอก)
+          </Text>
+          <Form.Item
+            name="lecturePayRateExternal"
+            rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+          >
+            <InputNumber className={style.inputNumber} />
+          </Form.Item>
+        </div>
+        <div className={style.subTopic2}>
+          <Text size="normal" bold>
+            ภาคปฏิบัติ (อาจารย์ภายนอก)
+          </Text>
+          <Form.Item
+            name="labPayRateExternal"
             rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
           >
             <InputNumber className={style.inputNumber} />
