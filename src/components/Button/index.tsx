@@ -12,11 +12,13 @@ interface IProps extends HTMLProps<HTMLButtonElement> {
   loading?: boolean
   shadow?: boolean
   children: React.ReactNode
+  htmlType?: 'button' | 'submit' | 'reset'
 }
 
 const MyButton: React.FC<IProps> = ({
   children,
   className,
+  htmlType = 'button',
   blue,
   white,
   green,
@@ -37,6 +39,7 @@ const MyButton: React.FC<IProps> = ({
       )}
       size={(small ? 'middle' : 'large') as any}
       loading={loading}
+      htmlType={htmlType}
       {...(props as any)}
     >
       {children}

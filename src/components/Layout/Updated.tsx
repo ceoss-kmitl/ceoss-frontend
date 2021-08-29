@@ -1,33 +1,11 @@
-import style from './Updated.module.scss'
-import { useState } from 'react'
-import { Button, Divider, Popconfirm, notification } from 'antd'
+import { Button, Divider } from 'antd'
 import { FcSynchronize } from 'react-icons/fc'
 
+import style from './Updated.module.scss'
+import { useWebScrap } from './helper'
+
 export const Updated = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [date, setDate] = useState('20 สิงหาคม 2563')
-
-  function mockLoading() {
-    if (isLoading) return
-
-    setIsLoading(true)
-    setShowConfirm(false)
-    setTimeout(() => {
-      setIsLoading(false)
-      setDate(
-        new Date().toLocaleDateString('th-TH', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })
-      )
-      notification.success({
-        message: 'อัปเดตข้อมูลสำเร็จ',
-        placement: 'bottomLeft',
-      })
-    }, 2000)
-  }
+  const { date, triggerWebScrap } = useWebScrap()
 
   return (
     <>
@@ -35,23 +13,21 @@ export const Updated = () => {
       <div className={style.wrapper}>
         <span className={style.title}>ข้อมูลตั้งแต่วันที่</span>
         <time className={style.time}>
-          {date}
-          <Popconfirm
-            title="อัปเดตข้อมูล"
-            visible={showConfirm}
-            onConfirm={mockLoading}
-            onCancel={() => setShowConfirm(false)}
-            okText="ตกลง"
-            cancelText="ยกเลิก"
-          >
-            <Button
-              shape="circle"
-              type="text"
-              icon={<FcSynchronize />}
-              onClick={() => setShowConfirm(true)}
-              loading={isLoading}
-            />
-          </Popconfirm>
+          {date === null ? (
+            <span className={style.text}>กำลังโหลด...</span>
+          ) : date.length ? (
+            <>
+              {date}
+              <Button
+                shape="circle"
+                type="text"
+                icon={<FcSynchronize />}
+                onClick={triggerWebScrap}
+              />
+            </>
+          ) : (
+            <span className={style.text}>เกิดข้อผิดพลาด</span>
+          )}
         </time>
       </div>
     </>
