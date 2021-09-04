@@ -140,14 +140,14 @@ export const columnList: IColumn[] = [
     maxLength: 8,
     placeholder: 'รหัสวิชา',
     editable: true,
-    width: '15%',
+    width: '10%',
   },
   {
     text: 'ชื่อวิชา',
     dataIndex: 'name',
     placeholder: 'ชื่อวิชา',
     editable: true,
-    width: '50%',
+    width: '40%',
   },
   {
     type: 'credit',
@@ -157,10 +157,24 @@ export const columnList: IColumn[] = [
     width: '20%',
   },
   {
+    text: 'หลักสูตร',
+    dataIndex: 'curriculumCode',
+    placeholder: 'หลักสูตร',
+    editable: true,
+    width: '10%',
+  },
+  {
     type: 'checkbox',
     text: 'วิชาบังคับ',
     dataIndex: 'isRequired',
     editable: true,
-    width: '15%',
+    width: '10%',
+  },
+  {
+    type: 'checkbox',
+    text: 'นานาชาติ',
+    dataIndex: 'isInter',
+    editable: true,
+    width: '10%',
   },
 ]
