@@ -22,8 +22,13 @@ export const WorkloadPage = () => {
     semesterOptionList,
   } = useAcademicYear()
 
-  const { isLoading, workload, getWorkloadByTeacherId, discardWorkload } =
-    useWorkload(academicYear, semester)
+  const {
+    isLoading,
+    workload,
+    getWorkloadByTeacherId,
+    discardWorkload,
+    addWorkload,
+  } = useWorkload(academicYear, semester)
 
   return (
     <div className={style.page}>
@@ -85,7 +90,7 @@ export const WorkloadPage = () => {
             </label>
           </div>
 
-          <WorkloadAdder />
+          <WorkloadAdder onSubmit={addWorkload} />
         </>
       )}
     </div>

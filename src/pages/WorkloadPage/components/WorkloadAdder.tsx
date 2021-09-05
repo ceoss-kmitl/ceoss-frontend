@@ -11,10 +11,13 @@ import { Text } from 'components/Text'
 import style from './WorkloadAdder.module.scss'
 import { useAdderForm } from './WorkloadAdderHelper'
 
-export const WorkloadAdder = () => {
+interface IProps {
+  onSubmit: (formValue: any) => void
+}
+
+export const WorkloadAdder: React.FC<IProps> = ({ onSubmit }) => {
   const {
     form,
-    initialValues,
     isLoading,
     subjectOptionList,
     typeOptionList,
@@ -35,8 +38,7 @@ export const WorkloadAdder = () => {
           form={form}
           layout="vertical"
           requiredMark={false}
-          initialValues={initialValues}
-          onFinish={(v) => console.log(v)}
+          onFinish={onSubmit}
         >
           {/* ===== Form part 1 ===== */}
           <Text bold className={style.title}>
@@ -57,6 +59,7 @@ export const WorkloadAdder = () => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
+                notFoundContent="ไม่พบวิชา"
                 options={subjectOptionList}
               />
             </Form.Item>
@@ -105,9 +108,10 @@ export const WorkloadAdder = () => {
               className={style.fieldOfStudyInput}
               rules={[
                 { required: true, message: '' },
-                { pattern: /^[A-Z]+$/, message: 'ตัวพิมพ์ใหญ่เท่านั้น' },
+                { pattern: /^[A-Z]+$/i, message: 'อักษรอังกฤษเท่านั้น' },
               ]}
               hasFeedback
+              normalize={(value) => String(value).toUpperCase()}
             >
               <Input placeholder="ABC" />
             </Form.Item>
@@ -133,13 +137,16 @@ export const WorkloadAdder = () => {
               label="ห้องเรียน"
               className={style.roomInput}
             >
-              <Select options={roomOptionList} />
+              <Select
+                options={roomOptionList}
+                notFoundContent="ไม่พบห้องเรียน"
+              />
             </Form.Item>
           </div>
 
           <Text size="small">ช่วงเวลา</Text>
           <div className={style.row}>
-            <Form.List name="timeList">
+            <Form.List name="timeList" initialValue={[{}]}>
               {(fields, timeList) => (
                 <div className={style.col}>
                   {fields.map(({ name, ...rest }) => (

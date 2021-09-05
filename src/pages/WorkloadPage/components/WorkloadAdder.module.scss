@@ -6,6 +6,7 @@
     border-radius: 6px;
     background: white;
     padding: 1rem;
+    margin-bottom: 1rem;
 }
 
 .row {
@@ -71,6 +72,9 @@
 
 .timePicker {
     width: 100%;
+    &:global(.ant-picker) {
+        border-radius: 6px;
+    }
 }
 
 .removeTimeListIcon {

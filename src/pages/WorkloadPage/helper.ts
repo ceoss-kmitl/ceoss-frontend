@@ -92,6 +92,50 @@ export function useWorkload(academicYear: number, semester: number) {
     })
   }
 
+  function convertToWorkloadTime(timeRangePicker: any[]) {
+    console.log(timeRangePicker)
+    return timeRangePicker.map(({ time }: { time: any[] }) => {
+      const normalTimeList = time.map((t: any) =>
+        t.toDate().toLocaleTimeString('th-TH', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      )
+      const [startTime, endTime] = normalTimeList
+      return {
+        startTime,
+        endTime,
+      }
+    })
+  }
+
+  async function addWorkload(formValue: any) {
+    Modal.loading({
+      loadingText: 'กำลังเพิ่มภาระงาน',
+      finishTitle: 'เพิ่มภาระงานสำเร็จ!',
+      finishFailTitle: 'ไม่สามารถเพิ่มภาระงานได้',
+      width: 400,
+      onAsyncOk: async () => {
+        try {
+          const payload = {
+            ...formValue,
+            timeList: convertToWorkloadTime(formValue.timeList),
+            section: Number(formValue.section),
+            isCompensated: false,
+            teacherId: currentTeacherId,
+            academicYear,
+            semester,
+          }
+          await http.post(`/workload`, payload)
+          await getWorkloadByTeacherId(currentTeacherId)
+        } catch (err) {
+          console.log(err)
+          throw err
+        }
+      },
+    })
+  }
+
   useEffect(() => {
     getWorkloadByTeacherId(currentTeacherId)
   }, [academicYear, semester])
@@ -101,5 +145,6 @@ export function useWorkload(academicYear: number, semester: number) {
     workload,
     getWorkloadByTeacherId,
     discardWorkload,
+    addWorkload,
   }
 }
