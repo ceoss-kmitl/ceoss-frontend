@@ -5,6 +5,7 @@ import { HTMLProps } from 'react'
 
 interface IProps extends HTMLProps<HTMLButtonElement> {
   className?: string
+  dashed?: boolean
   blue?: boolean
   white?: boolean
   green?: boolean
@@ -19,6 +20,7 @@ const MyButton: React.FC<IProps> = ({
   children,
   className,
   htmlType = 'button',
+  dashed,
   blue,
   white,
   green,
@@ -40,6 +42,7 @@ const MyButton: React.FC<IProps> = ({
       size={(small ? 'middle' : 'large') as any}
       loading={loading}
       htmlType={htmlType}
+      type={dashed ? 'dashed' : 'default'}
       {...(props as any)}
     >
       {children}

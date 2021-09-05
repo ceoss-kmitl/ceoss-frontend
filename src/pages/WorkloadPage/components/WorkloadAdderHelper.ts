@@ -54,7 +54,7 @@ export function useAdderForm() {
   return {
     form,
     initialValues: {
-      timeList: [],
+      timeList: [{}],
     },
     isLoading: isNull(subjectOptionList) && isNull(roomOptionList),
     subjectOptionList: subjectOptionList!,
