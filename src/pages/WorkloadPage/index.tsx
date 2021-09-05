@@ -9,6 +9,7 @@ import { Loader } from 'components/Loader'
 import style from './style.module.scss'
 import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
+import { WorkloadAdder } from './components/WorkloadAdder'
 import { useAcademicYear, useWorkload } from './helper'
 
 export const WorkloadPage = () => {
@@ -21,8 +22,13 @@ export const WorkloadPage = () => {
     semesterOptionList,
   } = useAcademicYear()
 
-  const { isLoading, workload, getWorkloadByTeacherId, discardWorkload } =
-    useWorkload(academicYear, semester)
+  const {
+    isLoading,
+    workload,
+    getWorkloadByTeacherId,
+    discardWorkload,
+    addWorkload,
+  } = useWorkload(academicYear, semester)
 
   return (
     <div className={style.page}>
@@ -83,6 +89,8 @@ export const WorkloadPage = () => {
               วิชาที่ทับซ้อน
             </label>
           </div>
+
+          <WorkloadAdder onSubmit={addWorkload} />
         </>
       )}
     </div>
