@@ -20,7 +20,6 @@ const MyButton: React.FC<IProps> = ({
   children,
   className,
   htmlType = 'button',
-  dashed,
   blue,
   white,
   green,
@@ -42,7 +41,6 @@ const MyButton: React.FC<IProps> = ({
       size={(small ? 'middle' : 'large') as any}
       loading={loading}
       htmlType={htmlType}
-      type={dashed ? 'dashed' : 'default'}
       {...(props as any)}
     >
       {children}
