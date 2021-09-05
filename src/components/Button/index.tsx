@@ -5,7 +5,6 @@ import { HTMLProps } from 'react'
 
 interface IProps extends HTMLProps<HTMLButtonElement> {
   className?: string
-  dashed?: boolean
   blue?: boolean
   white?: boolean
   green?: boolean
