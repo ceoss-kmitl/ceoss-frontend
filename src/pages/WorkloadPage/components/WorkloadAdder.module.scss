@@ -1,0 +1,47 @@
+.title {
+    margin: 1rem 0;
+}
+
+.wrapper {
+    border-radius: 6px;
+    background: white;
+    padding: 1rem;
+}
+
+.row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.between {
+    justify-content: space-between;
+}
+
+.subjectInput {
+    flex: 1;
+}
+
+.typeInput {
+    width: 120px;
+}
+
+.sectionInput {
+    min-width: 56px;
+}
+
+.fieldOfStudyInput {
+    width: 120px;
+}
+
+.classYearInput {
+    width: 80px;
+}
+
+.dayOfWeekInput {
+    width: 10%;
+}
+
+.roomInput {
+    width: 10%;
+}

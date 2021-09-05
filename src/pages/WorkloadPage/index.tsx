@@ -9,6 +9,7 @@ import { Loader } from 'components/Loader'
 import style from './style.module.scss'
 import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
+import { WorkloadAdder } from './components/WorkloadAdder'
 import { useAcademicYear, useWorkload } from './helper'
 
 export const WorkloadPage = () => {
@@ -83,6 +84,8 @@ export const WorkloadPage = () => {
               วิชาที่ทับซ้อน
             </label>
           </div>
+
+          <WorkloadAdder />
         </>
       )}
     </div>
