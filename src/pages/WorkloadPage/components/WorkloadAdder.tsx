@@ -68,7 +68,7 @@ export const WorkloadAdder: React.FC<IProps> = ({ onSubmit }) => {
           <div className={style.row}>
             <Form.Item
               name="type"
-              label="รูปแบบ"
+              label="รูปแบบการสอน"
               className={style.typeInput}
               rules={[{ required: true, message: '' }]}
               hasFeedback
