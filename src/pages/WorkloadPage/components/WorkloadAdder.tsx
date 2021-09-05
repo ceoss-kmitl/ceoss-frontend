@@ -191,7 +191,7 @@ export const WorkloadAdder: React.FC<IProps> = ({ onSubmit }) => {
 
           <div className={css(style.row, style.formFooter)}>
             <Button white onClick={() => form.resetFields()}>
-              ล้างฟอร์มใหม่
+              รีเซตฟอร์มใหม่
             </Button>
             <Button htmlType="submit">เพิ่มภาระงาน</Button>
           </div>
