@@ -113,9 +113,8 @@ export const columnList: IColumn[] = [
     placeholder: 'ชื่อ-สกุล',
   },
   {
-    type: 'checkbox',
-    text: 'ผู้บริหาร',
-    dataIndex: 'isExecutive',
+    text: 'ตำแหน่งบริหาร',
+    dataIndex: 'executiveRole',
     editable: true,
     width: '20%',
   },
