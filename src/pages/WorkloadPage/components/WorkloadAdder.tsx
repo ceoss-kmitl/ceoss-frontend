@@ -21,6 +21,7 @@ export const WorkloadAdder: React.FC<IProps> = ({ onSubmit }) => {
     isLoading,
     subjectOptionList,
     typeOptionList,
+    degreeOptionList,
     classYearOptionList,
     dayOfWeekOptionList,
     roomOptionList,
@@ -114,6 +115,16 @@ export const WorkloadAdder: React.FC<IProps> = ({ onSubmit }) => {
               normalize={(value) => String(value).toUpperCase()}
             >
               <Input placeholder="ABC" />
+            </Form.Item>
+
+            <Form.Item
+              name="degree"
+              label="ระดับการศึกษา"
+              className={style.typeInput}
+              rules={[{ required: true, message: '' }]}
+              hasFeedback
+            >
+              <Select options={degreeOptionList} />
             </Form.Item>
           </div>
 
