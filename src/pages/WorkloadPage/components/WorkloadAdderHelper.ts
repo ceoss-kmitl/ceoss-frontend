@@ -2,7 +2,7 @@ import { Form } from 'antd'
 import { useEffect, useState } from 'react'
 
 import { http } from 'libs/http'
-import { DAY_IN_WEEK, SUBJECT_TYPE } from 'components/TimeTable'
+import { DAY_IN_WEEK, SUBJECT_TYPE, DEGREE } from 'components/TimeTable'
 
 interface IOption {
   label: string
@@ -56,6 +56,7 @@ export function useAdderForm() {
     isLoading: isNull(subjectOptionList) && isNull(roomOptionList),
     subjectOptionList: subjectOptionList!,
     typeOptionList,
+    degreeOptionList,
     classYearOptionList,
     dayOfWeekOptionList,
     roomOptionList: roomOptionList!,
@@ -70,6 +71,29 @@ const typeOptionList = [
   {
     label: 'ปฏิบัติ',
     value: SUBJECT_TYPE.LAB,
+  },
+]
+
+const degreeOptionList = [
+  {
+    label: 'ปริญญาตรี ทั่วไป',
+    value: DEGREE.Bachelor,
+  },
+  {
+    label: 'ปริญญาตรี ต่อเนื่อง',
+    value: DEGREE.BachelorCon,
+  },
+  {
+    label: 'ปริญญาตรี นานาชาติ',
+    value: DEGREE.BachelorInter,
+  },
+  {
+    label: 'บัณฑิต ทั่วไป',
+    value: DEGREE.Pundit,
+  },
+  {
+    label: 'บัณฑิต นานาชาติ',
+    value: DEGREE.PunditInter,
   },
 ]
 

@@ -64,5 +64,5 @@ export const TimeTable: React.FC<IProps> = ({
   )
 }
 
-export { DAY_IN_WEEK, SUBJECT_TYPE } from './helper'
+export { DAY_IN_WEEK, SUBJECT_TYPE, DEGREE } from './helper'
 export type { IDay }

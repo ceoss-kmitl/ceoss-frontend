@@ -21,6 +21,14 @@ export enum SUBJECT_TYPE {
   LAB = 'LAB',
 }
 
+export enum DEGREE {
+  Bachelor = 'BACHELOR',
+  BachelorCon = 'BACHELOR_CONTINUE',
+  BachelorInter = 'BACHELOR_INTER',
+  Pundit = 'PUNDIT',
+  PunditInter = 'PUNDIT_INTER',
+}
+
 export interface ISubject {
   id: string
   code: string
