@@ -7,6 +7,7 @@ interface IBaseColumn {
   width?: string
   align?: 'left' | 'right' | 'center'
   showInTable?: boolean
+  required?: boolean
 }
 
 interface ITextColumn extends IBaseColumn {

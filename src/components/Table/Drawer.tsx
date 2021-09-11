@@ -6,6 +6,7 @@ import {
   Form,
   Row,
   Button as AntdButton,
+  Switch,
   Popconfirm,
   message,
 } from 'antd'
@@ -78,12 +79,32 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
     }
   }
 
+  const getHasFeedback = (column: IColumn) => {
+    switch (column.type) {
+      case 'text':
+      case 'credit':
+      case 'number':
+        return true
+    }
+  }
+
+  const getValuePropName = (column: IColumn) => {
+    switch (column.type) {
+      case 'checkbox':
+      case 'status':
+        return 'checked'
+      default:
+        return 'value'
+    }
+  }
+
   const renderInput = (dataIndex: string) => {
     const col = _.getColumn(dataIndex)
     if (!col) return
 
     switch (col.type) {
       case 'status':
+        return <Switch checkedChildren="ทำงาน" unCheckedChildren="ไม่ทำงาน" />
       case 'checkbox':
         return <Checkbox />
       case 'select':
@@ -168,10 +189,8 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
                 const formRules: Rule[] = [
                   { required: true, message: `กรุณากรอก ${col?.header}` },
                 ]
+                if (col.required === false) formRules.pop()
                 switch (col?.type) {
-                  case 'checkbox':
-                    formRules.pop()
-                    break
                   case 'text':
                     if (col.pattern)
                       formRules.push({
@@ -193,13 +212,9 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
                       label={col?.header}
                       rules={formRules}
                       normalize={(col as any)?.normalize}
-                      hasFeedback={['text', 'credit', 'number'].includes(
-                        col?.type || ''
-                      )}
+                      hasFeedback={getHasFeedback(col)}
                       initialValue={getInitialValues(col)}
-                      valuePropName={
-                        col.type === 'checkbox' ? 'checked' : 'value'
-                      }
+                      valuePropName={getValuePropName(col)}
                     >
                       {renderInput(dataIndex)}
                     </Form.Item>
