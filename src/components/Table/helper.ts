@@ -14,6 +14,7 @@ interface ITextColumn extends IBaseColumn {
   pattern?: RegExp
   maxLength?: number
   placeholder?: string
+  normalize?: (value: string) => string
 }
 
 interface INumberColumn extends IBaseColumn {
@@ -24,6 +25,7 @@ interface INumberColumn extends IBaseColumn {
 
 interface ICheckboxColumn extends IBaseColumn {
   type: 'checkbox'
+  defaultChecked?: boolean
 }
 
 interface ISelectColumn extends IBaseColumn {
@@ -62,6 +64,10 @@ interface ITableConfig {
    */
   data: IRecord[]
   /**
+   * Loading status
+   */
+  loading?: boolean
+  /**
    * Column header of table
    */
   columnList: IColumn[]
@@ -87,6 +93,7 @@ export interface IPrivateUseTable {
   addRecord: () => void
   _: {
     form: FormInstance
+    loading?: boolean
     tableData: IRecord[]
     columnList: any[]
     formLayout: IFormLayout
@@ -119,6 +126,7 @@ interface IUseTable {
  */
 export function useTable({
   data,
+  loading,
   columnList,
   formLayout,
   onAdd,
@@ -159,6 +167,7 @@ export function useTable({
     _: {
       form,
       tableData,
+      loading,
       columnList: convertToAntdColumn(
         columnList.filter((col) => col.showInTable)
       ),

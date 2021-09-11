@@ -13,7 +13,6 @@ export const Loader: React.FC<IProps> = ({ children, loading }) => {
       className={style.loader}
       size="large"
       indicator={<FiBox className={style.spin} />}
-      tip="รอสักครู่..."
       spinning={loading ?? true}
     >
       {children}

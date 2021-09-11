@@ -13,7 +13,7 @@ import { Text } from 'components/Text'
 import { Loader } from 'components/Loader'
 
 import style from './Drawer.module.scss'
-import { IPrivateUseTable, IRecord, useTable } from './helper'
+import { IColumn, IPrivateUseTable, IRecord, useTable } from './helper'
 
 interface IProps {
   use: ReturnType<typeof useTable>
@@ -36,7 +36,7 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
       _.closeDrawer()
       message.success('บันทึกข้อมูลแล้ว')
     } catch (err) {
-      message.error(err.message)
+      message.error(err.message, 10)
       console.error(err)
     } finally {
       setIsSubmitting(false)
@@ -52,10 +52,21 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
       _.closeDrawer()
       message.success('ลบข้อมูลแล้ว')
     } catch (err) {
-      message.error(err.message)
+      message.error(err.message, 10)
       console.error(err)
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const getInitialValues = (column: IColumn) => {
+    switch (column.type) {
+      case 'checkbox':
+        return column.defaultChecked ?? false
+      case 'status':
+        return true
+      case 'select':
+        return column.defaultFirstOption && column.optionList[0]
     }
   }
 
@@ -128,6 +139,7 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
           hideRequiredMark
           onFinish={handleFormAction}
         >
+          <Form.Item name="id" style={{ display: 'none' }} />
           {_.formLayout.layout.map((row, index) => (
             <Row key={index} gutter={16}>
               {row.map((dataIndex) => {
@@ -159,12 +171,13 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
                       name={dataIndex}
                       label={col?.header}
                       rules={formRules}
+                      normalize={(col as any)?.normalize}
                       hasFeedback={['text', 'credit', 'number'].includes(
                         col?.type || ''
                       )}
-                      initialValue={
-                        (col as any)?.defaultFirstOption &&
-                        (col as any)?.optionList[0]
+                      initialValue={getInitialValues(col)}
+                      valuePropName={
+                        col.type === 'checkbox' ? 'checked' : 'value'
                       }
                     >
                       {renderInput(dataIndex)}

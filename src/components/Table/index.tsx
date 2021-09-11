@@ -6,6 +6,7 @@ import style from './style.module.scss'
 import { CustomCell } from './CustomCell'
 import { Drawer } from './Drawer'
 import { IColumn, IFormLayout, IPrivateUseTable, useTable } from './helper'
+import { Loader } from 'components/Loader'
 
 interface IProps {
   /** Use with `useTable` hooks */
@@ -22,6 +23,7 @@ const MyTable: React.FC<IProps> = ({ use }) => {
         components={{ body: { cell: CustomCell } }}
         columns={_.columnList as any}
         dataSource={_.tableData}
+        loading={{ spinning: _.loading, indicator: <Loader /> }}
         pagination={false}
         onRow={(record) => ({
           className: style.tableRow,
