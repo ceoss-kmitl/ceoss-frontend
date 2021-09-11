@@ -1,0 +1,33 @@
+.titleWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.closeIcon {
+    font-size: 20px;
+    margin-right: 1rem;
+    color: var(--gray400);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--gray800);
+    }
+}
+
+.title {
+    margin-right: auto;
+}
+
+.submitIcon {
+    font-size: 18px;
+    margin-right: 0.5rem;
+}
+
+.deleteIcon {
+    margin-bottom: -2px;
+    margin-right: 0.5rem;
+}
+
+.disabled {
+    pointer-events: none;
+}

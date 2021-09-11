@@ -1,14 +1,22 @@
-import style from './style.module.scss'
 import { Spin } from 'antd'
 import { FiBox } from 'react-icons/fi'
 
-export const Loader = () => {
+import style from './style.module.scss'
+
+interface IProps {
+  loading?: boolean
+}
+
+export const Loader: React.FC<IProps> = ({ children, loading }) => {
   return (
     <Spin
       className={style.loader}
       size="large"
       indicator={<FiBox className={style.spin} />}
       tip="รอสักครู่..."
-    />
+      spinning={loading ?? true}
+    >
+      {children}
+    </Spin>
   )
 }
