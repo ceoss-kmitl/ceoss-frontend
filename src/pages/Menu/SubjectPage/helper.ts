@@ -3,7 +3,6 @@ import { message } from 'antd'
 
 import { http } from 'libs/http'
 import { IColumn, IFormLayout } from 'components/Table'
-import { delay } from 'libs/delay'
 
 export function useMenuSubject() {
   const [data, setData] = useState<any[]>([])
@@ -33,7 +32,6 @@ export function useMenuSubject() {
 
   async function getAllSubject() {
     setIsLoading(true)
-    await delay(2)
     try {
       const { data } = await http.get('/subject')
       setData(parseCredit(data))
@@ -51,7 +49,6 @@ export function useMenuSubject() {
       ...record,
       ...credit,
     }
-    await delay(2)
     await http.post(`/subject`, subject)
     await getAllSubject()
   }
@@ -62,14 +59,12 @@ export function useMenuSubject() {
       ...record,
       ...credit,
     }
-    await delay(2)
     const { id, ...subjectData } = subject
     await http.put(`/subject/${id}`, subjectData)
     await getAllSubject()
   }
 
   async function deleteSubject(record: any) {
-    await delay(2)
     await http.delete(`/subject/${record.id}`)
     await getAllSubject()
   }

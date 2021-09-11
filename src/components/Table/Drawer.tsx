@@ -1,6 +1,14 @@
 import css from 'classnames'
 import { useState } from 'react'
-import { Col, Drawer, Form, Row, Button as AntdButton, message } from 'antd'
+import {
+  Col,
+  Drawer,
+  Form,
+  Row,
+  Button as AntdButton,
+  Popconfirm,
+  message,
+} from 'antd'
 import { Rule } from 'antd/lib/form'
 import { FiX, FiTrash2 } from 'react-icons/fi'
 import { AiFillEdit } from 'react-icons/ai'
@@ -119,16 +127,29 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
       }
       footer={
         _.formAction === 'EDIT' && (
-          <AntdButton
-            block
-            danger
-            type="text"
-            icon={<FiTrash2 className={style.deleteIcon} />}
-            onClick={handleDelete}
-            disabled={isSubmitting}
+          <Popconfirm
+            title="ต้องการลบข้อมูลใช่ไหม"
+            okText="ลบ"
+            cancelText="ยกเลิก"
+            okButtonProps={{
+              type: 'primary',
+              danger: true,
+            }}
+            cancelButtonProps={{
+              type: 'text',
+            }}
+            onConfirm={handleDelete}
           >
-            ลบข้อมูล
-          </AntdButton>
+            <AntdButton
+              block
+              danger
+              type="text"
+              icon={<FiTrash2 className={style.deleteIcon} />}
+              disabled={isSubmitting}
+            >
+              ลบข้อมูล
+            </AntdButton>
+          </Popconfirm>
         )
       }
     >
