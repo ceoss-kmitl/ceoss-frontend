@@ -6,8 +6,8 @@ import { CompensationBookPage } from 'pages/CompensationBookPage'
 import { AssistantDocumentPage } from 'pages/AssistantDocumentPage'
 import { MenuTeacherPage } from 'pages/Menu/TeacherPage'
 import { MenuSubjectPage } from 'pages/Menu/SubjectPage'
-// import { MenuAssistantPage } from 'pages/Menu/AssistantPage'
-// import { MenuRoomPage } from 'pages/Menu/RoomPage'
+import { MenuAssistantPage } from 'pages/Menu/AssistantPage'
+import { MenuRoomPage } from 'pages/Menu/RoomPage'
 import { MenuSettingPage } from 'pages/Menu/SettingPage'
 
 // Start Example
@@ -30,8 +30,8 @@ function App() {
           <Route path="/assistant-document" component={AssistantDocumentPage} />
           <Route path="/menu/teacher" component={MenuTeacherPage} />
           <Route path="/menu/subject" component={MenuSubjectPage} />
-          {/* <Route path="/menu/assistant" component={MenuAssistantPage} /> */}
-          {/* <Route path="/menu/room" component={MenuRoomPage} /> */}
+          <Route path="/menu/assistant" component={MenuAssistantPage} />
+          <Route path="/menu/room" component={MenuRoomPage} />
           <Route path="/menu/setting" component={MenuSettingPage} />
 
           {/* Start Example */}
