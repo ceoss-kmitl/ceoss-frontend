@@ -99,8 +99,8 @@ export interface IPrivateUseTable {
     columnList: any[]
     formLayout: IFormLayout
     formAction: 'ADD' | 'EDIT'
-    getColumn: (dataIndex: string) => IColumn
-    getRecord: (dataIndex: string) => IRecord
+    getColumn: (dataIndex: string) => IColumn | undefined
+    getRecord: (dataIndex: string) => IRecord | undefined
     editRecord: (record: IRecord) => void
     isDrawerVisible: boolean
     closeDrawer: () => void

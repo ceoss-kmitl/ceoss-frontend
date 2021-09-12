@@ -98,6 +98,37 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
     }
   }
 
+  const getRules = (column: IColumn) => {
+    const formRules: Rule[] = [
+      { required: true, message: `กรุณากรอก ${column.header}` },
+    ]
+    if (column.required === false) formRules.pop()
+
+    switch (column.type) {
+      case 'text':
+        if (column.pattern)
+          formRules.push({
+            pattern: column.pattern,
+            message: `${column.header} ไม่ถูกต้อง`,
+          })
+        break
+      case 'credit':
+        formRules.push({
+          pattern: /^\d{4}$/,
+          message: `กรุณาใส่ตัวเลข 4 ตัว`,
+        })
+        break
+    }
+    return formRules
+  }
+
+  const getNormalize = (column: IColumn) => {
+    switch (column.type) {
+      case 'text':
+        return column.normalize
+    }
+  }
+
   const renderInput = (dataIndex: string) => {
     const col = _.getColumn(dataIndex)
     if (!col) return
@@ -133,13 +164,11 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
           })}
         >
           <FiX className={style.closeIcon} onClick={_.closeDrawer} />
-
           <Text size="sub-head" bold className={style.title}>
             {_.formAction === 'ADD'
               ? _.formLayout.addFormTitle
               : _.formLayout.editFormTitle}
           </Text>
-
           <Button small onClick={_.form.submit} disabled={isSubmitting}>
             <AiFillEdit className={style.submitIcon} />
             บันทึกข้อมูล
@@ -185,33 +214,14 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
           {_.formLayout.layout.map((row, index) => (
             <Row key={index} gutter={16}>
               {row.map((dataIndex) => {
-                const col = _.getColumn(dataIndex)
-                const formRules: Rule[] = [
-                  { required: true, message: `กรุณากรอก ${col?.header}` },
-                ]
-                if (col.required === false) formRules.pop()
-                switch (col?.type) {
-                  case 'text':
-                    if (col.pattern)
-                      formRules.push({
-                        pattern: col.pattern,
-                        message: `${col.header} ไม่ถูกต้อง`,
-                      })
-                    break
-                  case 'credit':
-                    formRules.push({
-                      pattern: /^\d{4}$/,
-                      message: `กรุณาใส่ตัวเลข 4 ตัว`,
-                    })
-                }
-
+                const col = _.getColumn(dataIndex) || ({} as IColumn)
                 return (
                   <Col key={dataIndex} span={24 / row.length}>
                     <Form.Item
                       name={dataIndex}
-                      label={col?.header}
-                      rules={formRules}
-                      normalize={(col as any)?.normalize}
+                      label={col.header}
+                      rules={getRules(col)}
+                      normalize={getNormalize(col)}
                       hasFeedback={getHasFeedback(col)}
                       initialValue={getInitialValues(col)}
                       valuePropName={getValuePropName(col)}
