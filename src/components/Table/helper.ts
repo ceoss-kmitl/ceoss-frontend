@@ -2,18 +2,20 @@ import { useState, useEffect } from 'react'
 import { Form, FormInstance } from 'antd'
 
 interface IBaseColumn {
-  text: string
+  header: string
   dataIndex: string
   width?: string
   align?: 'left' | 'right' | 'center'
-  editable?: boolean
+  showInTable?: boolean
+  required?: boolean
 }
 
 interface ITextColumn extends IBaseColumn {
-  type?: 'text'
+  type: 'text'
   pattern?: RegExp
   maxLength?: number
   placeholder?: string
+  normalize?: (value: string) => string
 }
 
 interface INumberColumn extends IBaseColumn {
@@ -24,11 +26,13 @@ interface INumberColumn extends IBaseColumn {
 
 interface ICheckboxColumn extends IBaseColumn {
   type: 'checkbox'
+  defaultChecked?: boolean
 }
 
 interface ISelectColumn extends IBaseColumn {
   type: 'select'
-  selectList: string[]
+  optionList: string[]
+  defaultFirstOption?: boolean
 }
 
 interface IStatusColumn extends IBaseColumn {
@@ -47,8 +51,12 @@ export type IColumn =
   | ICreditColumn
   | IStatusColumn
 
-export type IRecord = Record<string, string | number | boolean> & {
-  key?: number
+export type IRecord = Record<string, string | number | boolean>
+
+export type IFormLayout = {
+  addFormTitle: string
+  editFormTitle: string
+  layout: string[][]
 }
 
 interface ITableConfig {
@@ -57,9 +65,17 @@ interface ITableConfig {
    */
   data: IRecord[]
   /**
+   * Loading status
+   */
+  loading?: boolean
+  /**
    * Column header of table
    */
   columnList: IColumn[]
+  /**
+   * Form layout
+   */
+  formLayout: IFormLayout
   /**
    * Function that run when add
    */
@@ -72,201 +88,112 @@ interface ITableConfig {
    * Function that run when delete
    */
   onDelete?: (record: IRecord) => void
-  /**
-   * Show edit/delete button in the last column.
-   * Default is `true`
-   */
-  editable?: boolean
 }
 
-interface IEditorAction {
-  type: 'add' | 'edit' | 'delete'
-  payload: IRecord
-}
-
-export enum EditingStatus {
-  NotEditing = -1,
-  NewlyAdded = -2,
-}
-
-export type IRealUseTable = {
-  addRow: (record: Omit<IRecord, 'key'>) => void
-  $: {
-    form: FormInstance<any>
-    startEditing: (record: IRecord) => void
-    stopEditing: () => void
-    isEditable: () => boolean
-    isEditing: (record: IRecord) => boolean
-    event: (
-      type: IEditorAction['type'],
-      payload: IEditorAction['payload']
-    ) => void
+export interface IPrivateUseTable {
+  addRecord: () => void
+  _: {
+    form: FormInstance
+    loading?: boolean
     tableData: IRecord[]
-    columnList: IColumn[]
-    enableEdit: boolean
+    columnList: any[]
+    formLayout: IFormLayout
+    formAction: 'ADD' | 'EDIT'
+    getColumn: (dataIndex: string) => IColumn | undefined
+    getRecord: (dataIndex: string) => IRecord | undefined
+    editRecord: (record: IRecord) => void
+    isDrawerVisible: boolean
+    closeDrawer: () => void
+    onAdd: (record: IRecord) => void
+    onEdit: (record: IRecord) => void
+    onDelete: (record: IRecord) => void
   }
 }
 
 interface IUseTable {
   /**
-   * Add new row to table
+   * Add new record to table
    */
-  addRow: (record?: Omit<IRecord, 'key'>) => void
+  addRecord: () => void
 
   /**
    * *Private data. Do not use it*
    */
-  $?: unknown
+  _?: unknown
 }
 
 /**
  * Custom hooks to use with `<Table />` component
  */
-export function useTable(config: ITableConfig): IUseTable {
-  const [form] = Form.useForm()
-  const [action, setAction] = useState<IEditorAction | null>(null)
-  const [editingKey, setEditingKey] = useState(EditingStatus.NotEditing)
-  const [tableData, setTableData] = useState<IRecord[]>(config.data)
+export function useTable({
+  data,
+  loading,
+  columnList,
+  formLayout,
+  onAdd,
+  onEdit,
+  onDelete,
+}: ITableConfig): IUseTable {
+  const [tableData, setTableData] = useState<IRecord[]>(data)
+  const [form] = Form.useForm<IRecord>()
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
+  const [formAction, setFormAction] = useState<'ADD' | 'EDIT'>('ADD')
 
-  const isEditing = (record: IRecord) => record.key === editingKey
-
-  const isEditable = () => editingKey !== EditingStatus.NotEditing
-
-  const event = (
-    type: IEditorAction['type'],
-    payload: IEditorAction['payload']
-  ) => {
-    setAction({ type, payload })
-  }
-
-  const startEditing = (record: IRecord) => {
-    form.setFieldsValue(record)
-    setEditingKey(record.key!)
-  }
-
-  const stopEditing = () => {
-    if (editingKey === EditingStatus.NewlyAdded) {
-      setTableData((prev) => prev.slice(1))
-    }
+  const addRecord = () => {
     form.resetFields()
-    setEditingKey(EditingStatus.NotEditing)
+    setFormAction('ADD')
+    setIsDrawerVisible(true)
   }
 
-  const handleAction = async () => {
-    try {
-      const payload = { ...action?.payload }
-      delete payload.key
-
-      switch (action?.type) {
-        case 'add':
-          await form.validateFields()
-          config?.onAdd?.(payload)
-          form.resetFields()
-          setEditingKey(EditingStatus.NotEditing)
-          break
-        case 'edit':
-          await form.validateFields()
-          config?.onEdit?.(payload)
-          form.resetFields()
-          setEditingKey(EditingStatus.NotEditing)
-          break
-        case 'delete':
-          config?.onDelete?.(payload)
-          form.resetFields()
-          setEditingKey(EditingStatus.NotEditing)
-          break
-      }
-    } catch (error) {}
+  const editRecord = (record: IRecord) => {
+    form.resetFields()
+    form.setFieldsValue(record)
+    setFormAction('EDIT')
+    setIsDrawerVisible(true)
   }
+
+  const closeDrawer = () => setIsDrawerVisible(false)
+
+  const getColumn = (dataIndex: string) =>
+    columnList.find((col) => col.dataIndex === dataIndex)
+
+  const getRecord = (dataIndex: string) =>
+    tableData.find((record) => record.dataIndex === dataIndex)
 
   useEffect(() => {
-    handleAction()
-  }, [action])
-
-  useEffect(() => {
-    setTableData(config.data)
-  }, [config.data])
-
-  // Public methods
-  const addRow = (record = {}) => {
-    if (editingKey !== EditingStatus.NotEditing) return
-    const { columnList } = config as ITableConfig
-    const editable = config.editable ?? true
-    if (!editable) return
-
-    const newRow = columnList.reduce(
-      (acc, cur) => ({
-        ...acc,
-        [cur.dataIndex]: ['checkbox', 'status'].includes(cur.type as any)
-          ? false
-          : cur.type === 'select'
-          ? cur.selectList[0]
-          : '',
-      }),
-      {}
-    )
-
-    setTableData((prev) => [
-      { ...newRow, ...record, key: EditingStatus.NewlyAdded },
-      ...prev,
-    ])
-    setEditingKey(EditingStatus.NewlyAdded)
-    form.setFieldsValue(newRow)
-  }
+    setTableData(data)
+  }, [data])
 
   return {
-    // public data
-    addRow,
-    // Private data using inside component only!
-    $: {
+    _: {
       form,
-      startEditing,
-      stopEditing,
-      isEditable,
-      isEditing,
-      event,
       tableData,
-      columnList: config.columnList,
-      enableEdit: config.editable ?? true,
+      loading,
+      columnList: convertToAntdColumn(
+        columnList.filter((col) => col.showInTable)
+      ),
+      formLayout,
+      formAction,
+      getColumn,
+      getRecord,
+      editRecord,
+      isDrawerVisible,
+      closeDrawer,
+      onAdd,
+      onEdit,
+      onDelete,
     },
+    addRecord,
   }
 }
 
-/**
- * Add `key` to data array
- */
-export function convertToAntdData(data: IRecord[]) {
-  return data.map((eachData, index) => ({
-    ...eachData,
-    key: eachData.key || index,
-  }))
-}
-
-/**
- * Add `EditableCellProps` to column that editable.
- * The `onCell` is kinda flexible use it carefully
- */
-export function convertToAntdColumn(
-  columnList: IColumn[],
-  isEditing: (record: IRecord) => boolean
-) {
-  return columnList.map((col) => {
-    if (!col.editable) {
-      return { ...col, title: col.text }
-    }
-    return {
+function convertToAntdColumn(columnList: IColumn[]): any[] {
+  return columnList.map((col) => ({
+    ...col,
+    title: col.header,
+    onCell: (record: IRecord) => ({
       ...col,
-      title: col.text,
-      onCell: (record: any) => ({
-        ...col,
-        inputType: col.type,
-        dataIndex: col.dataIndex,
-        record: record,
-        title: col.text,
-        pattern: (col as any).pattern,
-        placeholder: (col as any).placeholder,
-        editing: isEditing(record),
-      }),
-    }
-  })
+      record,
+    }),
+  }))
 }

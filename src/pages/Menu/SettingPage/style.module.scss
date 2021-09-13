@@ -43,6 +43,7 @@
     background: white;
     border: 1px solid var(--gray200);
     padding: 0.5rem 0.75rem;
-    width: fit-content;
+    width: 100%;
     white-space: pre;
+    overflow-y: auto;
 }

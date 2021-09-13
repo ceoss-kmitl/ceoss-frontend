@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
+import { message } from 'antd'
+
 import { http } from 'libs/http'
-import { Modal } from 'components/Modal'
-import { IColumn } from 'components/Table'
+import { IColumn, IFormLayout } from 'components/Table'
 
 export function useMenuTeacher() {
   const [data, setData] = useState<any[]>([])
-  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   async function getAllTeacher() {
@@ -13,72 +13,30 @@ export function useMenuTeacher() {
     try {
       const { data } = await http.get('/teacher')
       setData(data)
-      setError(null)
     } catch (err) {
-      setError(err)
       setData([])
+      message.error(err.message)
+      console.error(err)
     }
     setIsLoading(false)
   }
 
   async function addTeacher(record: any) {
-    Modal.loading({
-      loadingText: 'กำลังเพิ่มข้อมูลอาจารย์',
-      finishTitle: 'เพิ่มข้อมูลอาจารย์สำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถเพิ่มข้อมูลอาจารย์ได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          await http.post(`/teacher`, record)
-          await getAllTeacher()
-        } catch (err) {
-          await getAllTeacher()
-          throw err
-        }
-      },
-    })
+    const payload = { ...record, executiveRole: record.executiveRole ?? '' }
+    await http.post(`/teacher`, payload)
+    await getAllTeacher()
   }
 
   async function editTeacher(record: any) {
-    Modal.loading({
-      loadingText: 'กำลังแก้ไขข้อมูลอาจารย์',
-      finishTitle: 'แก้ไขข้อมูลอาจารย์สำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถแก้ไขข้อมูลอาจารย์ได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          const { id, ...teacher } = record
-          await http.put(`/teacher/${id}`, teacher)
-          await getAllTeacher()
-        } catch (err) {
-          throw err
-        }
-      },
-    })
+    const { id, ...teacher } = record
+    const payload = { ...teacher, executiveRole: record.executiveRole ?? '' }
+    await http.put(`/teacher/${id}`, payload)
+    await getAllTeacher()
   }
 
   async function deleteTeacher(record: any) {
-    Modal.warning({
-      width: 400,
-      title: 'ยืนยันการลบ',
-      description: 'คุณต้องการยืนยันการลบข้อมูลอาจารย์นี้หรือไม่',
-      finishTitle: 'ลบข้อมูลอาจารย์สำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถลบข้อมูลอาจารย์ได้',
-      finishFailText: 'ตกลง',
-      onAsyncOk: async () => {
-        try {
-          await http.delete(`/teacher/${record.id}`)
-          await getAllTeacher()
-        } catch (err) {
-          throw err
-        }
-      },
-    })
+    await http.delete(`/teacher/${record.id}`)
+    await getAllTeacher()
   }
 
   useEffect(() => {
@@ -88,7 +46,6 @@ export function useMenuTeacher() {
   return {
     isLoading,
     data,
-    error,
     getAllTeacher,
     addTeacher,
     editTeacher,
@@ -99,30 +56,40 @@ export function useMenuTeacher() {
 export const columnList: IColumn[] = [
   {
     type: 'select',
-    text: 'ตำแหน่ง',
+    header: 'ตำแหน่ง',
     dataIndex: 'title',
-    selectList: ['อ.', 'ดร.', 'รศ.', 'รศ.ดร.', 'ศ.', 'ผศ.', 'ผศ.ดร.'],
-    editable: true,
+    optionList: ['อ.', 'ดร.', 'รศ.', 'รศ.ดร.', 'ศ.', 'ผศ.', 'ผศ.ดร.'],
+    showInTable: true,
     width: '20%',
   },
   {
-    text: 'ชื่อ-สกุล',
+    type: 'text',
+    header: 'ชื่อ-สกุล',
     dataIndex: 'name',
-    editable: true,
+    showInTable: true,
     width: '40%',
     placeholder: 'ชื่อ-สกุล',
   },
   {
-    text: 'ตำแหน่งบริหาร',
+    type: 'text',
+    header: 'ตำแหน่งบริหาร',
     dataIndex: 'executiveRole',
-    editable: true,
-    width: '20%',
+    required: false,
   },
   {
     type: 'status',
-    text: 'สถานะ',
+    header: 'สถานะ',
     dataIndex: 'isActive',
-    editable: true,
+    showInTable: true,
     width: '20%',
   },
 ]
+
+export const formLayout: IFormLayout = {
+  addFormTitle: 'เพิ่มข้อมูลอาจารย์ใหม่',
+  editFormTitle: 'แก้ไขข้อมูลอาจารย์',
+  layout: [
+    ['title', 'name'],
+    ['executiveRole', 'isActive'],
+  ],
+}

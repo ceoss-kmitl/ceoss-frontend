@@ -1,38 +1,18 @@
-import { useState } from 'react'
-import { IColumn, Table, useTable } from 'components/Table'
+import { IColumn, IFormLayout, Table, useTable } from 'components/Table'
+import { delay } from 'libs/delay'
 
 export const DemoTable = () => {
-  const [data, setData] = useState(MOCK_DATA)
-
   const table = useTable({
-    data: data,
+    data: MOCK_DATA,
     columnList: MOCK_COLUMN,
-    onAdd: mockAddData,
-    onEdit: mockEditData,
-    onDelete: mockDeleteData,
+    formLayout: MOCK_LAYOUT,
+    onAdd: async (record) => {
+      await delay(1.5)
+      console.log(record)
+    },
+    onEdit: async (record) => console.log(record),
+    onDelete: async (record) => console.log(record),
   })
-
-  function mockAddData(record: any) {
-    setData([
-      { ...record, id: `MOCK-${Math.random()}-${Math.random()}` },
-      ...data,
-    ])
-  }
-
-  function mockEditData(record: any) {
-    setData(
-      data.map((each) => {
-        if (each.id === record.id) {
-          return { ...each, ...record }
-        }
-        return each
-      })
-    )
-  }
-
-  function mockDeleteData(record: any) {
-    setData(data.filter((each) => each.id !== record.id))
-  }
 
   return (
     <main
@@ -42,7 +22,7 @@ export const DemoTable = () => {
         padding: '2rem',
       }}
     >
-      <button onClick={() => table.addRow({})}>Add row</button>
+      <button onClick={() => table.addRecord()}>Add row</button>
       <Table use={table} />
     </main>
   )
@@ -51,42 +31,64 @@ export const DemoTable = () => {
 const MOCK_COLUMN: IColumn[] = [
   {
     type: 'select',
-    text: 'ตำแหน่ง',
+    header: 'ตำแหน่ง',
     dataIndex: 'title',
-    selectList: ['อาจารย์', 'ศาสตราจารย์', 'admin'],
-    editable: true,
+    optionList: ['อาจารย์', 'ศาสตราจารย์', 'admin'],
+    defaultFirstOption: true,
+    showInTable: true,
     width: '20%',
   },
   {
-    text: 'ชื่อ-สกุล',
+    type: 'text',
+    header: 'ชื่อ-สกุล',
     dataIndex: 'name',
-    editable: true,
-    width: '50%',
+    showInTable: true,
+    width: '20%',
     placeholder: 'ชื่อ-สกุล',
   },
   {
+    type: 'credit',
+    header: 'credit',
+    dataIndex: 'credit',
+    showInTable: true,
+    width: '20%',
+  },
+  {
     type: 'number',
-    text: 'อายุ',
+    header: 'อายุ',
     dataIndex: 'age',
-    editable: true,
+    showInTable: true,
     width: '20%',
     min: 10,
     max: 30,
   },
   {
     type: 'checkbox',
-    text: 'ผู้บริหาร',
+    header: 'ผู้บริหาร',
     dataIndex: 'isExecutive',
-    editable: true,
+    showInTable: true,
+    align: 'center',
     width: '10%',
   },
+  {
+    type: 'text',
+    header: 'secret',
+    dataIndex: 'secret',
+  },
 ]
+
+const MOCK_LAYOUT: IFormLayout = {
+  addFormTitle: 'เพิ่มข้อมูลเดโม่ใหม่',
+  editFormTitle: 'แก้ไขข้อมูลเดโม่',
+  layout: [['title', 'name'], ['credit'], ['age', 'isExecutive', 'name']],
+}
 
 const MOCK_DATA: any[] = [
   {
     id: 'eDvc-4X',
     title: 'อาจารย์',
     name: 'คณัฐ ตังติสาานนท์',
+    credit: '1(2-3-4)',
     age: 28,
     isExecutive: true,
   },

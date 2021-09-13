@@ -1,16 +1,21 @@
-import style from './style.module.scss'
 import { VscAdd } from 'react-icons/vsc'
+
 import { Button } from 'components/Button'
 import { Text } from 'components/Text'
 import { Table, useTable } from 'components/Table'
-import { useMenuSubject, columnList } from './helper'
+
+import style from './style.module.scss'
+import { useMenuSubject, columnList, formLayout } from './helper'
 
 export const MenuSubjectPage = () => {
-  const { data, addSubject, editSubject, deleteSubject } = useMenuSubject()
+  const { isLoading, data, addSubject, editSubject, deleteSubject } =
+    useMenuSubject()
 
   const subjectTable = useTable({
+    loading: isLoading,
     data,
     columnList,
+    formLayout,
     onAdd: addSubject,
     onEdit: editSubject,
     onDelete: deleteSubject,
@@ -22,7 +27,7 @@ export const MenuSubjectPage = () => {
         <Text size="head" bold>
           ข้อมูลวิชา
         </Text>
-        <Button onClick={() => subjectTable.addRow()}>
+        <Button onClick={() => subjectTable.addRecord()}>
           <VscAdd className={style.iconAdd} />
           เพิ่มวิชา
         </Button>

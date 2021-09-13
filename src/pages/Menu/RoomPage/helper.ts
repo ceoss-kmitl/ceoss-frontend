@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
+import { message } from 'antd'
+
 import { http } from 'libs/http'
-import { Modal } from 'components/Modal'
-import { IColumn } from 'components/Table'
+import { IColumn, IFormLayout } from 'components/Table'
 
 export function useMenuRoom() {
   const [data, setData] = useState<any[]>([])
-  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   async function getAllRoom() {
@@ -13,82 +13,28 @@ export function useMenuRoom() {
     try {
       const { data } = await http.get('/room')
       setData(data)
-      setError(null)
     } catch (err) {
-      setError(err)
       setData([])
+      message.error(err.message)
+      console.error(err)
     }
     setIsLoading(false)
   }
 
   async function addRoom(record: any) {
-    const room = {
-      ...record,
-      name: String(record.name).toLocaleUpperCase(),
-    }
-
-    Modal.loading({
-      loadingText: 'กำลังเพิ่มข้อมูลห้องเรียน',
-      finishTitle: 'เพิ่มข้อมูลห้องเรียนสำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถเพิ่มข้อมูลห้องเรียนได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          await http.post(`/room`, room)
-          await getAllRoom()
-        } catch (err) {
-          await getAllRoom()
-          throw err
-        }
-      },
-    })
+    await http.post(`/room`, record)
+    await getAllRoom()
   }
 
   async function editRoom(record: any) {
-    const room = {
-      ...record,
-      name: String(record.name).toLocaleUpperCase(),
-    }
-
-    Modal.loading({
-      loadingText: 'กำลังแก้ไขข้อมูลห้องเรียน',
-      finishTitle: 'แก้ไขข้อมูลห้องเรียนสำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถแก้ไขข้อมูลห้องเรียนได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          const { id, ...roomData } = room
-          await http.put(`/room/${id}`, roomData)
-          await getAllRoom()
-        } catch (err) {
-          throw err
-        }
-      },
-    })
+    const { id, ...roomData } = record
+    await http.put(`/room/${id}`, roomData)
+    await getAllRoom()
   }
 
   async function deleteRoom(record: any) {
-    Modal.warning({
-      width: 400,
-      title: 'ยืนยันการลบ',
-      description: 'คุณต้องการยืนยันการลบข้อมูลห้องเรียนนี้หรือไม่',
-      finishTitle: 'ลบข้อมูลห้องเรียนสำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถลบข้อมูลห้องเรียนได้',
-      finishFailText: 'ตกลง',
-      onAsyncOk: async () => {
-        try {
-          await http.delete(`/room/${record.id}`)
-          await getAllRoom()
-        } catch (err) {
-          throw err
-        }
-      },
-    })
+    await http.delete(`/room/${record.id}`)
+    await getAllRoom()
   }
 
   useEffect(() => {
@@ -98,7 +44,6 @@ export function useMenuRoom() {
   return {
     isLoading,
     data,
-    error,
     getAllRoom,
     addRoom,
     editRoom,
@@ -108,18 +53,25 @@ export function useMenuRoom() {
 
 export const columnList: IColumn[] = [
   {
-    text: 'ชื่อห้อง',
+    type: 'text',
+    header: 'ชื่อห้อง',
     dataIndex: 'name',
-    editable: true,
+    showInTable: true,
     width: '30%',
     placeholder: 'ชื่อห้อง',
   },
   {
     type: 'number',
     min: 0,
-    text: 'จำนวนที่รองรับ (คน)',
+    header: 'จำนวนที่รองรับ (คน)',
     dataIndex: 'capacity',
-    editable: true,
+    showInTable: true,
     width: '70%',
   },
 ]
+
+export const formLayout: IFormLayout = {
+  addFormTitle: 'เพิ่มข้อมูลห้องเรียนใหม่',
+  editFormTitle: 'แก้ไขข้อมูลห้องเรียน',
+  layout: [['name', 'capacity']],
+}

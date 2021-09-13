@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
+import { message } from 'antd'
+
 import { http } from 'libs/http'
-import { Modal } from 'components/Modal'
-import { IColumn } from 'components/Table'
+import { IColumn, IFormLayout } from 'components/Table'
 
 export function useMenuSubject() {
   const [data, setData] = useState<any[]>([])
-  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   function parseCredit(data: any[]) {
@@ -35,9 +35,9 @@ export function useMenuSubject() {
     try {
       const { data } = await http.get('/subject')
       setData(parseCredit(data))
-      setError(null)
     } catch (err) {
-      setError(err)
+      message.error(err.message)
+      console.error(err)
       setData([])
     }
     setIsLoading(false)
@@ -48,26 +48,9 @@ export function useMenuSubject() {
     const subject = {
       ...record,
       ...credit,
-      name: String(record.name).toLocaleUpperCase(),
     }
-
-    Modal.loading({
-      loadingText: 'กำลังเพิ่มข้อมูลวิชา',
-      finishTitle: 'เพิ่มข้อมูลวิชาสำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถเพิ่มข้อมูลวิชาได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          await http.post(`/subject`, subject)
-          await getAllSubject()
-        } catch (err) {
-          await getAllSubject()
-          throw err
-        }
-      },
-    })
+    await http.post(`/subject`, subject)
+    await getAllSubject()
   }
 
   async function editSubject(record: any) {
@@ -75,46 +58,15 @@ export function useMenuSubject() {
     const subject = {
       ...record,
       ...credit,
-      name: String(record.name).toLocaleUpperCase(),
     }
-
-    Modal.loading({
-      loadingText: 'กำลังแก้ไขข้อมูลวิชา',
-      finishTitle: 'แก้ไขข้อมูลวิชาสำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถแก้ไขข้อมูลวิชาได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          const { id, ...subjectData } = subject
-          await http.put(`/subject/${id}`, subjectData)
-          await getAllSubject()
-        } catch (err) {
-          throw err
-        }
-      },
-    })
+    const { id, ...subjectData } = subject
+    await http.put(`/subject/${id}`, subjectData)
+    await getAllSubject()
   }
 
   async function deleteSubject(record: any) {
-    Modal.warning({
-      width: 400,
-      title: 'ยืนยันการลบ',
-      description: 'คุณต้องการยืนยันการลบข้อมูลวิชานี้หรือไม่',
-      finishTitle: 'ลบข้อมูลวิชาสำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถลบข้อมูลวิชาได้',
-      finishFailText: 'ตกลง',
-      onAsyncOk: async () => {
-        try {
-          await http.delete(`/subject/${record.id}`)
-          await getAllSubject()
-        } catch (err) {
-          throw err
-        }
-      },
-    })
+    await http.delete(`/subject/${record.id}`)
+    await getAllSubject()
   }
 
   useEffect(() => {
@@ -124,7 +76,6 @@ export function useMenuSubject() {
   return {
     isLoading,
     data,
-    error,
     getAllSubject,
     addSubject,
     editSubject,
@@ -134,47 +85,57 @@ export function useMenuSubject() {
 
 export const columnList: IColumn[] = [
   {
-    text: 'รหัสวิชา',
+    type: 'text',
+    header: 'รหัสวิชา',
     dataIndex: 'code',
     pattern: /^\d{8}$/,
     maxLength: 8,
     placeholder: 'รหัสวิชา',
-    editable: true,
+    showInTable: true,
     width: '10%',
   },
   {
-    text: 'ชื่อวิชา',
+    type: 'text',
+    header: 'ชื่อวิชา',
     dataIndex: 'name',
     placeholder: 'ชื่อวิชา',
-    editable: true,
+    normalize: (value) => value.toLocaleUpperCase(),
+    showInTable: true,
     width: '40%',
   },
   {
     type: 'credit',
-    text: 'หน่วยกิต (ทฤษฎี-ปฏิบัติ-เพิ่มเติม)',
+    header: 'หน่วยกิต (ทฤษฎี-ปฏิบัติ-เพิ่มเติม)',
     dataIndex: 'credit',
-    editable: true,
+    showInTable: true,
     width: '20%',
   },
   {
-    text: 'หลักสูตร',
+    type: 'text',
+    header: 'หลักสูตร',
     dataIndex: 'curriculumCode',
     placeholder: 'หลักสูตร',
-    editable: true,
-    width: '10%',
+    normalize: (value) => value.toLocaleUpperCase(),
   },
   {
     type: 'checkbox',
-    text: 'วิชาบังคับ',
+    header: 'วิชาบังคับ',
     dataIndex: 'isRequired',
-    editable: true,
-    width: '10%',
+    defaultChecked: true,
   },
   {
     type: 'checkbox',
-    text: 'นานาชาติ',
+    header: 'นานาชาติ',
     dataIndex: 'isInter',
-    editable: true,
-    width: '10%',
   },
 ]
+
+export const formLayout: IFormLayout = {
+  addFormTitle: 'เพิ่มข้อมูลวิชาใหม่',
+  editFormTitle: 'แก้ไขข้อมูลวิชา',
+  layout: [
+    ['code', 'credit'],
+    ['name'],
+    ['curriculumCode', 'isRequired', 'isInter'],
+  ],
+}
