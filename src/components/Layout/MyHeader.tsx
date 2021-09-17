@@ -3,9 +3,8 @@ import { FiBox, FiLogOut } from 'react-icons/fi'
 import { Tooltip, Button } from 'antd'
 import { getCurrentAcademicYear } from 'libs/datetime'
 
-const { academicYear, semester } = getCurrentAcademicYear()
-
 export const MyHeader = () => {
+  const { academicYear, semester } = getCurrentAcademicYear()
   return (
     <>
       <div className={style.logo}>
