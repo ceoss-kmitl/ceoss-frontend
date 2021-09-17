@@ -1,8 +1,10 @@
 import style from './MyHeader.module.scss'
 import { FiBox, FiLogOut } from 'react-icons/fi'
 import { Tooltip, Button } from 'antd'
+import { getCurrentAcademicYear } from 'libs/datetime'
 
 export const MyHeader = () => {
+  const { academicYear, semester } = getCurrentAcademicYear()
   return (
     <>
       <div className={style.logo}>
@@ -12,7 +14,8 @@ export const MyHeader = () => {
       </div>
 
       <div className={style.headerText}>
-        คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์
+        คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์ ภาคเรียนที่ {semester}{' '}
+        ปีการศึกษา {academicYear}
       </div>
 
       <Tooltip
