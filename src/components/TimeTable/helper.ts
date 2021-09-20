@@ -1,8 +1,7 @@
 import { Form } from 'antd'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-export const timeSlot = generateTimeSlot(8, 20)
-export const dayInWeek = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา']
+import { http } from 'libs/http'
 
 export enum DAY_IN_WEEK {
   MONDAY = 1,
@@ -42,6 +41,10 @@ export interface ISubject {
   type: SUBJECT_TYPE
   isEditing?: boolean
   workloadId: string
+  fieldOfStudy: string
+  classYear: number
+  degree: DEGREE
+  dayOfWeek: DAY_IN_WEEK
 }
 
 export interface ISlot {
@@ -50,6 +53,81 @@ export interface ISlot {
   endSlot: number
   subjectList: ISubject[]
 }
+
+export const timeSlot = generateTimeSlot(8, 20)
+export const dayInWeek = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา']
+
+export const typeOptionList = [
+  {
+    label: 'ทฤษฎี',
+    value: SUBJECT_TYPE.LECTURE,
+  },
+  {
+    label: 'ปฏิบัติ',
+    value: SUBJECT_TYPE.LAB,
+  },
+]
+
+export const degreeOptionList = [
+  {
+    label: 'ปริญญาตรี ทั่วไป',
+    value: DEGREE.Bachelor,
+  },
+  {
+    label: 'ปริญญาตรี ต่อเนื่อง',
+    value: DEGREE.BachelorCon,
+  },
+  {
+    label: 'ปริญญาตรี นานาชาติ',
+    value: DEGREE.BachelorInter,
+  },
+  {
+    label: 'บัณฑิต ทั่วไป',
+    value: DEGREE.Pundit,
+  },
+  {
+    label: 'บัณฑิต นานาชาติ',
+    value: DEGREE.PunditInter,
+  },
+]
+
+export const classYearOptionList = Array(4)
+  .fill('')
+  .map((_, i) => ({
+    label: i + 1,
+    value: i + 1,
+  }))
+
+export const dayOfWeekOptionList = [
+  {
+    label: 'จันทร์',
+    value: DAY_IN_WEEK.MONDAY,
+  },
+  {
+    label: 'อังคาร',
+    value: DAY_IN_WEEK.TUESDAY,
+  },
+  {
+    label: 'พุธ',
+    value: DAY_IN_WEEK.WEDNESDAY,
+  },
+  {
+    label: 'พฤหัสบดี',
+    value: DAY_IN_WEEK.THURSDAY,
+  },
+  {
+    label: 'ศุกร์',
+    value: DAY_IN_WEEK.FRIDAY,
+  },
+  {
+    label: 'เสาร์',
+    value: DAY_IN_WEEK.SATURDAY,
+  },
+  {
+    label: 'อาทิตย์',
+    value: DAY_IN_WEEK.SUNDAY,
+  },
+]
 
 /**
  * Input 7 days data from backend and this hooks
@@ -152,10 +230,19 @@ export function useSubjectSlot(data: ISlot) {
   }
 }
 
+interface IOption {
+  label: string
+  value: string
+}
+
 export function useDrawer() {
   const [form] = Form.useForm<ISubject>()
   const [isDrawerVisible, setIsDrawerVisible] = useState(false)
   const [formAction, setFormAction] = useState<'ADD' | 'EDIT'>('ADD')
+  const [subjectOptionList, setSubjectOptionList] = useState<IOption[] | null>(
+    null
+  )
+  const [roomOptionList, setRoomOptionList] = useState<IOption[] | null>(null)
 
   const addSubject = () => {
     form.resetFields()
@@ -172,7 +259,31 @@ export function useDrawer() {
 
   const closeDrawer = () => setIsDrawerVisible(false)
 
-  return { form, isDrawerVisible, formAction, closeDrawer, editSubject }
+  async function getAllSubject() {
+    try {
+      const { data } = await http.get('/subject')
+      const antdOption = data.map((subject: any) => ({
+        label: `${subject.code} - ${subject.name}`,
+        value: subject.id,
+      }))
+      setSubjectOptionList(antdOption)
+    } catch (err) {
+      setSubjectOptionList([])
+    }
+  }
+
+  useEffect(() => {
+    getAllSubject()
+  }, [])
+
+  return {
+    form,
+    isDrawerVisible,
+    formAction,
+    closeDrawer,
+    editSubject,
+    subjectOptionList,
+  }
 }
 
 // ------------------

@@ -2,7 +2,6 @@ import css from 'classnames'
 import {
   Button as AntdButton,
   Col,
-  Divider,
   Drawer as AntdDrawer,
   Form,
   Popconfirm,
@@ -16,17 +15,24 @@ import { Button } from 'components/Button'
 import { Loader } from 'components/Loader'
 import { Text } from 'components/Text'
 import { Select } from 'components/Select'
+import { Input } from 'components/Input'
 
 import style from './Drawer.module.scss'
-import { useDrawer } from './helper'
-import { Input } from 'components/Input'
+import {
+  classYearOptionList,
+  dayOfWeekOptionList,
+  degreeOptionList,
+  typeOptionList,
+  useDrawer,
+} from './helper'
 
 interface IProps {
   use: ReturnType<typeof useDrawer>
 }
 
 export const Drawer: React.FC<IProps> = ({ use }) => {
-  const { form, formAction, isDrawerVisible, closeDrawer } = use
+  const { form, formAction, isDrawerVisible, closeDrawer, subjectOptionList } =
+    use
 
   return (
     <AntdDrawer
@@ -86,12 +92,12 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
           hideRequiredMark
           onFinish={undefined}
         >
-          <Form.Item name="id" style={{ display: 'none' }} />
+          <Form.Item name="workloadId" style={{ display: 'none' }} />
 
           <Row gutter={16}>
             <Col span={24}>
-              <Form.Item name="subjectId" label="วิชา">
-                <Select />
+              <Form.Item name="id" label="วิชา">
+                <Select options={subjectOptionList!} />
               </Form.Item>
             </Col>
           </Row>
@@ -99,7 +105,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
           <Row gutter={16}>
             <Col span={8}>
               <Form.Item name="type" label="รูปแบบการสอน">
-                <Select />
+                <Select options={typeOptionList} />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -117,21 +123,20 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="degree" label="ระดับการศึกษา">
-                <Select />
+                <Select options={degreeOptionList} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item name="classYear" label="ชั้นปี">
-                <Select />
+                <Select options={classYearOptionList} />
               </Form.Item>
             </Col>
           </Row>
 
-          <Divider />
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item name="dayOfWeek" label="วันที่สอน">
-                <Select />
+                <Select options={dayOfWeekOptionList} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -141,59 +146,102 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
             </Col>
           </Row>
 
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.List name="timeList" initialValue={[{}]}>
-                {(fields, timeList) => (
-                  <>
-                    <Row gutter={16}>
-                      {fields.map(({ name, ...rest }) => (
-                        <>
-                          <Col flex={1}>
-                            <Form.Item
-                              {...rest}
-                              name={[name, 'time']}
-                              className={style.timeInput}
-                              rules={[{ required: true, message: '' }]}
-                            >
-                              <TimePicker.RangePicker
-                                className={style.timePicker}
-                                format="HH:mm"
-                                placeholder={['เวลาเริ่ม', 'เวลาสิ้นสุด']}
-                                disabledHours={() => [
-                                  0, 1, 2, 3, 4, 5, 6, 7, 21, 22, 23,
-                                ]}
-                                hideDisabledOptions
-                                minuteStep={15}
-                              />
-                            </Form.Item>
-                          </Col>
-                          <Col span={2}>
-                            {fields.length > 1 && (
-                              <FiTrash2
-                                className={style.removeTimeListIcon}
-                                onClick={() => timeList.remove(name)}
-                              />
-                            )}
-                          </Col>
-                        </>
-                      ))}
-                    </Row>
-
-                    <Row>
-                      <AntdButton
-                        block
-                        type="dashed"
-                        onClick={() => timeList.add()}
+          <Text size="small">ช่วงเวลา</Text>
+          <div className={style.row}>
+            <Form.List name="timeList" initialValue={[{}]}>
+              {(fields, timeList) => (
+                <div className={style.col}>
+                  {fields.map(({ name, ...rest }) => (
+                    <div className={style.row}>
+                      <Form.Item
+                        {...rest}
+                        name={[name, 'time']}
+                        className={style.timeInput}
+                        rules={[{ required: true, message: '' }]}
                       >
-                        + คลิกเพื่อเพิ่มช่วงเวลา
-                      </AntdButton>
-                    </Row>
-                  </>
-                )}
-              </Form.List>
+                        <TimePicker.RangePicker
+                          className={style.timePicker}
+                          format="HH:mm"
+                          placeholder={['เวลาเริ่ม', 'เวลาสิ้นสุด']}
+                          disabledHours={() => [
+                            0, 1, 2, 3, 4, 5, 6, 7, 21, 22, 23,
+                          ]}
+                          hideDisabledOptions
+                          minuteStep={15}
+                        />
+                      </Form.Item>
+                      {fields.length > 1 && (
+                        <FiTrash2
+                          className={style.removeTimeListIcon}
+                          onClick={() => timeList.remove(name)}
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  <AntdButton
+                    block
+                    type="dashed"
+                    onClick={() => timeList.add()}
+                  >
+                    + คลิกเพื่อเพิ่มช่วงเวลา
+                  </AntdButton>
+                </div>
+              )}
+            </Form.List>
+          </div>
+
+          <br />
+          <Row gutter={16}>
+            <Col span={12}>
+              <Text size="small">ชื่อผู้สอน</Text>
+            </Col>
+            <Col span={12}>
+              <Text size="small">จำนวนสัปดาห์ที่สอน</Text>
             </Col>
           </Row>
+          <div className={style.row}>
+            <Form.List name="teacherList" initialValue={[{}]}>
+              {(fields, timeList) => (
+                <div className={style.col}>
+                  {fields.map(({ name, key, ...rest }) => (
+                    <div key={key} className={style.row}>
+                      <Form.Item
+                        {...rest}
+                        name={[name, 'name']}
+                        className={style.timeInput}
+                        rules={[{ required: true, message: '' }]}
+                      >
+                        <Select />
+                      </Form.Item>
+                      <Form.Item
+                        {...rest}
+                        name={[name, 'weekCount']}
+                        className={style.timeInput}
+                        rules={[{ required: true, message: '' }]}
+                      >
+                        <Input />
+                      </Form.Item>
+                      {fields.length > 1 && (
+                        <FiTrash2
+                          className={style.removeTimeListIcon}
+                          onClick={() => timeList.remove(name)}
+                        />
+                      )}
+                    </div>
+                  ))}
+
+                  <AntdButton
+                    block
+                    type="dashed"
+                    onClick={() => timeList.add()}
+                  >
+                    + คลิกเพื่อเพิ่มช่วงเวลา
+                  </AntdButton>
+                </div>
+              )}
+            </Form.List>
+          </div>
         </Form>
       </Loader>
     </AntdDrawer>

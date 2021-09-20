@@ -18,6 +18,7 @@
     padding-left: 1rem;
     padding-right: 0.5rem;
     position: relative;
+    cursor: pointer;
 
     &::before {
         content: '';
@@ -33,6 +34,10 @@
 .LECTURE {
     background: var(--green100);
 
+    &:hover {
+        outline: 3px solid var(--green500);
+    }
+
     &::before {
         background: var(--green500);
     }
@@ -41,6 +46,10 @@
 .LAB {
     background: var(--blue100);
 
+    &:hover {
+        outline: 3px solid var(--blue500);
+    }
+
     &::before {
         background: var(--blue500);
     }
@@ -48,22 +57,14 @@
 
 .OVERLAP {
     background: var(--red70);
+    outline-color: var(--red500);
 
-    &::before {
-        color: white;
-        background: var(--red500);
-        overflow: hidden;
-        white-space: nowrap;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: width 0.2s;
+    &:hover {
+        outline: 3px solid var(--red500);
     }
 
-    &:hover::before {
-        content: 'คลิกเพื่อนำออก';
-        width: 100%;
-        cursor: pointer;
+    &::before {
+        background: var(--red500);
     }
 }
 
