@@ -1,7 +1,8 @@
 import style from './style.module.scss'
 import { OutlineTable } from './OutlineTable'
 import { Subject } from './Subject'
-import { IDay, ISubject, timeSlot, useTimeTable } from './helper'
+import { Drawer } from './Drawer'
+import { IDay, ISubject, timeSlot, useTimeTable, useDrawer } from './helper'
 
 interface IProps {
   /**
@@ -24,6 +25,7 @@ export const TimeTable: React.FC<IProps> = ({
   onOverlapSubjectClick = () => {},
 }) => {
   const tableSlotList = useTimeTable(data)
+  const subjectDrawer = useDrawer()
 
   return (
     <div className={style.tableWrapper}>
@@ -49,7 +51,7 @@ export const TimeTable: React.FC<IProps> = ({
                   <Subject
                     key={j}
                     data={slot}
-                    onSubjectClick={onSubjectClick}
+                    onSubjectClick={subjectDrawer.editSubject}
                     onOverlapSubjectClick={onOverlapSubjectClick}
                   />
                 ) : (
@@ -60,6 +62,8 @@ export const TimeTable: React.FC<IProps> = ({
           ))}
         </tbody>
       </table>
+
+      <Drawer use={subjectDrawer} />
     </div>
   )
 }

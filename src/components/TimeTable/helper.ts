@@ -1,3 +1,6 @@
+import { Form } from 'antd'
+import { useState } from 'react'
+
 export const timeSlot = generateTimeSlot(8, 20)
 export const dayInWeek = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา']
 
@@ -147,6 +150,29 @@ export function useSubjectSlot(data: ISlot) {
     subjectSlotList: subjectSlot,
     slotHeight: `${((100 / data.subjectList.length) * 60) / 100}px`,
   }
+}
+
+export function useDrawer() {
+  const [form] = Form.useForm<ISubject>()
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
+  const [formAction, setFormAction] = useState<'ADD' | 'EDIT'>('ADD')
+
+  const addSubject = () => {
+    form.resetFields()
+    setFormAction('ADD')
+    setIsDrawerVisible(true)
+  }
+
+  const editSubject = (subject: ISubject) => {
+    form.resetFields()
+    form.setFieldsValue(subject)
+    setFormAction('EDIT')
+    setIsDrawerVisible(true)
+  }
+
+  const closeDrawer = () => setIsDrawerVisible(false)
+
+  return { form, isDrawerVisible, formAction, closeDrawer, editSubject }
 }
 
 // ------------------
