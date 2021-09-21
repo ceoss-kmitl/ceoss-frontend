@@ -1,4 +1,5 @@
 import css from 'classnames'
+import localeTH from 'antd/es/date-picker/locale/th_TH'
 import {
   Button as AntdButton,
   Col,
@@ -6,7 +7,6 @@ import {
   Form,
   Popconfirm,
   Row,
-  TimePicker,
 } from 'antd'
 import { FiX, FiTrash2 } from 'react-icons/fi'
 import { AiFillEdit } from 'react-icons/ai'
@@ -14,17 +14,17 @@ import { AiFillEdit } from 'react-icons/ai'
 import { Button } from 'components/Button'
 import { Loader } from 'components/Loader'
 import { Text } from 'components/Text'
+import { DatePicker } from 'components/DatePicker'
 import { Select } from 'components/Select'
 import { Input } from 'components/Input'
-
-import style from './Drawer.module.scss'
 import {
-  classYearOptionList,
   dayOfWeekOptionList,
   degreeOptionList,
   typeOptionList,
-  useDrawer,
-} from './helper'
+} from 'constants/selectOption'
+
+import style from './Drawer.module.scss'
+import { classYearOptionList, useDrawer } from './helper'
 
 interface IProps {
   use: ReturnType<typeof useDrawer>
@@ -92,12 +92,26 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
           hideRequiredMark
           onFinish={undefined}
         >
-          <Form.Item name="workloadId" style={{ display: 'none' }} />
+          <Form.Item name="id" style={{ display: 'none' }} />
 
           <Row gutter={16}>
             <Col span={24}>
-              <Form.Item name="id" label="วิชา">
-                <Select options={subjectOptionList!} />
+              <Form.Item
+                name="subjectId"
+                label="วิชา"
+                rules={[{ required: true, message: '' }]}
+                hasFeedback
+              >
+                <Select
+                  showSearch
+                  filterOption={(input, option) =>
+                    String(option?.label)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  notFoundContent="ไม่พบวิชา"
+                  options={subjectOptionList!}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -155,17 +169,20 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                     <div className={style.row}>
                       <Form.Item
                         {...rest}
-                        name={[name, 'time']}
+                        name={[name]}
                         className={style.timeInput}
                         rules={[{ required: true, message: '' }]}
                       >
-                        <TimePicker.RangePicker
+                        <DatePicker.RangePicker
+                          picker="time"
+                          locale={localeTH}
                           className={style.timePicker}
                           format="HH:mm"
-                          placeholder={['เวลาเริ่ม', 'เวลาสิ้นสุด']}
+                          placeholder={['เวลาเริ่ม', 'เวลาจบ']}
                           disabledHours={() => [
                             0, 1, 2, 3, 4, 5, 6, 7, 21, 22, 23,
                           ]}
+                          showNow={false}
                           hideDisabledOptions
                           minuteStep={15}
                         />

@@ -9,7 +9,7 @@ import { Loader } from 'components/Loader'
 import style from './style.module.scss'
 import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
-import { WorkloadAdder } from './components/WorkloadAdder'
+// import { WorkloadAdder } from './components/WorkloadAdder'
 import { useAcademicYear, useWorkload } from './helper'
 
 export const WorkloadPage = () => {
@@ -70,9 +70,9 @@ export const WorkloadPage = () => {
 
           <TimeTable
             data={workload}
-            onOverlapSubjectClick={(subject) =>
-              discardWorkload(subject.workloadId)
-            }
+            // onOverlapSubjectClick={(subject) =>
+            //   discardWorkload(subject.workloadId)
+            // }
           />
 
           <div className={style.timeTableFooter}>
@@ -90,7 +90,7 @@ export const WorkloadPage = () => {
             </label>
           </div>
 
-          <WorkloadAdder onSubmit={addWorkload} />
+          {/* <WorkloadAdder onSubmit={addWorkload} /> */}
         </>
       )}
     </div>

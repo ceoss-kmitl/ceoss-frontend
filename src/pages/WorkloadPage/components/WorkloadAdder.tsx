@@ -1,213 +1,213 @@
-import css from 'classnames'
-import { FiTrash2 } from 'react-icons/fi'
-import { Form, Button as AntdButton, TimePicker } from 'antd'
+export {} // import css from 'classnames'
+// import { FiTrash2 } from 'react-icons/fi'
+// import { Form, Button as AntdButton, TimePicker } from 'antd'
 
-import { Button } from 'components/Button'
-import { Input } from 'components/Input'
-import { Loader } from 'components/Loader'
-import { Select } from 'components/Select'
-import { Text } from 'components/Text'
+// import { Button } from 'components/Button'
+// import { Input } from 'components/Input'
+// import { Loader } from 'components/Loader'
+// import { Select } from 'components/Select'
+// import { Text } from 'components/Text'
 
-import style from './WorkloadAdder.module.scss'
-import { useAdderForm } from './WorkloadAdderHelper'
+// import style from './WorkloadAdder.module.scss'
+// import { useAdderForm } from './WorkloadAdderHelper'
 
-interface IProps {
-  onSubmit: (formValue: any) => void
-}
+// interface IProps {
+//   onSubmit: (formValue: any) => void
+// }
 
-export const WorkloadAdder: React.FC<IProps> = ({ onSubmit }) => {
-  const {
-    form,
-    isLoading,
-    subjectOptionList,
-    typeOptionList,
-    degreeOptionList,
-    classYearOptionList,
-    dayOfWeekOptionList,
-    roomOptionList,
-  } = useAdderForm()
+// export const WorkloadAdder: React.FC<IProps> = ({ onSubmit }) => {
+//   const {
+//     form,
+//     isLoading,
+//     subjectOptionList,
+//     typeOptionList,
+//     degreeOptionList,
+//     classYearOptionList,
+//     dayOfWeekOptionList,
+//     roomOptionList,
+//   } = useAdderForm()
 
-  if (isLoading) return <Loader />
+//   if (isLoading) return <Loader />
 
-  return (
-    <>
-      <Text size="sub-head" bold className={style.title}>
-        เพิ่มภาระงานใหม่
-      </Text>
-      <div className={css(style.wrapper, 'shadow')}>
-        <Form
-          form={form}
-          layout="vertical"
-          requiredMark={false}
-          onFinish={onSubmit}
-        >
-          {/* ===== Form part 1 ===== */}
-          <Text bold className={style.title}>
-            รายละเอียดวิชา
-          </Text>
-          <div className={css(style.row, style.between)}>
-            <Form.Item
-              name="subjectId"
-              label="วิชา"
-              className={style.subjectInput}
-              rules={[{ required: true, message: '' }]}
-              hasFeedback
-            >
-              <Select
-                showSearch
-                filterOption={(input, option) =>
-                  String(option?.label)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                notFoundContent="ไม่พบวิชา"
-                options={subjectOptionList}
-              />
-            </Form.Item>
-          </div>
+//   return (
+//     <>
+//       <Text size="sub-head" bold className={style.title}>
+//         เพิ่มภาระงานใหม่
+//       </Text>
+//       <div className={css(style.wrapper, 'shadow')}>
+//         <Form
+//           form={form}
+//           layout="vertical"
+//           requiredMark={false}
+//           onFinish={onSubmit}
+//         >
+//           {/* ===== Form part 1 ===== */}
+//           <Text bold className={style.title}>
+//             รายละเอียดวิชา
+//           </Text>
+//           <div className={css(style.row, style.between)}>
+//             <Form.Item
+//               name="subjectId"
+//               label="วิชา"
+//               className={style.subjectInput}
+//               rules={[{ required: true, message: '' }]}
+//               hasFeedback
+//             >
+//               <Select
+//                 showSearch
+//                 filterOption={(input, option) =>
+//                   String(option?.label)
+//                     .toLowerCase()
+//                     .includes(input.toLowerCase())
+//                 }
+//                 notFoundContent="ไม่พบวิชา"
+//                 options={subjectOptionList}
+//               />
+//             </Form.Item>
+//           </div>
 
-          <div className={style.row}>
-            <Form.Item
-              name="type"
-              label="รูปแบบการสอน"
-              className={style.typeInput}
-              rules={[{ required: true, message: '' }]}
-              hasFeedback
-            >
-              <Select options={typeOptionList} />
-            </Form.Item>
+//           <div className={style.row}>
+//             <Form.Item
+//               name="type"
+//               label="รูปแบบการสอน"
+//               className={style.typeInput}
+//               rules={[{ required: true, message: '' }]}
+//               hasFeedback
+//             >
+//               <Select options={typeOptionList} />
+//             </Form.Item>
 
-            <Form.Item
-              name="section"
-              label="กลุ่มเรียน"
-              className={style.sectionInput}
-              rules={[
-                {
-                  required: true,
-                  message: '',
-                },
-                { pattern: /^\d+$/, message: 'ตัวเลขเท่านั้น' },
-              ]}
-              hasFeedback
-            >
-              <Input placeholder="123" />
-            </Form.Item>
+//             <Form.Item
+//               name="section"
+//               label="กลุ่มเรียน"
+//               className={style.sectionInput}
+//               rules={[
+//                 {
+//                   required: true,
+//                   message: '',
+//                 },
+//                 { pattern: /^\d+$/, message: 'ตัวเลขเท่านั้น' },
+//               ]}
+//               hasFeedback
+//             >
+//               <Input placeholder="123" />
+//             </Form.Item>
 
-            <Form.Item
-              name="classYear"
-              label="ชั้นปี"
-              className={style.classYearInput}
-              rules={[{ required: true, message: '' }]}
-              hasFeedback
-            >
-              <Select options={classYearOptionList} />
-            </Form.Item>
+//             <Form.Item
+//               name="classYear"
+//               label="ชั้นปี"
+//               className={style.classYearInput}
+//               rules={[{ required: true, message: '' }]}
+//               hasFeedback
+//             >
+//               <Select options={classYearOptionList} />
+//             </Form.Item>
 
-            <Form.Item
-              name="fieldOfStudy"
-              label="อักษรย่อสาขาวิชา"
-              className={style.fieldOfStudyInput}
-              rules={[
-                { required: true, message: '' },
-                { pattern: /^[A-Z]+$/i, message: 'อักษรอังกฤษเท่านั้น' },
-              ]}
-              hasFeedback
-              normalize={(value) => String(value).toUpperCase()}
-            >
-              <Input placeholder="ABC" />
-            </Form.Item>
+//             <Form.Item
+//               name="fieldOfStudy"
+//               label="อักษรย่อสาขาวิชา"
+//               className={style.fieldOfStudyInput}
+//               rules={[
+//                 { required: true, message: '' },
+//                 { pattern: /^[A-Z]+$/i, message: 'อักษรอังกฤษเท่านั้น' },
+//               ]}
+//               hasFeedback
+//               normalize={(value) => String(value).toUpperCase()}
+//             >
+//               <Input placeholder="ABC" />
+//             </Form.Item>
 
-            <Form.Item
-              name="degree"
-              label="ระดับการศึกษา"
-              className={style.typeInput}
-              rules={[{ required: true, message: '' }]}
-              hasFeedback
-            >
-              <Select options={degreeOptionList} />
-            </Form.Item>
-          </div>
+//             <Form.Item
+//               name="degree"
+//               label="ระดับการศึกษา"
+//               className={style.typeInput}
+//               rules={[{ required: true, message: '' }]}
+//               hasFeedback
+//             >
+//               <Select options={degreeOptionList} />
+//             </Form.Item>
+//           </div>
 
-          {/* ===== Form part 2 ===== */}
-          <Text bold className={style.title}>
-            รายละเอียดการสอน
-          </Text>
-          <div className={style.row}>
-            <Form.Item
-              name="dayOfWeek"
-              label="วันที่สอน"
-              className={style.dayOfWeekInput}
-              rules={[{ required: true, message: '' }]}
-              hasFeedback
-            >
-              <Select options={dayOfWeekOptionList} />
-            </Form.Item>
+//           {/* ===== Form part 2 ===== */}
+//           <Text bold className={style.title}>
+//             รายละเอียดการสอน
+//           </Text>
+//           <div className={style.row}>
+//             <Form.Item
+//               name="dayOfWeek"
+//               label="วันที่สอน"
+//               className={style.dayOfWeekInput}
+//               rules={[{ required: true, message: '' }]}
+//               hasFeedback
+//             >
+//               <Select options={dayOfWeekOptionList} />
+//             </Form.Item>
 
-            <Form.Item
-              name="roomId"
-              label="ห้องเรียน"
-              className={style.roomInput}
-            >
-              <Select
-                options={roomOptionList}
-                notFoundContent="ไม่พบห้องเรียน"
-              />
-            </Form.Item>
-          </div>
+//             <Form.Item
+//               name="roomId"
+//               label="ห้องเรียน"
+//               className={style.roomInput}
+//             >
+//               <Select
+//                 options={roomOptionList}
+//                 notFoundContent="ไม่พบห้องเรียน"
+//               />
+//             </Form.Item>
+//           </div>
 
-          <Text size="small">ช่วงเวลา</Text>
-          <div className={style.row}>
-            <Form.List name="timeList" initialValue={[{}]}>
-              {(fields, timeList) => (
-                <div className={style.col}>
-                  {fields.map(({ name, ...rest }) => (
-                    <div className={style.row}>
-                      <Form.Item
-                        {...rest}
-                        name={[name, 'time']}
-                        className={style.timeInput}
-                        rules={[{ required: true, message: '' }]}
-                      >
-                        <TimePicker.RangePicker
-                          className={style.timePicker}
-                          format="HH:mm"
-                          placeholder={['เวลาเริ่ม', 'เวลาสิ้นสุด']}
-                          disabledHours={() => [
-                            0, 1, 2, 3, 4, 5, 6, 7, 21, 22, 23,
-                          ]}
-                          hideDisabledOptions
-                          minuteStep={15}
-                        />
-                      </Form.Item>
-                      {fields.length > 1 && (
-                        <FiTrash2
-                          className={style.removeTimeListIcon}
-                          onClick={() => timeList.remove(name)}
-                        />
-                      )}
-                    </div>
-                  ))}
+//           <Text size="small">ช่วงเวลา</Text>
+//           <div className={style.row}>
+//             <Form.List name="timeList" initialValue={[{}]}>
+//               {(fields, timeList) => (
+//                 <div className={style.col}>
+//                   {fields.map(({ name, ...rest }) => (
+//                     <div className={style.row}>
+//                       <Form.Item
+//                         {...rest}
+//                         name={[name, 'time']}
+//                         className={style.timeInput}
+//                         rules={[{ required: true, message: '' }]}
+//                       >
+//                         <TimePicker.RangePicker
+//                           className={style.timePicker}
+//                           format="HH:mm"
+//                           placeholder={['เวลาเริ่ม', 'เวลาสิ้นสุด']}
+//                           disabledHours={() => [
+//                             0, 1, 2, 3, 4, 5, 6, 7, 21, 22, 23,
+//                           ]}
+//                           hideDisabledOptions
+//                           minuteStep={15}
+//                         />
+//                       </Form.Item>
+//                       {fields.length > 1 && (
+//                         <FiTrash2
+//                           className={style.removeTimeListIcon}
+//                           onClick={() => timeList.remove(name)}
+//                         />
+//                       )}
+//                     </div>
+//                   ))}
 
-                  <AntdButton
-                    block
-                    type="dashed"
-                    onClick={() => timeList.add()}
-                  >
-                    + คลิกเพื่อเพิ่มช่วงเวลา
-                  </AntdButton>
-                </div>
-              )}
-            </Form.List>
-          </div>
+//                   <AntdButton
+//                     block
+//                     type="dashed"
+//                     onClick={() => timeList.add()}
+//                   >
+//                     + คลิกเพื่อเพิ่มช่วงเวลา
+//                   </AntdButton>
+//                 </div>
+//               )}
+//             </Form.List>
+//           </div>
 
-          <div className={css(style.row, style.formFooter)}>
-            <Button white onClick={() => form.resetFields()}>
-              รีเซตฟอร์มใหม่
-            </Button>
-            <Button htmlType="submit">เพิ่มภาระงาน</Button>
-          </div>
-        </Form>
-      </div>
-    </>
-  )
-}
+//           <div className={css(style.row, style.formFooter)}>
+//             <Button white onClick={() => form.resetFields()}>
+//               รีเซตฟอร์มใหม่
+//             </Button>
+//             <Button htmlType="submit">เพิ่มภาระงาน</Button>
+//           </div>
+//         </Form>
+//       </div>
+//     </>
+//   )
+// }

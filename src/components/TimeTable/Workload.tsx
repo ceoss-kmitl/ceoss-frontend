@@ -1,79 +1,77 @@
 import css from 'classnames'
-import style from './Subject.module.scss'
 import { Tooltip } from 'antd'
 import { FiAlertTriangle } from 'react-icons/fi'
-import { ISlot, ISubject, SUBJECT_TYPE, useSubjectSlot } from './helper'
+
+import { SUBJECT_TYPE } from 'constants/enum'
+
+import style from './Workload.module.scss'
+import { ISlot, IWorkload, useWorkloadSlot } from './helper'
 
 interface IProps {
   data: ISlot
-  onSubjectClick: (subject: ISubject) => void
-  onOverlapSubjectClick: (subject: ISubject) => void
+  onClick: (workload: IWorkload) => void
 }
 
-export const Subject: React.FC<IProps> = ({
-  data,
-  onSubjectClick,
-  onOverlapSubjectClick,
-}) => {
-  const { subjectSlotList, slotHeight } = useSubjectSlot(data)
+export const Workload: React.FC<IProps> = ({ data, onClick }) => {
+  const { workloadSlotList, slotHeight } = useWorkloadSlot(data)
 
+  // Render sub-table inside that <td /> as a workload
   return (
     <td colSpan={data.slotSpan}>
       <div className={style.wrapper}>
         <table className={style.table}>
           <tbody>
-            {subjectSlotList.map((subject, i) => (
+            {workloadSlotList.map((workload, i) => (
               <tr key={i}>
-                {subject.map((slot, j) => {
-                  const isOverlap = data.subjectList.length > 1
+                {workload.map((slot, j) => {
+                  const isOverlap = data.workloadList.length > 1
                   return slot ? (
-                    // IF #1: Has subject
+                    // IF #1: Has workload
                     <td key={j} colSpan={slot.slotSpan}>
                       {isOverlap ? (
-                        //IF #2: Has subject BUT overlap
+                        //IF #1.1: Has workload BUT overlap
                         <Tooltip
-                          title={`${slot.subject.code} ${slot.subject.name} กลุ่ม ${slot.subject.section}`}
+                          title={`${slot.workload.code} ${slot.workload.name} กลุ่ม ${slot.workload.section}`}
                           color="#1F2937"
                         >
                           <div
                             className={css(style.subject, style.OVERLAP)}
                             style={{ height: slotHeight }}
-                            onClick={() => onOverlapSubjectClick(slot.subject)}
+                            onClick={() => onClick(slot.workload)}
                           >
                             <div className={style.name}>
                               <FiAlertTriangle className={style.icon} />
-                              {slot.subject.name}
+                              {slot.workload.name}
                             </div>
                           </div>
                         </Tooltip>
                       ) : (
-                        //IF #2: Has OK subject
+                        //IF #1.2: Has OK workload
                         <Tooltip
-                          title={`${slot.subject.code} ${slot.subject.name} กลุ่ม ${slot.subject.section}`}
+                          title={`${slot.workload.code} ${slot.workload.name} กลุ่ม ${slot.workload.section}`}
                           color="#1F2937"
                         >
                           <div
                             className={css(
                               style.subject,
-                              style[slot.subject.type || SUBJECT_TYPE.LECTURE],
-                              { [style.EDITING]: slot.subject.isEditing }
+                              style[slot.workload.type || SUBJECT_TYPE.LECTURE]
                             )}
                             style={{ height: slotHeight }}
-                            onClick={() => onSubjectClick(slot.subject)}
+                            onClick={() => onClick(slot.workload)}
                           >
                             <div className={style.code}>
-                              {slot.subject.code}
-                              {` กลุ่ม ${slot.subject.section}`}
+                              {slot.workload.code}
+                              {` กลุ่ม ${slot.workload.section}`}
                             </div>
                             <div className={style.name}>
-                              {slot.subject.name}
+                              {slot.workload.name}
                             </div>
                           </div>
                         </Tooltip>
                       )}
                     </td>
                   ) : (
-                    // IF #1: No subject
+                    // IF #2: No workload
                     <td key={j} colSpan={1} />
                   )
                 })}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { getCurrentAcademicYear } from 'libs/datetime'
+
+import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 
@@ -59,7 +60,20 @@ export function useWorkload(academicYear: number, semester: number) {
           semester,
         },
       })
-      setWorkload(data)
+      console.log(data)
+
+      const workloadWithDayjs = data.map((day: any) => ({
+        workloadList: day.workloadList.map((workload: any) => ({
+          ...workload,
+          timeList: workload.timeList.map((time: any) => [
+            toDayjsTime(time.start),
+            toDayjsTime(time.end),
+          ]),
+        })),
+      }))
+      console.log(workloadWithDayjs)
+
+      setWorkload(workloadWithDayjs)
       setCurrentTeacherId(id)
     } catch (err) {
       Modal.error({
