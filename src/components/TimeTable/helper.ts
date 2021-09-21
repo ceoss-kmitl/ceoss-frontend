@@ -24,7 +24,12 @@ export interface IWorkload {
   dayOfWeek: DAY_OF_WEEK
   startSlot: number
   endSlot: number
-  timeList: { start: Dayjs; end: Dayjs }[]
+  timeList: [Dayjs, Dayjs][]
+  teacherList: {
+    id: string
+    name: string
+    weekCount: number
+  }[]
 }
 
 export interface ISlot {

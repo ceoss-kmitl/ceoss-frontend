@@ -7,6 +7,7 @@ import {
   Form,
   Popconfirm,
   Row,
+  Switch,
 } from 'antd'
 import { FiX, FiTrash2 } from 'react-icons/fi'
 import { AiFillEdit } from 'react-icons/ai'
@@ -118,17 +119,39 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
 
           <Row gutter={16}>
             <Col span={8}>
-              <Form.Item name="type" label="รูปแบบการสอน">
+              <Form.Item
+                name="type"
+                label="รูปแบบการสอน"
+                rules={[{ required: true, message: '' }]}
+                hasFeedback
+              >
                 <Select options={typeOptionList} />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="section" label="กลุ่มเรียน">
+              <Form.Item
+                name="section"
+                label="กลุ่มเรียน"
+                rules={[
+                  { required: true, message: '' },
+                  { pattern: /^\d+$/, message: 'ตัวเลขเท่านั้น' },
+                ]}
+                hasFeedback
+              >
                 <Input />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="fieldOfStudy" label="อักษรย่อสาขาวิชา">
+              <Form.Item
+                name="fieldOfStudy"
+                label="อักษรย่อสาขาวิชา"
+                rules={[
+                  { required: true, message: '' },
+                  { pattern: /^[A-Z]+$/i, message: 'อักษรอังกฤษเท่านั้น' },
+                ]}
+                normalize={(value) => String(value).toLocaleUpperCase()}
+                hasFeedback
+              >
                 <Input />
               </Form.Item>
             </Col>
@@ -136,12 +159,22 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="degree" label="ระดับการศึกษา">
+              <Form.Item
+                name="degree"
+                label="ระดับการศึกษา"
+                rules={[{ required: true, message: '' }]}
+                hasFeedback
+              >
                 <Select options={degreeOptionList} />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="classYear" label="ชั้นปี">
+              <Form.Item
+                name="classYear"
+                label="ชั้นปี"
+                rules={[{ required: true, message: '' }]}
+                hasFeedback
+              >
                 <Select options={classYearOptionList} />
               </Form.Item>
             </Col>
@@ -149,51 +182,66 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="dayOfWeek" label="วันที่สอน">
+              <Form.Item
+                name="dayOfWeek"
+                label="วันที่สอน"
+                rules={[{ required: true, message: '' }]}
+                hasFeedback
+              >
                 <Select options={dayOfWeekOptionList} />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item name="roomId" label="ห้องเรียน">
-                <Select />
+                <Select
+                  showSearch
+                  filterOption={(input, option) =>
+                    String(option?.label)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  notFoundContent="ไม่พบห้องเรียน"
+                />
               </Form.Item>
             </Col>
           </Row>
 
           <Text size="small">ช่วงเวลา</Text>
-          <div className={style.row}>
+          <Row gutter={16}>
             <Form.List name="timeList" initialValue={[{}]}>
               {(fields, timeList) => (
-                <div className={style.col}>
+                <Col span={24}>
                   {fields.map(({ name, ...rest }) => (
-                    <div className={style.row}>
-                      <Form.Item
-                        {...rest}
-                        name={[name]}
-                        className={style.timeInput}
-                        rules={[{ required: true, message: '' }]}
-                      >
-                        <DatePicker.RangePicker
-                          picker="time"
-                          locale={localeTH}
-                          className={style.timePicker}
-                          format="HH:mm"
-                          placeholder={['เวลาเริ่ม', 'เวลาจบ']}
-                          disabledHours={() => [
-                            0, 1, 2, 3, 4, 5, 6, 7, 21, 22, 23,
-                          ]}
-                          showNow={false}
-                          hideDisabledOptions
-                          minuteStep={15}
-                        />
-                      </Form.Item>
+                    <Row gutter={16} align="middle">
+                      <Col flex={1}>
+                        <Form.Item
+                          {...rest}
+                          name={[name]}
+                          className={style.listInput}
+                          rules={[{ required: true, message: '' }]}
+                        >
+                          <DatePicker.RangePicker
+                            picker="time"
+                            locale={localeTH}
+                            className={style.timePicker}
+                            format="HH:mm"
+                            placeholder={['เวลาเริ่ม', 'เวลาจบ']}
+                            disabledHours={() => [
+                              0, 1, 2, 3, 4, 5, 6, 7, 21, 22, 23,
+                            ]}
+                            hideDisabledOptions
+                            minuteStep={15}
+                            showNow={false}
+                          />
+                        </Form.Item>
+                      </Col>
                       {fields.length > 1 && (
                         <FiTrash2
-                          className={style.removeTimeListIcon}
+                          className={style.removeListIcon}
                           onClick={() => timeList.remove(name)}
                         />
                       )}
-                    </div>
+                    </Row>
                   ))}
 
                   <AntdButton
@@ -203,62 +251,52 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                   >
                     + คลิกเพื่อเพิ่มช่วงเวลา
                   </AntdButton>
-                </div>
+                </Col>
               )}
             </Form.List>
-          </div>
+          </Row>
 
           <br />
           <Row gutter={16}>
-            <Col span={12}>
+            <Col flex={1}>
               <Text size="small">ชื่อผู้สอน</Text>
             </Col>
-            <Col span={12}>
+            <Col span={7}>
               <Text size="small">จำนวนสัปดาห์ที่สอน</Text>
             </Col>
           </Row>
-          <div className={style.row}>
+          <Row gutter={16}>
             <Form.List name="teacherList" initialValue={[{}]}>
-              {(fields, timeList) => (
-                <div className={style.col}>
-                  {fields.map(({ name, key, ...rest }) => (
-                    <div key={key} className={style.row}>
-                      <Form.Item
-                        {...rest}
-                        name={[name, 'name']}
-                        className={style.timeInput}
-                        rules={[{ required: true, message: '' }]}
-                      >
-                        <Select />
-                      </Form.Item>
-                      <Form.Item
-                        {...rest}
-                        name={[name, 'weekCount']}
-                        className={style.timeInput}
-                        rules={[{ required: true, message: '' }]}
-                      >
-                        <Input />
-                      </Form.Item>
-                      {fields.length > 1 && (
-                        <FiTrash2
-                          className={style.removeTimeListIcon}
-                          onClick={() => timeList.remove(name)}
-                        />
-                      )}
-                    </div>
+              {(fields) => (
+                <Col span={24}>
+                  {fields.map(({ name, ...rest }) => (
+                    <Row gutter={16} align="middle">
+                      <Col flex={1}>
+                        <Form.Item
+                          {...rest}
+                          name={[name, 'name']}
+                          className={style.listInput}
+                          rules={[{ required: true, message: '' }]}
+                        >
+                          <Select />
+                        </Form.Item>
+                      </Col>
+                      <Col span={7}>
+                        <Form.Item
+                          {...rest}
+                          name={[name, 'weekCount']}
+                          className={style.listInput}
+                          rules={[{ required: true, message: '' }]}
+                        >
+                          <Input type="number" />
+                        </Form.Item>
+                      </Col>
+                    </Row>
                   ))}
-
-                  <AntdButton
-                    block
-                    type="dashed"
-                    onClick={() => timeList.add()}
-                  >
-                    + คลิกเพื่อเพิ่มช่วงเวลา
-                  </AntdButton>
-                </div>
+                </Col>
               )}
             </Form.List>
-          </div>
+          </Row>
         </Form>
       </Loader>
     </AntdDrawer>
