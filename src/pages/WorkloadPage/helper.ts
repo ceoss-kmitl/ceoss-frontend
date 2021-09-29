@@ -5,6 +5,7 @@ import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 import { delay } from 'libs/delay'
 import { message } from 'antd'
+import { Dayjs } from 'dayjs'
 
 export function useAcademicYear() {
   const [currentAcademicYear, setCurrentAcademicYear] = useState(0)
@@ -87,17 +88,28 @@ export function useWorkload(academicYear: number, semester: number) {
     setIsLoading(false)
   }
 
+  async function addWorkload(formValue: any) {
+    setIsLoading(true)
+    const payload = {
+      ...formValue,
+      timeList: convertToWorkloadTime(formValue.timeList),
+      section: Number(formValue.section),
+      academicYear,
+      semester,
+    }
+    delete payload.id
+
+    await http.post(`/workload`, payload)
+    await getWorkloadByTeacherId(currentTeacherId)
+    setIsLoading(false)
+  }
+
   const editWorkload = async (workload: any) => {
     setIsLoading(true)
-    await delay(1)
-    try {
-      await http.put(`/workload/${workload.id}`, {
-        teacherList: workload.teacherList,
-      })
-      await getWorkloadByTeacherId(currentTeacherId)
-    } catch (err) {
-      message.error(err.message, 10)
-    }
+    await http.put(`/workload/${workload.id}`, {
+      teacherList: workload.teacherList,
+    })
+    await getWorkloadByTeacherId(currentTeacherId)
     setIsLoading(false)
   }
 
@@ -113,46 +125,18 @@ export function useWorkload(academicYear: number, semester: number) {
     setIsLoading(false)
   }
 
-  function convertToWorkloadTime(timeRangePicker: any[]) {
-    return timeRangePicker.map(({ time }: { time: any[] }) => {
-      const normalTimeList = time.map((t: any) =>
-        t.toDate().toLocaleTimeString('th-TH', {
+  function convertToWorkloadTime(timeRangePicker: Dayjs[][]) {
+    return timeRangePicker.map(([start, end]) => {
+      return [
+        start.toDate().toLocaleTimeString('th-TH', {
           hour: '2-digit',
           minute: '2-digit',
-        })
-      )
-      const [startTime, endTime] = normalTimeList
-      return {
-        startTime,
-        endTime,
-      }
-    })
-  }
-
-  async function addWorkload(formValue: any) {
-    Modal.loading({
-      loadingText: 'กำลังเพิ่มภาระงาน',
-      finishTitle: 'เพิ่มภาระงานสำเร็จ!',
-      finishFailTitle: 'ไม่สามารถเพิ่มภาระงานได้',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          const payload = {
-            ...formValue,
-            timeList: convertToWorkloadTime(formValue.timeList),
-            section: Number(formValue.section),
-            isCompensated: false,
-            teacherId: currentTeacherId,
-            academicYear,
-            semester,
-          }
-          await http.post(`/workload`, payload)
-          await getWorkloadByTeacherId(currentTeacherId)
-        } catch (err) {
-          console.log(err)
-          throw err
-        }
-      },
+        }),
+        end.toDate().toLocaleTimeString('th-TH', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      ]
     })
   }
 
@@ -164,8 +148,8 @@ export function useWorkload(academicYear: number, semester: number) {
     isLoading,
     workload,
     getWorkloadByTeacherId,
+    addWorkload,
     editWorkload,
     deleteWorkload,
-    addWorkload,
   }
 }

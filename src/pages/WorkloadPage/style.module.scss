@@ -88,9 +88,16 @@
         background: repeating-linear-gradient(
             45deg,
             var(--gray400),
-            var(--gray400) 4px,
-            var(--gray800) 4px,
-            var(--gray800) 8px
+            var(--gray400) 5px,
+            var(--gray800) 5px,
+            var(--gray800) 10px
         );
     }
+}
+
+.workloadAdder {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }

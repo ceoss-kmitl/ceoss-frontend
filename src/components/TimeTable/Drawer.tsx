@@ -25,26 +25,34 @@ import {
 } from 'constants/selectOption'
 
 import style from './Drawer.module.scss'
-import { classYearOptionList, useDrawer } from './helper'
+import {
+  classYearOptionList,
+  IPrivateUseTimeTable,
+  useTimeTable,
+} from './helper'
 
 interface IProps {
-  use: ReturnType<typeof useDrawer>
-  onEdit: (workload: any) => void
-  onDelete: (workload: any) => void
+  use: ReturnType<typeof useTimeTable>
 }
 
-export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
+export const Drawer: React.FC<IProps> = ({ use }) => {
+  const { _ } = use as IPrivateUseTimeTable
+
   const {
+    config,
     isLoading,
     form,
     formAction,
     isDrawerVisible,
     closeDrawer,
-    handleOnEdit,
+    handleOnFinish,
     handleOnDelete,
     subjectOptionList,
     teacherOptionList,
-  } = use
+    roomOptionList,
+  } = _
+
+  const isFormDisabled = formAction === 'EDIT'
 
   return (
     <AntdDrawer
@@ -84,7 +92,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
             cancelButtonProps={{
               type: 'text',
             }}
-            onConfirm={handleOnDelete(onDelete)}
+            onConfirm={handleOnDelete(config.onDelete!)}
           >
             <AntdButton
               block
@@ -104,7 +112,11 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
           form={form}
           layout="vertical"
           hideRequiredMark
-          onFinish={handleOnEdit(onEdit)}
+          onFinish={
+            formAction === 'ADD'
+              ? handleOnFinish(config.onAdd!)
+              : handleOnFinish(config.onEdit!)
+          }
         >
           <Form.Item name="id" style={{ display: 'none' }} />
 
@@ -117,7 +129,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                 hasFeedback
               >
                 <Select
-                  disabled
+                  disabled={isFormDisabled}
                   showSearch
                   filterOption={(input, option) =>
                     String(option?.label)
@@ -139,7 +151,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                 rules={[{ required: true, message: '' }]}
                 hasFeedback
               >
-                <Select disabled options={typeOptionList} />
+                <Select disabled={isFormDisabled} options={typeOptionList} />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -152,7 +164,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                 ]}
                 hasFeedback
               >
-                <Input disabled />
+                <Input disabled={isFormDisabled} />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -166,7 +178,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                 normalize={(value) => String(value).toLocaleUpperCase()}
                 hasFeedback
               >
-                <Input disabled />
+                <Input disabled={isFormDisabled} />
               </Form.Item>
             </Col>
           </Row>
@@ -179,7 +191,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                 rules={[{ required: true, message: '' }]}
                 hasFeedback
               >
-                <Select disabled options={degreeOptionList} />
+                <Select disabled={isFormDisabled} options={degreeOptionList} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -189,7 +201,10 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                 rules={[{ required: true, message: '' }]}
                 hasFeedback
               >
-                <Select disabled options={classYearOptionList} />
+                <Select
+                  disabled={isFormDisabled}
+                  options={classYearOptionList}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -202,13 +217,16 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                 rules={[{ required: true, message: '' }]}
                 hasFeedback
               >
-                <Select disabled options={dayOfWeekOptionList} />
+                <Select
+                  disabled={isFormDisabled}
+                  options={dayOfWeekOptionList}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item name="roomId" label="ห้องเรียน">
                 <Select
-                  disabled
+                  disabled={isFormDisabled}
                   showSearch
                   filterOption={(input, option) =>
                     String(option?.label)
@@ -216,6 +234,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                       .includes(input.toLowerCase())
                   }
                   notFoundContent="ไม่พบห้องเรียน"
+                  options={roomOptionList!}
                 />
               </Form.Item>
             </Col>
@@ -223,8 +242,8 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
 
           <Text size="small">ช่วงเวลา</Text>
           <Row gutter={16}>
-            <Form.List name="timeList" initialValue={[{}]}>
-              {(fields) => (
+            <Form.List name="timeList" initialValue={[[]]}>
+              {(fields, timeList) => (
                 <Col span={24}>
                   {fields.map(({ name, ...rest }) => (
                     <Row gutter={16} align="middle">
@@ -236,7 +255,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                           rules={[{ required: true, message: '' }]}
                         >
                           <DatePicker.RangePicker
-                            disabled
+                            disabled={isFormDisabled}
                             picker="time"
                             locale={localeTH}
                             className={style.timePicker}
@@ -251,22 +270,24 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                           />
                         </Form.Item>
                       </Col>
-                      {/* {fields.length > 1 && (
+                      {!isFormDisabled && fields.length > 1 && (
                         <FiTrash2
                           className={style.removeListIcon}
                           onClick={() => timeList.remove(name)}
                         />
-                      )} */}
+                      )}
                     </Row>
                   ))}
 
-                  {/* <AntdButton
-                    block
-                    type="dashed"
-                    onClick={() => timeList.add()}
-                  >
-                    + คลิกเพื่อเพิ่มช่วงเวลา
-                  </AntdButton> */}
+                  {!isFormDisabled && (
+                    <AntdButton
+                      block
+                      type="dashed"
+                      onClick={() => timeList.add()}
+                    >
+                      + คลิกเพื่อเพิ่มช่วงเวลา
+                    </AntdButton>
+                  )}
                 </Col>
               )}
             </Form.List>
@@ -285,8 +306,11 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Form.List name="teacherList" initialValue={[{}]}>
-              {(fields) => (
+            <Form.List
+              name="teacherList"
+              initialValue={[{ weekCount: 15, isClaim: true }]}
+            >
+              {(fields, teacherList) => (
                 <Col span={24}>
                   {fields.map(({ name, ...rest }) => (
                     <Row gutter={16} align="middle">
@@ -297,7 +321,17 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                           className={style.listInput}
                           rules={[{ required: true, message: '' }]}
                         >
-                          <Select disabled options={teacherOptionList!} />
+                          <Select
+                            disabled={isFormDisabled}
+                            showSearch
+                            filterOption={(input, option) =>
+                              String(option?.label)
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
+                            notFoundContent="ไม่พบรายชื่อนี้"
+                            options={teacherOptionList!}
+                          />
                         </Form.Item>
                       </Col>
                       <Col span={7}>
@@ -310,35 +344,37 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
                           <Input type="number" />
                         </Form.Item>
                       </Col>
-                      <Col span={3}>
-                        {/* <Col span={fields.length > 1 ? 2 : 3}> */}
+                      <Col span={!isFormDisabled && fields.length > 1 ? 2 : 3}>
                         <Form.Item
                           {...rest}
                           name={[name, 'isClaim']}
                           valuePropName="checked"
                           className={style.listInput}
-                          rules={[{ required: true, message: '' }]}
                         >
                           <Checkbox />
                         </Form.Item>
                       </Col>
 
-                      {/* {fields.length > 1 && (
+                      {!isFormDisabled && fields.length > 1 && (
                         <FiTrash2
                           className={style.removeListIcon}
                           onClick={() => teacherList.remove(name)}
                         />
-                      )} */}
+                      )}
                     </Row>
                   ))}
 
-                  {/* <AntdButton
-                    block
-                    type="dashed"
-                    onClick={() => teacherList.add()}
-                  >
-                    + คลิกเพื่อเพิ่มผู้สอน
-                  </AntdButton> */}
+                  {!isFormDisabled && (
+                    <AntdButton
+                      block
+                      type="dashed"
+                      onClick={() =>
+                        teacherList.add({ weekCount: 15, isClaim: true })
+                      }
+                    >
+                      + คลิกเพื่อเพิ่มผู้สอน
+                    </AntdButton>
+                  )}
                 </Col>
               )}
             </Form.List>

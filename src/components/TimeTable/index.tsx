@@ -2,28 +2,24 @@ import style from './style.module.scss'
 import { OutlineTable } from './OutlineTable'
 import { Workload } from './Workload'
 import { Drawer } from './Drawer'
-import { IDay, timeSlot, useTimeTable, useDrawer } from './helper'
+import {
+  IDay,
+  IPrivateUseTimeTable,
+  timeSlot,
+  useTimeSlot,
+  useTimeTable,
+} from './helper'
 
 interface IProps {
   /**
-   * 7 days. Start with Monday. End with Sunday
+   * Use with hooks `useTimeTable`
    */
-  data: IDay[]
-
-  /**
-   * Function to be called when Edit Workload
-   */
-  onEdit: (workload: any) => void
-
-  /**
-   * Function to be called when Delete Workload
-   */
-  onDelete: (workload: any) => void
+  use: ReturnType<typeof useTimeTable>
 }
 
-export const TimeTable: React.FC<IProps> = ({ data, onEdit, onDelete }) => {
-  const tableSlotList = useTimeTable(data)
-  const workloadDrawer = useDrawer()
+export const TimeTable: React.FC<IProps> = ({ use }) => {
+  const { _ } = use as IPrivateUseTimeTable
+  const tableSlotList = useTimeSlot(_.config.data)
 
   // This component is render by 2 <table /> overlap together
   // Layer 1 is for rendering border outline and header text
@@ -49,11 +45,7 @@ export const TimeTable: React.FC<IProps> = ({ data, onEdit, onDelete }) => {
               <th className={style.dayHeader} colSpan={4}></th>
               {day.map((slot, j) => {
                 return slot ? (
-                  <Workload
-                    key={j}
-                    data={slot}
-                    onClick={workloadDrawer.startEditWorkload}
-                  />
+                  <Workload key={j} data={slot} onClick={_.startEditWorkload} />
                 ) : (
                   <td key={j} colSpan={1} />
                 )
@@ -63,7 +55,9 @@ export const TimeTable: React.FC<IProps> = ({ data, onEdit, onDelete }) => {
         </tbody>
       </table>
 
-      <Drawer use={workloadDrawer} onEdit={onEdit} onDelete={onDelete} />
+      <Drawer use={use} />
     </div>
   )
 }
+
+export { useTimeTable }

@@ -1,4 +1,4 @@
-import { Form, message } from 'antd'
+import { Form, FormInstance, message } from 'antd'
 import { Dayjs } from 'dayjs'
 import { useState, useEffect } from 'react'
 
@@ -58,7 +58,7 @@ export const classYearOptionList = Array(4)
  * Input 7 days data from backend and this hooks
  * will return 7 days data that ready to render
  */
-export function useTimeTable(dayList: IDay[]) {
+export function useTimeSlot(dayList: IDay[]) {
   const tableSlot = []
   const MAX_SLOT = 52 // 13 hours x 4 slot each hours (08:00 - 20:00)
   const sortedDayList = sortWorkloadStartTime(dayList)
@@ -158,7 +158,68 @@ export function useWorkloadSlot(data: ISlot) {
   }
 }
 
-export function useDrawer() {
+interface ITimeTableConfig {
+  /**
+   * 7 days. Start with Monday. End with Sunday
+   */
+  data: IDay[]
+  /**
+   * Function that run when add
+   */
+  onAdd?: (workload: any) => void
+  /**
+   * Function that run when edit
+   */
+  onEdit?: (workload: any) => void
+  /**
+   * Function that run when delete
+   */
+  onDelete?: (workload: any) => void
+}
+
+interface IUseTimeTable {
+  /**
+   * Add new workload for curent teacher
+   */
+  addWorkload: () => void
+
+  /**
+   * *Private data. Do not use it*
+   */
+  _?: unknown
+}
+
+export interface IPrivateUseTimeTable {
+  _: {
+    data: any[]
+    config: ITimeTableConfig
+    isLoading: boolean
+    form: FormInstance<IWorkload>
+    isDrawerVisible: boolean
+    formAction: 'ADD' | 'EDIT'
+    closeDrawer: () => void
+    handleOnFinish: (
+      callback: (workload: any) => void
+    ) => (workload: any) => Promise<void>
+    handleOnDelete: (callback: (workload: any) => void) => () => Promise<void>
+    startEditWorkload: () => void
+    subjectOptionList: ISelectOption[] | null
+    teacherOptionList: ISelectOption[] | null
+    roomOptionList: ISelectOption[] | null
+  }
+}
+
+/**
+ * Custom hooks to use with <TimeTable />
+ */
+export function useTimeTable(
+  config: ITimeTableConfig = {
+    data: [],
+    onAdd: () => {},
+    onEdit: () => {},
+    onDelete: () => {},
+  }
+): IUseTimeTable {
   const [form] = Form.useForm<IWorkload>()
   const [isDrawerVisible, setIsDrawerVisible] = useState(false)
   const [formAction, setFormAction] = useState<'ADD' | 'EDIT'>('ADD')
@@ -174,7 +235,7 @@ export function useDrawer() {
     null
   )
 
-  const addSubject = () => {
+  const startAddWorkload = () => {
     form.resetFields()
     setFormAction('ADD')
     setIsDrawerVisible(true)
@@ -187,21 +248,29 @@ export function useDrawer() {
     setIsDrawerVisible(true)
   }
 
-  const handleOnEdit =
+  const handleOnFinish =
     (callback: (workload: any) => void) => async (workload: any) => {
       setIsLoading(true)
-      await callback(workload)
+      try {
+        await callback(workload)
+        message.success('บันทึกข้อมูลแล้ว')
+        closeDrawer()
+      } catch (err) {
+        message.error(err.message, 10)
+      }
       setIsLoading(false)
-      message.success('บันทึกข้อมูลแล้ว')
-      closeDrawer()
     }
 
   const handleOnDelete = (callback: (workload: any) => void) => async () => {
     setIsLoading(true)
-    await callback(form.getFieldsValue())
+    try {
+      await callback(form.getFieldsValue())
+      message.success('ลบข้อมูลแล้ว')
+      closeDrawer()
+    } catch (err) {
+      message.error(err.message, 10)
+    }
     setIsLoading(false)
-    message.success('ลบข้อมูลแล้ว')
-    closeDrawer()
   }
 
   const closeDrawer = () => setIsDrawerVisible(false)
@@ -236,23 +305,44 @@ export function useDrawer() {
     setIsLoading(false)
   }
 
+  async function getAllRoom() {
+    setIsLoading(true)
+    try {
+      const { data } = await http.get('/room')
+      const antdOption = data.map((room: any) => ({
+        label: room.name,
+        value: room.id,
+      }))
+      setRoomOptionList(antdOption)
+    } catch (err) {
+      setRoomOptionList([])
+    }
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     getAllSubject()
     getAllTeacher()
+    getAllRoom()
   }, [])
 
   return {
-    isLoading:
-      isLoading || isNull(teacherOptionList) || isNull(subjectOptionList),
-    form,
-    isDrawerVisible,
-    formAction,
-    closeDrawer,
-    handleOnEdit,
-    handleOnDelete,
-    startEditWorkload,
-    subjectOptionList,
-    teacherOptionList,
+    addWorkload: startAddWorkload,
+    _: {
+      config,
+      isLoading:
+        isLoading || isNull(teacherOptionList) || isNull(subjectOptionList),
+      form,
+      isDrawerVisible,
+      formAction,
+      closeDrawer,
+      handleOnFinish,
+      handleOnDelete,
+      startEditWorkload,
+      subjectOptionList,
+      teacherOptionList,
+      roomOptionList,
+    },
   }
 }
 
