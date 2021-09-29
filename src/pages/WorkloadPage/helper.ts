@@ -1,11 +1,9 @@
+import { Dayjs } from 'dayjs'
 import { useState, useEffect } from 'react'
 
 import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
-import { delay } from 'libs/delay'
-import { message } from 'antd'
-import { Dayjs } from 'dayjs'
 
 export function useAcademicYear() {
   const [currentAcademicYear, setCurrentAcademicYear] = useState(0)
@@ -55,7 +53,6 @@ export function useWorkload(academicYear: number, semester: number) {
     if (!id) return
 
     setIsLoading(true)
-    await delay(1)
     try {
       const { data } = await http.get(`/workload`, {
         params: {
@@ -115,13 +112,8 @@ export function useWorkload(academicYear: number, semester: number) {
 
   async function deleteWorkload(workload: any) {
     setIsLoading(true)
-    await delay(1)
-    try {
-      await http.delete(`/workload/${workload.id}`)
-      await getWorkloadByTeacherId(currentTeacherId)
-    } catch (err) {
-      message.error(err.message, 10)
-    }
+    await http.delete(`/workload/${workload.id}`)
+    await getWorkloadByTeacherId(currentTeacherId)
     setIsLoading(false)
   }
 
