@@ -79,15 +79,19 @@ export const WorkloadPage = () => {
           <div className={style.timeTableFooter}>
             <label className={style.label}>
               <span className={css(style.labelIcon, style.green)} />
-              วิชาทฤษฎี
+              วิชาสอนเดี่ยว
             </label>
             <label className={style.label}>
               <span className={css(style.labelIcon, style.blue)} />
-              วิชาปฏิบัติ
+              วิชาสอนร่วม
             </label>
             <label className={style.label}>
               <span className={css(style.labelIcon, style.red)} />
-              วิชาที่ทับซ้อน
+              วิชาที่เบิกทับซ้อน
+            </label>
+            <label className={style.label}>
+              <span className={css(style.labelIcon2, style.notClaim)} />
+              วิชาที่ไม่เบิก
             </label>
           </div>
 

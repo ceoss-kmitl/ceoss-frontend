@@ -27,11 +27,11 @@
         left: 0;
         height: 100%;
         width: 6px;
-        background: gray;
+        background: var(--green500);
     }
 }
 
-.LECTURE {
+.soloTeaching {
     background: var(--green100);
 
     &:hover {
@@ -41,9 +41,19 @@
     &::before {
         background: var(--green500);
     }
+
+    &.notClaim {
+        background: repeating-linear-gradient(
+            45deg,
+            var(--green50),
+            var(--green50) 10px,
+            var(--green100) 10px,
+            var(--green100) 20px
+        );
+    }
 }
 
-.LAB {
+.coTeaching {
     background: var(--blue100);
 
     &:hover {
@@ -52,6 +62,16 @@
 
     &::before {
         background: var(--blue500);
+    }
+
+    &.notClaim {
+        background: repeating-linear-gradient(
+            45deg,
+            var(--blue50),
+            var(--blue50) 10px,
+            var(--blue100) 10px,
+            var(--blue100) 20px
+        );
     }
 }
 
@@ -65,14 +85,6 @@
 
     &::before {
         background: var(--red500);
-    }
-}
-
-.EDITING {
-    background: var(--orange100);
-
-    &::before {
-        background: var(--orange400);
     }
 }
 

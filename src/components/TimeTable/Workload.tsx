@@ -25,6 +25,11 @@ export const Workload: React.FC<IProps> = ({ data, onClick }) => {
               <tr key={i}>
                 {workload.map((slot, j) => {
                   const isOverlap = data.workloadList.length > 1
+                  let claimCount = 0
+                  data.workloadList.forEach((w) => {
+                    if (w.isClaim) claimCount++
+                  })
+
                   return slot ? (
                     // IF #1: Has workload
                     <td key={j} colSpan={slot.slotSpan}>
@@ -35,12 +40,23 @@ export const Workload: React.FC<IProps> = ({ data, onClick }) => {
                           color="#1F2937"
                         >
                           <div
-                            className={css(style.subject, style.OVERLAP)}
+                            className={css(
+                              style.subject,
+                              slot.workload.teacherList.length > 1
+                                ? style.coTeaching
+                                : style.soloTeaching,
+                              {
+                                [style.notClaim]: !slot.workload.isClaim,
+                                [style.OVERLAP]: claimCount > 1,
+                              }
+                            )}
                             style={{ height: slotHeight }}
                             onClick={() => onClick(slot.workload)}
                           >
                             <div className={style.name}>
-                              <FiAlertTriangle className={style.icon} />
+                              {claimCount > 1 && (
+                                <FiAlertTriangle className={style.icon} />
+                              )}
                               {slot.workload.name}
                             </div>
                           </div>
@@ -54,7 +70,12 @@ export const Workload: React.FC<IProps> = ({ data, onClick }) => {
                           <div
                             className={css(
                               style.subject,
-                              style[slot.workload.type || SUBJECT_TYPE.LECTURE]
+                              slot.workload.teacherList.length > 1
+                                ? style.coTeaching
+                                : style.soloTeaching,
+                              {
+                                [style.notClaim]: !slot.workload.isClaim,
+                              }
                             )}
                             style={{ height: slotHeight }}
                             onClick={() => onClick(slot.workload)}

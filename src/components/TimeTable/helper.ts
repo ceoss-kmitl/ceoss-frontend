@@ -33,6 +33,7 @@ export interface IWorkload {
     weekCount: number
     isClaim: boolean
   }[]
+  isClaim: boolean
 }
 
 export interface ISlot {
