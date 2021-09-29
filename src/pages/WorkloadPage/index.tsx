@@ -1,6 +1,7 @@
 import css from 'classnames'
+import { VscAdd } from 'react-icons/vsc'
 
-import { TimeTable } from 'components/TimeTable'
+import { TimeTable, useTimeTable } from 'components/TimeTable'
 import { Text } from 'components/Text'
 import { Select } from 'components/Select'
 import { Button } from 'components/Button'
@@ -9,7 +10,6 @@ import { Loader } from 'components/Loader'
 import style from './style.module.scss'
 import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
-import { WorkloadAdder } from './components/WorkloadAdder'
 import { useAcademicYear, useWorkload } from './helper'
 
 export const WorkloadPage = () => {
@@ -26,9 +26,17 @@ export const WorkloadPage = () => {
     isLoading,
     workload,
     getWorkloadByTeacherId,
-    discardWorkload,
     addWorkload,
+    editWorkload,
+    deleteWorkload,
   } = useWorkload(academicYear, semester)
+
+  const timeTable = useTimeTable({
+    data: workload,
+    onAdd: addWorkload,
+    onEdit: editWorkload,
+    onDelete: deleteWorkload,
+  })
 
   return (
     <div className={style.page}>
@@ -43,10 +51,8 @@ export const WorkloadPage = () => {
           <img src={monster} />
           <span>เริ่มค้นหาอาจารย์เพื่อดูภาระงาน</span>
         </div>
-      ) : isLoading ? (
-        <Loader />
       ) : (
-        <>
+        <Loader loading={isLoading}>
           <div className={style.timeTableHeader}>
             <Text size="sub-head" bold>
               ตารางการปฏิบัติงานสอน
@@ -68,30 +74,37 @@ export const WorkloadPage = () => {
             </div>
           </div>
 
-          <TimeTable
-            data={workload}
-            onOverlapSubjectClick={(subject) =>
-              discardWorkload(subject.workloadId)
-            }
-          />
+          <TimeTable use={timeTable} />
 
           <div className={style.timeTableFooter}>
             <label className={style.label}>
               <span className={css(style.labelIcon, style.green)} />
-              วิชาทฤษฎี
+              วิชาสอนเดี่ยว
             </label>
             <label className={style.label}>
               <span className={css(style.labelIcon, style.blue)} />
-              วิชาปฏิบัติ
+              วิชาสอนร่วม
             </label>
             <label className={style.label}>
               <span className={css(style.labelIcon, style.red)} />
-              วิชาที่ทับซ้อน
+              วิชาที่เบิกทับซ้อน
             </label>
-          </div>
+            <label className={style.label}>
+              <span className={css(style.labelIcon2, style.notClaim)} />
+              วิชาที่ไม่เบิก
+            </label>
 
-          <WorkloadAdder onSubmit={addWorkload} />
-        </>
+            <Button
+              small
+              white
+              className={style.workloadAdder}
+              onClick={timeTable.addWorkload}
+            >
+              <VscAdd />
+              เพิ่มภาระงานใหม่
+            </Button>
+          </div>
+        </Loader>
       )}
     </div>
   )

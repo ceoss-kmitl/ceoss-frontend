@@ -1,5 +1,7 @@
+import { Dayjs } from 'dayjs'
 import { useState, useEffect } from 'react'
-import { getCurrentAcademicYear } from 'libs/datetime'
+
+import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 
@@ -59,7 +61,18 @@ export function useWorkload(academicYear: number, semester: number) {
           semester,
         },
       })
-      setWorkload(data)
+
+      const workloadWithDayjs = data.map((day: any) => ({
+        workloadList: day.workloadList.map((workload: any) => ({
+          ...workload,
+          timeList: workload.timeList.map((time: any) => [
+            toDayjsTime(time.start),
+            toDayjsTime(time.end),
+          ]),
+        })),
+      }))
+
+      setWorkload(workloadWithDayjs)
       setCurrentTeacherId(id)
     } catch (err) {
       Modal.error({
@@ -72,67 +85,50 @@ export function useWorkload(academicYear: number, semester: number) {
     setIsLoading(false)
   }
 
-  async function discardWorkload(id: string) {
-    Modal.warning({
-      title: 'ยืนยันการนำออก',
-      description: 'คุณต้องการนำภาระงานนี้ออกหรือไม่',
-      finishTitle: 'นำภาระงานออกสำเร็จ',
-      finishFailTitle: 'ไม่สามารถนำภาระงานออกได้',
-      width: 340,
-      onAsyncOk: async () => {
-        setIsLoading(true)
-        try {
-          await http.delete(`/workload/${id}`)
-          await getWorkloadByTeacherId(currentTeacherId)
-        } catch (err) {
-          setIsLoading(false)
-          throw err
-        }
-      },
-    })
+  async function addWorkload(formValue: any) {
+    setIsLoading(true)
+    const payload = {
+      ...formValue,
+      timeList: convertToWorkloadTime(formValue.timeList),
+      section: Number(formValue.section),
+      academicYear,
+      semester,
+    }
+    delete payload.id
+
+    await http.post(`/workload`, payload)
+    await getWorkloadByTeacherId(currentTeacherId)
+    setIsLoading(false)
   }
 
-  function convertToWorkloadTime(timeRangePicker: any[]) {
-    console.log(timeRangePicker)
-    return timeRangePicker.map(({ time }: { time: any[] }) => {
-      const normalTimeList = time.map((t: any) =>
-        t.toDate().toLocaleTimeString('th-TH', {
+  const editWorkload = async (workload: any) => {
+    setIsLoading(true)
+    await http.put(`/workload/${workload.id}`, {
+      teacherList: workload.teacherList,
+    })
+    await getWorkloadByTeacherId(currentTeacherId)
+    setIsLoading(false)
+  }
+
+  async function deleteWorkload(workload: any) {
+    setIsLoading(true)
+    await http.delete(`/workload/${workload.id}`)
+    await getWorkloadByTeacherId(currentTeacherId)
+    setIsLoading(false)
+  }
+
+  function convertToWorkloadTime(timeRangePicker: Dayjs[][]) {
+    return timeRangePicker.map(([start, end]) => {
+      return [
+        start.toDate().toLocaleTimeString('th-TH', {
           hour: '2-digit',
           minute: '2-digit',
-        })
-      )
-      const [startTime, endTime] = normalTimeList
-      return {
-        startTime,
-        endTime,
-      }
-    })
-  }
-
-  async function addWorkload(formValue: any) {
-    Modal.loading({
-      loadingText: 'กำลังเพิ่มภาระงาน',
-      finishTitle: 'เพิ่มภาระงานสำเร็จ!',
-      finishFailTitle: 'ไม่สามารถเพิ่มภาระงานได้',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          const payload = {
-            ...formValue,
-            timeList: convertToWorkloadTime(formValue.timeList),
-            section: Number(formValue.section),
-            isCompensated: false,
-            teacherId: currentTeacherId,
-            academicYear,
-            semester,
-          }
-          await http.post(`/workload`, payload)
-          await getWorkloadByTeacherId(currentTeacherId)
-        } catch (err) {
-          console.log(err)
-          throw err
-        }
-      },
+        }),
+        end.toDate().toLocaleTimeString('th-TH', {
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      ]
     })
   }
 
@@ -144,7 +140,8 @@ export function useWorkload(academicYear: number, semester: number) {
     isLoading,
     workload,
     getWorkloadByTeacherId,
-    discardWorkload,
     addWorkload,
+    editWorkload,
+    deleteWorkload,
   }
 }

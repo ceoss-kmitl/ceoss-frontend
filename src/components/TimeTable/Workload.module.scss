@@ -18,6 +18,7 @@
     padding-left: 1rem;
     padding-right: 0.5rem;
     position: relative;
+    cursor: pointer;
 
     &::before {
         content: '';
@@ -26,52 +27,74 @@
         left: 0;
         height: 100%;
         width: 6px;
-        background: gray;
-    }
-}
-
-.LECTURE {
-    background: var(--green100);
-
-    &::before {
         background: var(--green500);
     }
 }
 
-.LAB {
+.soloTeaching {
+    background: var(--green100);
+
+    &:hover {
+        outline: 3px solid var(--green500);
+    }
+
+    &::before {
+        background: var(--green500);
+    }
+
+    &.notClaim {
+        background: repeating-linear-gradient(
+            45deg,
+            var(--green50),
+            var(--green50) 10px,
+            var(--green100) 10px,
+            var(--green100) 20px
+        );
+    }
+}
+
+.coTeaching {
     background: var(--blue100);
+
+    &:hover {
+        outline: 3px solid var(--blue500);
+    }
 
     &::before {
         background: var(--blue500);
+    }
+
+    &.notClaim {
+        background: repeating-linear-gradient(
+            45deg,
+            var(--blue50),
+            var(--blue50) 10px,
+            var(--blue100) 10px,
+            var(--blue100) 20px
+        );
     }
 }
 
 .OVERLAP {
     background: var(--red70);
+    outline-color: var(--red500);
+
+    &:hover {
+        outline: 3px solid var(--red500);
+    }
 
     &::before {
-        color: white;
         background: var(--red500);
-        overflow: hidden;
-        white-space: nowrap;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: width 0.2s;
     }
 
-    &:hover::before {
-        content: 'คลิกเพื่อนำออก';
-        width: 100%;
-        cursor: pointer;
-    }
-}
-
-.EDITING {
-    background: var(--orange100);
-
-    &::before {
-        background: var(--orange400);
+    &.notClaim {
+        background: repeating-linear-gradient(
+            45deg,
+            var(--red50),
+            var(--red50) 10px,
+            var(--red100) 10px,
+            var(--red100) 20px
+        );
     }
 }
 

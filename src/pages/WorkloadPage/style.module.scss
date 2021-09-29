@@ -76,3 +76,28 @@
         background: var(--red500);
     }
 }
+
+.labelIcon2 {
+    $size: 12px;
+    width: $size * 2;
+    height: $size;
+    margin-right: 0.5rem;
+    display: inline-block;
+
+    &.notClaim {
+        background: repeating-linear-gradient(
+            45deg,
+            var(--gray400),
+            var(--gray400) 5px,
+            var(--gray800) 5px,
+            var(--gray800) 10px
+        );
+    }
+}
+
+.workloadAdder {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

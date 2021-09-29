@@ -1,8 +1,9 @@
 import css from 'classnames'
-import style from './style.module.scss'
 import { Fragment } from 'react'
 import { BiTime } from 'react-icons/bi'
-import { timeSlot, dayInWeek } from './helper'
+
+import style from './style.module.scss'
+import { timeSlot, shortDayOfWeek } from './helper'
 
 export const OutlineTable: React.FC = () => {
   return (
@@ -20,7 +21,7 @@ export const OutlineTable: React.FC = () => {
         </tr>
       </thead>
       <tbody>
-        {dayInWeek.map((day) => (
+        {shortDayOfWeek.map((day) => (
           <tr key={day} className={style.dayRow}>
             <th className={style.dayHeader} colSpan={4}>
               {day}

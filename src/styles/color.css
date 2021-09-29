@@ -1,4 +1,5 @@
 :root {
+    --blue50: #eff6ff;
     --blue100: #dbeafe;
     --blue400: #60a5fa;
     --blue500: #3b82f6;
@@ -10,6 +11,7 @@
     --gray500: #6b7280;
     --gray800: #1f2937;
 
+    --green50: #ecfdf5;
     --green100: #d1fae5;
     --green400: #34d399;
     --green500: #10b981;
@@ -20,7 +22,9 @@
     --orange500: #f97316;
     --orange600: #ea580c;
 
+    --red50: #fef2f2;
     --red70: #fcebeb;
+    --red100: #fee2e2;
     --red500: #ef4444;
     --red600: #dc2626;
 }

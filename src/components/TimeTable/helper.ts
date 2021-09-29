@@ -1,105 +1,111 @@
-export const timeSlot = generateTimeSlot(8, 20)
-export const dayInWeek = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา']
+import { Form, FormInstance, message } from 'antd'
+import { Dayjs } from 'dayjs'
+import { useState, useEffect } from 'react'
 
-export enum DAY_IN_WEEK {
-  MONDAY = 1,
-  TUESDAY,
-  WEDNESDAY,
-  THURSDAY,
-  FRIDAY,
-  SATURDAY,
-  SUNDAY,
-}
+import { DAY_OF_WEEK, DEGREE, SUBJECT_TYPE } from 'constants/enum'
+import { ISelectOption } from 'constants/selectOption'
+
+import { http } from 'libs/http'
+import { isNull } from 'libs/utils'
+import { delay } from 'libs/delay'
 
 export interface IDay {
-  dayInWeek: DAY_IN_WEEK
-  subjectList: ISubject[]
+  workloadList: IWorkload[]
 }
 
-export enum SUBJECT_TYPE {
-  LECTURE = 'LECTURE',
-  LAB = 'LAB',
-}
-
-export enum DEGREE {
-  Bachelor = 'BACHELOR',
-  BachelorCon = 'BACHELOR_CONTINUE',
-  BachelorInter = 'BACHELOR_INTER',
-  Pundit = 'PUNDIT',
-  PunditInter = 'PUNDIT_INTER',
-}
-
-export interface ISubject {
+export interface IWorkload {
   id: string
+  subjectId: string
   code: string
   name: string
   section: number
+  type: SUBJECT_TYPE
+  fieldOfStudy: string
+  degree: DEGREE
+  classYear: number
+  dayOfWeek: DAY_OF_WEEK
   startSlot: number
   endSlot: number
-  type: SUBJECT_TYPE
-  isEditing?: boolean
-  workloadId: string
+  timeList: [Dayjs, Dayjs][]
+  teacherList: {
+    teacherId: string
+    name: string
+    weekCount: number
+    isClaim: boolean
+  }[]
+  isClaim: boolean
 }
 
 export interface ISlot {
   slotSpan: number
   startSlot: number
   endSlot: number
-  subjectList: ISubject[]
+  workloadList: IWorkload[]
 }
+
+export const timeSlot = generateTimeSlot(8, 20)
+
+export const shortDayOfWeek = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา']
+
+export const classYearOptionList = Array(4)
+  .fill('')
+  .map((_, i) => ({
+    label: i + 1,
+    value: i + 1,
+  }))
 
 /**
  * Input 7 days data from backend and this hooks
  * will return 7 days data that ready to render
  */
-export function useTimeTable(dayList: IDay[]) {
+export function useTimeSlot(dayList: IDay[]) {
   const tableSlot = []
   const MAX_SLOT = 52 // 13 hours x 4 slot each hours (08:00 - 20:00)
-  const sortedDayList = sortBySubjectStartTime(dayList)
+  const sortedDayList = sortWorkloadStartTime(dayList)
 
-  for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-    const { subjectList } = sortedDayList[dayIndex]
+  for (const day of sortedDayList) {
+    const { workloadList } = day
     const daySlot: (ISlot | null)[] = []
-    let subjectIndex = 0
-    let curSlot = 1
+    let workloadIndex = 0
+    let currentSlot = 1
 
-    while (curSlot <= MAX_SLOT) {
-      const currentSubject = subjectList[subjectIndex] || { startSlot: 99 }
+    while (currentSlot <= MAX_SLOT) {
+      const currentWorkload = workloadList[workloadIndex] || { startSlot: 99 }
 
-      // Case #1: Has subject
-      if (currentSubject.startSlot === curSlot) {
-        const slotSpan = currentSubject.endSlot - currentSubject.startSlot + 1
-        const newEndSlot = curSlot + slotSpan
+      // Case #1: Has workload
+      if (currentWorkload.startSlot === currentSlot) {
+        const slotSpan = currentWorkload.endSlot - currentWorkload.startSlot + 1
+        const newEndSlot = currentSlot + slotSpan
         daySlot.push({
           slotSpan,
-          startSlot: curSlot,
+          startSlot: currentSlot,
           endSlot: newEndSlot - 1,
-          subjectList: [currentSubject],
+          workloadList: [currentWorkload],
         })
-        curSlot = newEndSlot
-        subjectIndex += 1
+        currentSlot = newEndSlot
+        workloadIndex += 1
       }
-      // Case #2: Has subject BUT overlap time
-      else if (currentSubject.startSlot < curSlot) {
+      // Case #2: Has workload BUT overlap time
+      else if (currentWorkload.startSlot < currentSlot) {
         const prevDaySlot = daySlot.pop()!
-        const prevFirstSubject = prevDaySlot.subjectList[0]
+        const prevFirstSubject = prevDaySlot.workloadList[0]
         const slotSpan = Math.max(
-          currentSubject.endSlot - prevFirstSubject.startSlot + 1,
+          currentWorkload.endSlot - prevFirstSubject.startSlot + 1,
           prevDaySlot.slotSpan
         )
-        const newEndSlot = Math.max(currentSubject.endSlot + 1, curSlot)
+        const newEndSlot = Math.max(currentWorkload.endSlot + 1, currentSlot)
         daySlot.push({
           slotSpan,
           startSlot: prevDaySlot.startSlot,
           endSlot: newEndSlot - 1,
-          subjectList: [...prevDaySlot.subjectList, currentSubject],
+          workloadList: [...prevDaySlot.workloadList, currentWorkload],
         })
-        curSlot = newEndSlot
-        subjectIndex += 1
+        currentSlot = newEndSlot
+        workloadIndex += 1
       }
-      // Case #3: No subject
+      // Case #3: No workload
       else {
-        curSlot += 1
+        currentSlot += 1
         daySlot.push(null)
       }
     }
@@ -109,43 +115,234 @@ export function useTimeTable(dayList: IDay[]) {
 }
 
 /**
- * Input subject slot data and this hooks
- * will data that ready to render
+ * Convert data to view-model (Ready for render)
  */
-export function useSubjectSlot(data: ISlot) {
-  const subjectSlot = []
+export function useWorkloadSlot(data: ISlot) {
+  interface IWorkloadSpan {
+    slotSpan: number
+    workload: IWorkload
+  }
+  const workloadSlot: (IWorkloadSpan | null)[][] = []
   const MAX_SLOT = data.slotSpan
 
-  for (let i = 0, length = data.subjectList.length; i < length; i++) {
-    const slot = []
-    let curSlot = 1
+  for (let i = 0; i < data.workloadList.length; i++) {
+    const slot: (IWorkloadSpan | null)[] = []
+    let currentSlot = 1
 
-    while (curSlot <= MAX_SLOT) {
-      const currentSubject = data.subjectList[i]
-      const relativeStartSlot = currentSubject.startSlot - data.startSlot + 1
-      const relativeEndSlot = currentSubject.endSlot - data.startSlot + 1
+    while (currentSlot <= MAX_SLOT) {
+      const currentWorkload = data.workloadList[i]
+      const relativeStartSlot = currentWorkload.startSlot - data.startSlot + 1
+      const relativeEndSlot = currentWorkload.endSlot - data.startSlot + 1
 
       // Case #1: Has subject
-      if (relativeStartSlot === curSlot) {
+      if (relativeStartSlot === currentSlot) {
         const slotSpan = relativeEndSlot - relativeStartSlot + 1
-        const newEndSlot = curSlot + slotSpan
+        const newEndSlot = currentSlot + slotSpan
         slot.push({
           slotSpan,
-          subject: currentSubject,
+          workload: currentWorkload,
         })
-        curSlot = newEndSlot
+        currentSlot = newEndSlot
       }
       // Case #2: No subject
       else {
         slot.push(null)
-        curSlot += 1
+        currentSlot += 1
       }
     }
-    subjectSlot.push(slot)
+    workloadSlot.push(slot)
   }
   return {
-    subjectSlotList: subjectSlot,
-    slotHeight: `${((100 / data.subjectList.length) * 60) / 100}px`,
+    workloadSlotList: workloadSlot,
+    slotHeight: `${((100 / data.workloadList.length) * 60) / 100}px`,
+  }
+}
+
+interface ITimeTableConfig {
+  /**
+   * 7 days. Start with Monday. End with Sunday
+   */
+  data: IDay[]
+  /**
+   * Function that run when add
+   */
+  onAdd?: (workload: any) => void
+  /**
+   * Function that run when edit
+   */
+  onEdit?: (workload: any) => void
+  /**
+   * Function that run when delete
+   */
+  onDelete?: (workload: any) => void
+}
+
+interface IUseTimeTable {
+  /**
+   * Add new workload for curent teacher
+   */
+  addWorkload: () => void
+
+  /**
+   * *Private data. Do not use it*
+   */
+  _?: unknown
+}
+
+export interface IPrivateUseTimeTable {
+  _: {
+    data: any[]
+    config: ITimeTableConfig
+    isLoading: boolean
+    form: FormInstance<IWorkload>
+    isDrawerVisible: boolean
+    formAction: 'ADD' | 'EDIT'
+    closeDrawer: () => void
+    handleOnFinish: (
+      callback: (workload: any) => void
+    ) => (workload: any) => Promise<void>
+    handleOnDelete: (callback: (workload: any) => void) => () => Promise<void>
+    startEditWorkload: () => void
+    subjectOptionList: ISelectOption[] | null
+    teacherOptionList: ISelectOption[] | null
+    roomOptionList: ISelectOption[] | null
+  }
+}
+
+/**
+ * Custom hooks to use with <TimeTable />
+ */
+export function useTimeTable(
+  config: ITimeTableConfig = {
+    data: [],
+    onAdd: () => {},
+    onEdit: () => {},
+    onDelete: () => {},
+  }
+): IUseTimeTable {
+  const [form] = Form.useForm<IWorkload>()
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
+  const [formAction, setFormAction] = useState<'ADD' | 'EDIT'>('ADD')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const [subjectOptionList, setSubjectOptionList] = useState<
+    ISelectOption[] | null
+  >(null)
+  const [teacherOptionList, setTeacherOptionList] = useState<
+    ISelectOption[] | null
+  >(null)
+  const [roomOptionList, setRoomOptionList] = useState<ISelectOption[] | null>(
+    null
+  )
+
+  const startAddWorkload = () => {
+    form.resetFields()
+    setFormAction('ADD')
+    setIsDrawerVisible(true)
+  }
+
+  const startEditWorkload = (workload: IWorkload) => {
+    form.resetFields()
+    form.setFieldsValue(workload)
+    setFormAction('EDIT')
+    setIsDrawerVisible(true)
+  }
+
+  const handleOnFinish =
+    (callback: (workload: any) => void) => async (workload: any) => {
+      setIsLoading(true)
+      try {
+        await callback(workload)
+        message.success('บันทึกข้อมูลแล้ว')
+        closeDrawer()
+      } catch (err) {
+        message.error(err.message, 10)
+      }
+      setIsLoading(false)
+    }
+
+  const handleOnDelete = (callback: (workload: any) => void) => async () => {
+    setIsLoading(true)
+    try {
+      await callback(form.getFieldsValue())
+      message.success('ลบข้อมูลแล้ว')
+      closeDrawer()
+    } catch (err) {
+      message.error(err.message, 10)
+    }
+    setIsLoading(false)
+  }
+
+  const closeDrawer = () => setIsDrawerVisible(false)
+
+  async function getAllSubject() {
+    setIsLoading(true)
+    try {
+      const { data } = await http.get('/subject')
+      const antdOption = data.map((subject: any) => ({
+        label: `${subject.code} - ${subject.name}`,
+        value: subject.id,
+      }))
+      setSubjectOptionList(antdOption)
+    } catch (err) {
+      setSubjectOptionList([])
+    }
+    setIsLoading(false)
+  }
+
+  async function getAllTeacher() {
+    setIsLoading(true)
+    try {
+      const { data } = await http.get('/teacher')
+      const antdOption = data.map((teacher: any) => ({
+        label: `${teacher.title}${teacher.name}`,
+        value: teacher.id,
+      }))
+      setTeacherOptionList(antdOption)
+    } catch (err) {
+      setTeacherOptionList([])
+    }
+    setIsLoading(false)
+  }
+
+  async function getAllRoom() {
+    setIsLoading(true)
+    try {
+      const { data } = await http.get('/room')
+      const antdOption = data.map((room: any) => ({
+        label: room.name,
+        value: room.id,
+      }))
+      setRoomOptionList(antdOption)
+    } catch (err) {
+      setRoomOptionList([])
+    }
+    setIsLoading(false)
+  }
+
+  useEffect(() => {
+    getAllSubject()
+    getAllTeacher()
+    getAllRoom()
+  }, [])
+
+  return {
+    addWorkload: startAddWorkload,
+    _: {
+      config,
+      isLoading:
+        isLoading || isNull(teacherOptionList) || isNull(subjectOptionList),
+      form,
+      isDrawerVisible,
+      formAction,
+      closeDrawer,
+      handleOnFinish,
+      handleOnDelete,
+      startEditWorkload,
+      subjectOptionList,
+      teacherOptionList,
+      roomOptionList,
+    },
   }
 }
 
@@ -162,9 +359,11 @@ function generateTimeSlot(start: number, end: number) {
   return slots
 }
 
-function sortBySubjectStartTime(dayList: IDay[]) {
+function sortWorkloadStartTime(dayList: IDay[]): IDay[] {
   return dayList.map((day) => ({
     ...day,
-    subjectList: [...day.subjectList].sort((a, b) => a.startSlot - b.startSlot),
+    workloadList: [...day.workloadList].sort(
+      (a, b) => a.startSlot - b.startSlot
+    ),
   }))
 }
