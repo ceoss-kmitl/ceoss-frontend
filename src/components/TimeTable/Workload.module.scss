@@ -86,6 +86,16 @@
     &::before {
         background: var(--red500);
     }
+
+    &.notClaim {
+        background: repeating-linear-gradient(
+            45deg,
+            var(--red50),
+            var(--red50) 10px,
+            var(--red100) 10px,
+            var(--red100) 20px
+        );
+    }
 }
 
 .name {
