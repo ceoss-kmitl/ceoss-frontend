@@ -1,4 +1,4 @@
-import { Form } from 'antd'
+import { Form, message } from 'antd'
 import { Dayjs } from 'dayjs'
 import { useState, useEffect } from 'react'
 
@@ -6,6 +6,8 @@ import { DAY_OF_WEEK, DEGREE, SUBJECT_TYPE } from 'constants/enum'
 import { ISelectOption } from 'constants/selectOption'
 
 import { http } from 'libs/http'
+import { isNull } from 'libs/utils'
+import { delay } from 'libs/delay'
 
 export interface IDay {
   workloadList: IWorkload[]
@@ -26,9 +28,10 @@ export interface IWorkload {
   endSlot: number
   timeList: [Dayjs, Dayjs][]
   teacherList: {
-    id: string
+    teacherId: string
     name: string
     weekCount: number
+    isClaim: boolean
   }[]
 }
 
@@ -59,8 +62,8 @@ export function useTimeTable(dayList: IDay[]) {
   const MAX_SLOT = 52 // 13 hours x 4 slot each hours (08:00 - 20:00)
   const sortedDayList = sortWorkloadStartTime(dayList)
 
-  for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-    const { workloadList } = sortedDayList[dayIndex]
+  for (const day of sortedDayList) {
+    const { workloadList } = day
     const daySlot: (ISlot | null)[] = []
     let workloadIndex = 0
     let currentSlot = 1
@@ -158,7 +161,12 @@ export function useDrawer() {
   const [form] = Form.useForm<IWorkload>()
   const [isDrawerVisible, setIsDrawerVisible] = useState(false)
   const [formAction, setFormAction] = useState<'ADD' | 'EDIT'>('ADD')
+  const [isLoading, setIsLoading] = useState(false)
+
   const [subjectOptionList, setSubjectOptionList] = useState<
+    ISelectOption[] | null
+  >(null)
+  const [teacherOptionList, setTeacherOptionList] = useState<
     ISelectOption[] | null
   >(null)
   const [roomOptionList, setRoomOptionList] = useState<ISelectOption[] | null>(
@@ -171,16 +179,26 @@ export function useDrawer() {
     setIsDrawerVisible(true)
   }
 
-  const editWorkload = (workload: IWorkload) => {
+  const startEditWorkload = (workload: IWorkload) => {
     form.resetFields()
     form.setFieldsValue(workload)
     setFormAction('EDIT')
     setIsDrawerVisible(true)
   }
 
+  const handleOnEdit =
+    (callback: (workload: any) => void) => async (workload: any) => {
+      setIsLoading(true)
+      await callback(workload)
+      setIsLoading(false)
+      message.success('บันทึกข้อมูลแล้ว')
+      closeDrawer()
+    }
+
   const closeDrawer = () => setIsDrawerVisible(false)
 
   async function getAllSubject() {
+    setIsLoading(true)
     try {
       const { data } = await http.get('/subject')
       const antdOption = data.map((subject: any) => ({
@@ -191,19 +209,40 @@ export function useDrawer() {
     } catch (err) {
       setSubjectOptionList([])
     }
+    setIsLoading(false)
+  }
+
+  async function getAllTeacher() {
+    setIsLoading(true)
+    try {
+      const { data } = await http.get('/teacher')
+      const antdOption = data.map((teacher: any) => ({
+        label: `${teacher.title}${teacher.name}`,
+        value: teacher.id,
+      }))
+      setTeacherOptionList(antdOption)
+    } catch (err) {
+      setTeacherOptionList([])
+    }
+    setIsLoading(false)
   }
 
   useEffect(() => {
     getAllSubject()
+    getAllTeacher()
   }, [])
 
   return {
+    isLoading:
+      isLoading || isNull(teacherOptionList) || isNull(subjectOptionList),
     form,
     isDrawerVisible,
     formAction,
     closeDrawer,
-    editWorkload,
+    handleOnEdit,
+    startEditWorkload,
     subjectOptionList,
+    teacherOptionList,
   }
 }
 

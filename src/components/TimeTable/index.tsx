@@ -9,9 +9,14 @@ interface IProps {
    * 7 days. Start with Monday. End with Sunday
    */
   data: IDay[]
+
+  /**
+   * Function to be called when Edit TimeTable
+   */
+  onEdit: (workload: any) => void
 }
 
-export const TimeTable: React.FC<IProps> = ({ data }) => {
+export const TimeTable: React.FC<IProps> = ({ data, onEdit }) => {
   const tableSlotList = useTimeTable(data)
   const workloadDrawer = useDrawer()
 
@@ -42,7 +47,7 @@ export const TimeTable: React.FC<IProps> = ({ data }) => {
                   <Workload
                     key={j}
                     data={slot}
-                    onClick={workloadDrawer.editWorkload}
+                    onClick={workloadDrawer.startEditWorkload}
                   />
                 ) : (
                   <td key={j} colSpan={1} />
@@ -53,7 +58,7 @@ export const TimeTable: React.FC<IProps> = ({ data }) => {
         </tbody>
       </table>
 
-      <Drawer use={workloadDrawer} />
+      <Drawer use={workloadDrawer} onEdit={onEdit} />
     </div>
   )
 }

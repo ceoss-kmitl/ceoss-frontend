@@ -26,6 +26,7 @@ export const WorkloadPage = () => {
     isLoading,
     workload,
     getWorkloadByTeacherId,
+    editWorkload,
     discardWorkload,
     addWorkload,
   } = useWorkload(academicYear, semester)
@@ -43,10 +44,8 @@ export const WorkloadPage = () => {
           <img src={monster} />
           <span>เริ่มค้นหาอาจารย์เพื่อดูภาระงาน</span>
         </div>
-      ) : isLoading ? (
-        <Loader />
       ) : (
-        <>
+        <Loader loading={isLoading}>
           <div className={style.timeTableHeader}>
             <Text size="sub-head" bold>
               ตารางการปฏิบัติงานสอน
@@ -70,6 +69,7 @@ export const WorkloadPage = () => {
 
           <TimeTable
             data={workload}
+            onEdit={editWorkload}
             // onOverlapSubjectClick={(subject) =>
             //   discardWorkload(subject.workloadId)
             // }
@@ -91,7 +91,7 @@ export const WorkloadPage = () => {
           </div>
 
           {/* <WorkloadAdder onSubmit={addWorkload} /> */}
-        </>
+        </Loader>
       )}
     </div>
   )

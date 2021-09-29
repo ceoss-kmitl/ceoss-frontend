@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
+import { delay } from 'libs/delay'
+import { message } from 'antd'
 
 export function useAcademicYear() {
   const [currentAcademicYear, setCurrentAcademicYear] = useState(0)
@@ -52,6 +54,7 @@ export function useWorkload(academicYear: number, semester: number) {
     if (!id) return
 
     setIsLoading(true)
+    await delay(1)
     try {
       const { data } = await http.get(`/workload`, {
         params: {
@@ -60,7 +63,6 @@ export function useWorkload(academicYear: number, semester: number) {
           semester,
         },
       })
-      console.log(data)
 
       const workloadWithDayjs = data.map((day: any) => ({
         workloadList: day.workloadList.map((workload: any) => ({
@@ -71,7 +73,6 @@ export function useWorkload(academicYear: number, semester: number) {
           ]),
         })),
       }))
-      console.log(workloadWithDayjs)
 
       setWorkload(workloadWithDayjs)
       setCurrentTeacherId(id)
@@ -82,6 +83,20 @@ export function useWorkload(academicYear: number, semester: number) {
       })
       setWorkload([])
       setCurrentTeacherId('')
+    }
+    setIsLoading(false)
+  }
+
+  const editWorkload = async (workload: any) => {
+    setIsLoading(true)
+    await delay(2)
+    try {
+      await http.put(`/workload/${workload.id}`, {
+        teacherList: workload.teacherList,
+      })
+      await getWorkloadByTeacherId(currentTeacherId)
+    } catch (err) {
+      message.error(err.message, 10)
     }
     setIsLoading(false)
   }
@@ -107,7 +122,6 @@ export function useWorkload(academicYear: number, semester: number) {
   }
 
   function convertToWorkloadTime(timeRangePicker: any[]) {
-    console.log(timeRangePicker)
     return timeRangePicker.map(({ time }: { time: any[] }) => {
       const normalTimeList = time.map((t: any) =>
         t.toDate().toLocaleTimeString('th-TH', {
@@ -158,6 +172,7 @@ export function useWorkload(academicYear: number, semester: number) {
     isLoading,
     workload,
     getWorkloadByTeacherId,
+    editWorkload,
     discardWorkload,
     addWorkload,
   }
