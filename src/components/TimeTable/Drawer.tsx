@@ -30,9 +30,10 @@ import { classYearOptionList, useDrawer } from './helper'
 interface IProps {
   use: ReturnType<typeof useDrawer>
   onEdit: (workload: any) => void
+  onDelete: (workload: any) => void
 }
 
-export const Drawer: React.FC<IProps> = ({ use, onEdit }) => {
+export const Drawer: React.FC<IProps> = ({ use, onEdit, onDelete }) => {
   const {
     isLoading,
     form,
@@ -40,6 +41,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit }) => {
     isDrawerVisible,
     closeDrawer,
     handleOnEdit,
+    handleOnDelete,
     subjectOptionList,
     teacherOptionList,
   } = use
@@ -71,6 +73,7 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit }) => {
       footer={
         formAction === 'EDIT' && (
           <Popconfirm
+            disabled={isLoading}
             title="ต้องการลบข้อมูลใช่ไหม"
             okText="ลบ"
             cancelText="ยกเลิก"
@@ -81,14 +84,14 @@ export const Drawer: React.FC<IProps> = ({ use, onEdit }) => {
             cancelButtonProps={{
               type: 'text',
             }}
-            onConfirm={undefined}
+            onConfirm={handleOnDelete(onDelete)}
           >
             <AntdButton
               block
               danger
               type="text"
               icon={<FiTrash2 className={style.deleteIcon} />}
-              disabled={false}
+              disabled={isLoading}
             >
               ลบข้อมูล
             </AntdButton>

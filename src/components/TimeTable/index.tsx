@@ -11,12 +11,17 @@ interface IProps {
   data: IDay[]
 
   /**
-   * Function to be called when Edit TimeTable
+   * Function to be called when Edit Workload
    */
   onEdit: (workload: any) => void
+
+  /**
+   * Function to be called when Delete Workload
+   */
+  onDelete: (workload: any) => void
 }
 
-export const TimeTable: React.FC<IProps> = ({ data, onEdit }) => {
+export const TimeTable: React.FC<IProps> = ({ data, onEdit, onDelete }) => {
   const tableSlotList = useTimeTable(data)
   const workloadDrawer = useDrawer()
 
@@ -58,7 +63,7 @@ export const TimeTable: React.FC<IProps> = ({ data, onEdit }) => {
         </tbody>
       </table>
 
-      <Drawer use={workloadDrawer} onEdit={onEdit} />
+      <Drawer use={workloadDrawer} onEdit={onEdit} onDelete={onDelete} />
     </div>
   )
 }

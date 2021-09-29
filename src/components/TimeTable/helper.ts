@@ -195,6 +195,14 @@ export function useDrawer() {
       closeDrawer()
     }
 
+  const handleOnDelete = (callback: (workload: any) => void) => async () => {
+    setIsLoading(true)
+    await callback(form.getFieldsValue())
+    setIsLoading(false)
+    message.success('ลบข้อมูลแล้ว')
+    closeDrawer()
+  }
+
   const closeDrawer = () => setIsDrawerVisible(false)
 
   async function getAllSubject() {
@@ -240,6 +248,7 @@ export function useDrawer() {
     formAction,
     closeDrawer,
     handleOnEdit,
+    handleOnDelete,
     startEditWorkload,
     subjectOptionList,
     teacherOptionList,

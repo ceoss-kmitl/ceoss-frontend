@@ -27,7 +27,7 @@ export const WorkloadPage = () => {
     workload,
     getWorkloadByTeacherId,
     editWorkload,
-    discardWorkload,
+    deleteWorkload,
     addWorkload,
   } = useWorkload(academicYear, semester)
 
@@ -70,6 +70,7 @@ export const WorkloadPage = () => {
           <TimeTable
             data={workload}
             onEdit={editWorkload}
+            onDelete={deleteWorkload}
             // onOverlapSubjectClick={(subject) =>
             //   discardWorkload(subject.workloadId)
             // }

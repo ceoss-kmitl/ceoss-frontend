@@ -89,7 +89,7 @@ export function useWorkload(academicYear: number, semester: number) {
 
   const editWorkload = async (workload: any) => {
     setIsLoading(true)
-    await delay(2)
+    await delay(1)
     try {
       await http.put(`/workload/${workload.id}`, {
         teacherList: workload.teacherList,
@@ -101,24 +101,16 @@ export function useWorkload(academicYear: number, semester: number) {
     setIsLoading(false)
   }
 
-  async function discardWorkload(id: string) {
-    Modal.warning({
-      title: 'ยืนยันการนำออก',
-      description: 'คุณต้องการนำภาระงานนี้ออกหรือไม่',
-      finishTitle: 'นำภาระงานออกสำเร็จ',
-      finishFailTitle: 'ไม่สามารถนำภาระงานออกได้',
-      width: 340,
-      onAsyncOk: async () => {
-        setIsLoading(true)
-        try {
-          await http.delete(`/workload/${id}`)
-          await getWorkloadByTeacherId(currentTeacherId)
-        } catch (err) {
-          setIsLoading(false)
-          throw err
-        }
-      },
-    })
+  async function deleteWorkload(workload: any) {
+    setIsLoading(true)
+    await delay(1)
+    try {
+      await http.delete(`/workload/${workload.id}`)
+      await getWorkloadByTeacherId(currentTeacherId)
+    } catch (err) {
+      message.error(err.message, 10)
+    }
+    setIsLoading(false)
   }
 
   function convertToWorkloadTime(timeRangePicker: any[]) {
@@ -173,7 +165,7 @@ export function useWorkload(academicYear: number, semester: number) {
     workload,
     getWorkloadByTeacherId,
     editWorkload,
-    discardWorkload,
+    deleteWorkload,
     addWorkload,
   }
 }
