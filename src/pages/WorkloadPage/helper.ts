@@ -145,3 +145,23 @@ export function useWorkload(academicYear: number, semester: number) {
     deleteWorkload,
   }
 }
+
+export function useExternalTeacherDrawer() {
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
+
+  const openDrawer = () => {
+    setIsDrawerVisible(true)
+  }
+
+  const closeDrawer = () => {
+    setIsDrawerVisible(false)
+  }
+
+  return {
+    openDrawer,
+    drawerProps: {
+      isDrawerVisible,
+      onClose: closeDrawer,
+    },
+  }
+}
