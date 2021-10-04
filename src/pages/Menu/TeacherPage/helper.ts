@@ -74,6 +74,7 @@ export const columnList: IColumn[] = [
     type: 'text',
     header: 'ตำแหน่งบริหาร',
     dataIndex: 'executiveRole',
+    placeholder: 'ไม่มีตำแหน่ง',
     required: false,
   },
   {

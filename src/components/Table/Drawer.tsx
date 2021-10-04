@@ -46,7 +46,6 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
       message.success('บันทึกข้อมูลแล้ว')
     } catch (err) {
       message.error(err.message, 10)
-      console.error(err)
     } finally {
       setIsSubmitting(false)
     }
@@ -62,7 +61,6 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
       message.success('ลบข้อมูลแล้ว')
     } catch (err) {
       message.error(err.message, 10)
-      console.error(err)
     } finally {
       setIsSubmitting(false)
     }
@@ -154,7 +152,7 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
       width={560}
       visible={_.isDrawerVisible}
       onClose={_.closeDrawer}
-      maskClosable={false}
+      maskClosable={!isSubmitting}
       closable={false}
       keyboard={false}
       title={
