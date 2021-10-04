@@ -53,31 +53,32 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
     >
       <Collapse accordion defaultActiveKey="1">
         <Collapse.Panel header="COMPUTER PROGRAMMING" key="1">
+          eiei
+        </Collapse.Panel>
+        <Collapse.Panel header="Test2" key="2">
           <Row justify="center">
             <Text bold>เลือกวันที่สอน</Text>
           </Row>
           <Calendar
             className={style.calendar}
-            validRange={[dayjs().startOf('month'), dayjs().endOf('month')]}
             locale={localeTH}
             fullscreen={false}
             onChange={(a) => setDay((d) => [...d, a])}
           />
-          {day.map((d: Dayjs) => (
-            <Card title={d.format('DD MMMM YYYY')}>
-              <Checkbox />
-            </Card>
-          ))}
-        </Collapse.Panel>
-        <Collapse.Panel header="Test2" key="2">
-          <Calendar
-            className={style.calendar}
-            locale={localeTH}
-            fullscreen={false}
-            onChange={(a) => setDay((d) => [...d, a])}
-          />
-          {day.map((d: Dayjs) => (
-            <Card title={d.format('DD MMMM YYYY')}>
+          {day.map((d: Dayjs, index) => (
+            <Card
+              key={index}
+              title={d.format('DD MMMM YYYY')}
+              extra={
+                <div
+                  onClick={() =>
+                    setDay((da) => da.filter((d2: Dayjs) => !d2.isSame(d)))
+                  }
+                >
+                  X
+                </div>
+              }
+            >
               <Checkbox />
             </Card>
           ))}
