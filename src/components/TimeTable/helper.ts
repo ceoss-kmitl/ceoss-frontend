@@ -7,7 +7,6 @@ import { ISelectOption } from 'constants/selectOption'
 
 import { http } from 'libs/http'
 import { isNull } from 'libs/utils'
-import { delay } from 'libs/delay'
 
 export interface IDay {
   workloadList: IWorkload[]

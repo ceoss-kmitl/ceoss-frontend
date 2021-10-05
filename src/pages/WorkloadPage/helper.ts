@@ -46,7 +46,7 @@ export function useAcademicYear() {
 
 export function useWorkload(academicYear: number, semester: number) {
   const [currentTeacherId, setCurrentTeacherId] = useState('')
-  const [workload, setWorkload] = useState([])
+  const [workload, setWorkload] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
 
   async function getWorkloadByTeacherId(id: string) {

@@ -31,4 +31,22 @@
     :global(.ant-picker-calendar-header) {
         display: none;
     }
+
+    :global(.ant-picker-cell-selected)
+        :global(.ant-picker-cell-inner.ant-picker-calendar-date) {
+        background: inherit;
+        color: inherit;
+
+        &:hover {
+            background: rgb(245, 245, 245);
+        }
+    }
+
+    .daySelected {
+        width: 24px;
+        height: 24px;
+        background: var(--blue100);
+        border-bottom: 2px solid var(--blue500);
+        margin-top: -24px;
+    }
 }

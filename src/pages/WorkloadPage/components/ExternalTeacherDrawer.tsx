@@ -1,6 +1,5 @@
 import css from 'classnames'
-import localeTH from 'antd/es/date-picker/locale/th_TH'
-import { Drawer, Collapse, Card, Row } from 'antd'
+import { Drawer, Collapse, Card, Row, Col, Form } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 import { FiX, FiDownload } from 'react-icons/fi'
 
@@ -11,17 +10,30 @@ import { Checkbox } from 'components/Checkbox'
 
 import style from './ExternalTeacherDrawer.module.scss'
 import { useDocumentDetail } from './ExternalTeacherDrawerHelper'
+import { Select } from 'components/Select'
 
 interface IProps {
   isDrawerVisible?: boolean
   onClose?: () => void
+  workload: any[]
 }
 
 export const ExternalTeacherDrawer: React.FC<IProps> = ({
   isDrawerVisible,
   onClose,
+  workload,
 }) => {
-  const { day, setDay } = useDocumentDetail()
+  const {
+    detail,
+    isDaySelected,
+    addDay,
+    removeDay,
+    resetDetail,
+    currentDate,
+    month,
+    setMonth,
+    monthOptionList,
+  } = useDocumentDetail(workload)
 
   return (
     <Drawer
@@ -29,7 +41,7 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
       visible={isDrawerVisible}
       onClose={() => {
         onClose?.()
-        setDay([])
+        resetDetail()
       }}
       maskClosable={true}
       closable={false}
@@ -51,38 +63,43 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
         </div>
       }
     >
-      <Collapse accordion defaultActiveKey="1">
-        <Collapse.Panel header="COMPUTER PROGRAMMING" key="1">
-          eiei
-        </Collapse.Panel>
-        <Collapse.Panel header="Test2" key="2">
-          <Row justify="center">
-            <Text bold>เลือกวันที่สอน</Text>
-          </Row>
-          <Calendar
-            className={style.calendar}
-            locale={localeTH}
-            fullscreen={false}
-            onChange={(a) => setDay((d) => [...d, a])}
-          />
-          {day.map((d: Dayjs, index) => (
-            <Card
-              key={index}
-              title={d.format('DD MMMM YYYY')}
-              extra={
-                <div
-                  onClick={() =>
-                    setDay((da) => da.filter((d2: Dayjs) => !d2.isSame(d)))
-                  }
-                >
-                  X
-                </div>
+      <Text bold>เลือกเดือนที่จะทำรายการ</Text>
+      <Select
+        value={month}
+        onChange={(value) => setMonth(value)}
+        options={monthOptionList}
+      />
+
+      <Text bold>รายชื่อวิชาที่สอน</Text>
+      <Collapse accordion defaultActiveKey={0}>
+        {detail.subjectList.map((subject, index) => (
+          <Collapse.Panel header={subject.name} key={index}>
+            <Calendar
+              className={style.calendar}
+              fullscreen={false}
+              dateCellRender={(date) =>
+                isDaySelected(subject.id, date) && (
+                  <div className={style.daySelected} />
+                )
               }
-            >
-              <Checkbox />
-            </Card>
-          ))}
-        </Collapse.Panel>
+              value={currentDate.startOf('month')}
+              validRange={[
+                currentDate.startOf('month'),
+                currentDate.endOf('month'),
+              ]}
+              onChange={(value) =>
+                isDaySelected(subject.id, value)
+                  ? removeDay(subject.id, value)
+                  : addDay(subject.id, value)
+              }
+            />
+            {subject.dayList.map(({ day }, index) => (
+              <Card key={index} title={day.format('DD MMMM BBBB')}>
+                <Checkbox />
+              </Card>
+            ))}
+          </Collapse.Panel>
+        ))}
       </Collapse>
     </Drawer>
   )

@@ -81,7 +81,10 @@ export const WorkloadPage = () => {
                 ดาวน์โหลดเอกสาร
               </Button>
 
-              <ExternalTeacherDrawer {...externalTeacherDrawer.drawerProps} />
+              <ExternalTeacherDrawer
+                {...externalTeacherDrawer.drawerProps}
+                workload={workload.flatMap((w) => w.workloadList)}
+              />
             </div>
           </div>
 

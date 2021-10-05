@@ -3,7 +3,6 @@ import { OutlineTable } from './OutlineTable'
 import { Workload } from './Workload'
 import { Drawer } from './Drawer'
 import {
-  IDay,
   IPrivateUseTimeTable,
   timeSlot,
   useTimeSlot,

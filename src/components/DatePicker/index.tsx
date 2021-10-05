@@ -4,5 +4,5 @@ import generateCalendar from 'antd/es/calendar/generateCalendar'
 import { Dayjs } from 'dayjs'
 import 'antd/es/date-picker/style/index'
 
-export const DatePicker = generatePicker<Dayjs>(dayjsGenerateConfig)
-export const Calendar = generateCalendar<Dayjs>(dayjsGenerateConfig)
+export const DatePicker = generatePicker<Dayjs>(dayjsGenerateConfig as any)
+export const Calendar = generateCalendar<Dayjs>(dayjsGenerateConfig as any)
