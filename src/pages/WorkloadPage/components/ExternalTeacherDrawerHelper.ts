@@ -14,7 +14,16 @@ export function useDocumentDetail(workload: any[]) {
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs())
   const [detail, setDetail] = useState<IDetail>(initialDetail)
 
-  const setMonth = (index: number) => setCurrentDate(dayjs().month(index))
+  const setMonth = (index: number) => {
+    setCurrentDate(dayjs().month(index))
+    setDetail((detail) => ({
+      ...detail,
+      subjectList: detail.subjectList.map((subject) => ({
+        ...subject,
+        dayList: [],
+      })),
+    }))
+  }
 
   const resetDetail = () => {
     setCurrentDate(dayjs())

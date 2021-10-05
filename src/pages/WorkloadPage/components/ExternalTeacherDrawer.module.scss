@@ -28,6 +28,8 @@
 }
 
 .calendar {
+    user-select: none;
+
     :global(.ant-picker-calendar-header) {
         display: none;
     }
@@ -39,6 +41,13 @@
 
         &:hover {
             background: rgb(245, 245, 245);
+        }
+    }
+
+    :global(.ant-picker-cell-today
+            .ant-picker-cell-inner.ant-picker-calendar-date-today) {
+        &::before {
+            border: none;
         }
     }
 
