@@ -84,6 +84,13 @@ export const WorkloadPage = () => {
               <ExternalTeacherDrawer
                 {...externalTeacherDrawer.drawerProps}
                 workload={workload.flatMap((w) => w.workloadList)}
+                onDownload={(config) =>
+                  externalTeacherDrawer.downloadFile(
+                    academicYear,
+                    semester,
+                    config
+                  )
+                }
               />
             </div>
           </div>

@@ -157,8 +157,17 @@ export function useExternalTeacherDrawer() {
     setIsDrawerVisible(false)
   }
 
+  const downloadFile = (
+    academicYear: number,
+    semester: number,
+    config: any
+  ) => {
+    console.log(academicYear, semester, config)
+  }
+
   return {
     openDrawer,
+    downloadFile,
     drawerProps: {
       isDrawerVisible,
       onClose: closeDrawer,

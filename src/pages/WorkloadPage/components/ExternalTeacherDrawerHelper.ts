@@ -116,6 +116,21 @@ export function useDocumentDetail(workload: any[]) {
     return true
   }
 
+  const handleDownload = (callback: (config: any) => void) => {
+    const payload = {
+      ...detail,
+      subjectList: detail.subjectList.map((subject) => ({
+        subjectId: subject.id,
+        dayList: subject.dayList.map((obj) => ({
+          day: obj.day.date(),
+          isCompensated: obj.isCompensated,
+          remark: obj.remark,
+        })),
+      })),
+    }
+    callback(payload)
+  }
+
   useEffect(() => {
     setDetail({
       month: dayjs().format('MMMM'),
@@ -139,6 +154,7 @@ export function useDocumentDetail(workload: any[]) {
     month: currentDate.month(),
     setMonth,
     monthOptionList,
+    handleDownload,
   }
 }
 

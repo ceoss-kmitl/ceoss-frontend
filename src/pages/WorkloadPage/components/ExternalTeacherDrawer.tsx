@@ -1,6 +1,5 @@
 import css from 'classnames'
-import { Drawer, Collapse, List, Row, Col, ConfigProvider, Divider } from 'antd'
-import dayjs, { Dayjs } from 'dayjs'
+import { Drawer, Collapse, List, Row, ConfigProvider } from 'antd'
 import { FiX, FiDownload } from 'react-icons/fi'
 
 import { Button } from 'components/Button'
@@ -8,21 +7,23 @@ import { Text } from 'components/Text'
 import { Calendar } from 'components/DatePicker'
 import { Checkbox } from 'components/Checkbox'
 import { Input } from 'components/Input'
+import { Select } from 'components/Select'
 
 import style from './ExternalTeacherDrawer.module.scss'
 import { useDocumentDetail } from './ExternalTeacherDrawerHelper'
-import { Select } from 'components/Select'
 
 interface IProps {
   isDrawerVisible?: boolean
   onClose?: () => void
   workload: any[]
+  onDownload: (config: any) => void
 }
 
 export const ExternalTeacherDrawer: React.FC<IProps> = ({
   isDrawerVisible,
   onClose,
   workload,
+  onDownload,
 }) => {
   const {
     detail,
@@ -36,6 +37,7 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
     month,
     setMonth,
     monthOptionList,
+    handleDownload,
   } = useDocumentDetail(workload)
 
   return (
@@ -59,7 +61,11 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
           <Text size="sub-head" bold className={style.title}>
             รายละเอียดเอกสาร
           </Text>
-          <Button small onClick={undefined} disabled={false}>
+          <Button
+            small
+            onClick={() => handleDownload(onDownload)}
+            disabled={false}
+          >
             <FiDownload className={style.submitIcon} />
             ดาวน์โหลด
           </Button>
