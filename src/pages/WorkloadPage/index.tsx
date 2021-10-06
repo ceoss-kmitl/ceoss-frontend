@@ -10,7 +10,12 @@ import { Loader } from 'components/Loader'
 import style from './style.module.scss'
 import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
-import { useAcademicYear, useWorkload } from './helper'
+import { ExternalTeacherDrawer } from './components/ExternalTeacherDrawer'
+import {
+  useAcademicYear,
+  useExternalTeacherDrawer,
+  useWorkload,
+} from './helper'
 
 export const WorkloadPage = () => {
   const {
@@ -37,6 +42,8 @@ export const WorkloadPage = () => {
     onEdit: editWorkload,
     onDelete: deleteWorkload,
   })
+
+  const externalTeacherDrawer = useExternalTeacherDrawer()
 
   return (
     <div className={style.page}>
@@ -70,7 +77,21 @@ export const WorkloadPage = () => {
                 value={semester}
                 onChange={setSemester}
               />
-              <Button small>ดาวน์โหลดเอกสาร</Button>
+              <Button small onClick={externalTeacherDrawer.openDrawer}>
+                ดาวน์โหลดเอกสาร
+              </Button>
+
+              <ExternalTeacherDrawer
+                {...externalTeacherDrawer.drawerProps}
+                workload={workload.flatMap((w) => w.workloadList)}
+                onDownload={(config) =>
+                  externalTeacherDrawer.downloadFile(
+                    academicYear,
+                    semester,
+                    config
+                  )
+                }
+              />
             </div>
           </div>
 

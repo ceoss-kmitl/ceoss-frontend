@@ -46,7 +46,7 @@ export function useAcademicYear() {
 
 export function useWorkload(academicYear: number, semester: number) {
   const [currentTeacherId, setCurrentTeacherId] = useState('')
-  const [workload, setWorkload] = useState([])
+  const [workload, setWorkload] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
 
   async function getWorkloadByTeacherId(id: string) {
@@ -143,5 +143,34 @@ export function useWorkload(academicYear: number, semester: number) {
     addWorkload,
     editWorkload,
     deleteWorkload,
+  }
+}
+
+export function useExternalTeacherDrawer() {
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
+
+  const openDrawer = () => {
+    setIsDrawerVisible(true)
+  }
+
+  const closeDrawer = () => {
+    setIsDrawerVisible(false)
+  }
+
+  const downloadFile = (
+    academicYear: number,
+    semester: number,
+    config: any
+  ) => {
+    console.log(academicYear, semester, config)
+  }
+
+  return {
+    openDrawer,
+    downloadFile,
+    drawerProps: {
+      isDrawerVisible,
+      onClose: closeDrawer,
+    },
   }
 }

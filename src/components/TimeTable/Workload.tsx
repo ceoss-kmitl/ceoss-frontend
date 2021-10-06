@@ -2,8 +2,6 @@ import css from 'classnames'
 import { Tooltip } from 'antd'
 import { FiAlertTriangle } from 'react-icons/fi'
 
-import { SUBJECT_TYPE } from 'constants/enum'
-
 import style from './Workload.module.scss'
 import { ISlot, IWorkload, useWorkloadSlot } from './helper'
 

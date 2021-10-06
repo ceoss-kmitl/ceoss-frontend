@@ -1,0 +1,69 @@
+.titleWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.closeIcon {
+    font-size: 20px;
+    margin-right: 1rem;
+    color: var(--gray400);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--gray800);
+    }
+}
+
+.title {
+    margin-right: auto;
+}
+
+.submitIcon {
+    font-size: 18px;
+    margin-right: 0.5rem;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.calendar {
+    user-select: none;
+
+    :global(.ant-picker-calendar-header) {
+        display: none;
+    }
+
+    :global(.ant-picker-cell-selected)
+        :global(.ant-picker-cell-inner.ant-picker-calendar-date) {
+        background: inherit;
+        color: inherit;
+
+        &:hover {
+            background: rgb(245, 245, 245);
+        }
+    }
+
+    :global(.ant-picker-cell-today
+            .ant-picker-cell-inner.ant-picker-calendar-date-today) {
+        &::before {
+            border: none;
+        }
+    }
+
+    .daySelected {
+        width: 24px;
+        height: 24px;
+        background: var(--blue100);
+        border-bottom: 2px solid var(--blue500);
+        margin-top: -24px;
+    }
+}
+
+.listCheckbox {
+    margin-left: auto;
+}
+
+.listRemark {
+    margin-top: 0.5rem;
+}
