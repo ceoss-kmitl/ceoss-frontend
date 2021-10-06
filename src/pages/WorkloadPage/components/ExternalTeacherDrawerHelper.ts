@@ -6,7 +6,7 @@ interface IDetail {
   subjectList: {
     id: string
     name: string
-    dayList: { day: Dayjs; remark: string }[]
+    dayList: { day: Dayjs; isCompensated: boolean; remark: string }[]
   }[]
 }
 
@@ -50,17 +50,59 @@ export function useDocumentDetail(workload: any[]) {
         subject.id === subjectId
           ? {
               ...subject,
-              dayList: [...subject.dayList, { day, remark: '' }].sort(
-                (a, b) => {
-                  if (a.day.isBefore(b.day)) return -1
-                  if (a.day.isAfter(b.day)) return 1
-                  return 0
-                }
+              dayList: [
+                ...subject.dayList,
+                { day, remark: '', isCompensated: false },
+              ].sort((a, b) => {
+                if (a.day.isBefore(b.day)) return -1
+                if (a.day.isAfter(b.day)) return 1
+                return 0
+              }),
+            }
+          : subject
+      ),
+    }))
+
+  const toggleIsCompensated = (subjectId: string, day: Dayjs) =>
+    setDetail((detail) => ({
+      ...detail,
+      subjectList: detail.subjectList.map((subject) =>
+        subject.id === subjectId
+          ? {
+              ...subject,
+              dayList: subject.dayList.map((obj) =>
+                obj.day.startOf('day').isSame(day.startOf('day'))
+                  ? {
+                      ...obj,
+                      isCompensated: !obj.isCompensated,
+                    }
+                  : obj
               ),
             }
           : subject
       ),
     }))
+
+  const onRemarkChange = (subjectId: string, day: Dayjs, value: string) => {
+    setDetail((detail) => ({
+      ...detail,
+      subjectList: detail.subjectList.map((subject) =>
+        subject.id === subjectId
+          ? {
+              ...subject,
+              dayList: subject.dayList.map((obj) =>
+                obj.day.startOf('day').isSame(day.startOf('day'))
+                  ? {
+                      ...obj,
+                      remark: value,
+                    }
+                  : obj
+              ),
+            }
+          : subject
+      ),
+    }))
+  }
 
   const isDaySelected = (subjectId: string, day: Dayjs) => {
     const list = detail.subjectList.find((subject) => subject.id === subjectId)
@@ -91,6 +133,8 @@ export function useDocumentDetail(workload: any[]) {
     addDay,
     removeDay,
     resetDetail,
+    toggleIsCompensated,
+    onRemarkChange,
     currentDate,
     month: currentDate.month(),
     setMonth,

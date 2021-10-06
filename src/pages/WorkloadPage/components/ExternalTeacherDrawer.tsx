@@ -1,5 +1,5 @@
 import css from 'classnames'
-import { Drawer, Collapse, Card, Row, Col, Form } from 'antd'
+import { Drawer, Collapse, List, Row, Col, ConfigProvider, Divider } from 'antd'
 import dayjs, { Dayjs } from 'dayjs'
 import { FiX, FiDownload } from 'react-icons/fi'
 
@@ -7,6 +7,7 @@ import { Button } from 'components/Button'
 import { Text } from 'components/Text'
 import { Calendar } from 'components/DatePicker'
 import { Checkbox } from 'components/Checkbox'
+import { Input } from 'components/Input'
 
 import style from './ExternalTeacherDrawer.module.scss'
 import { useDocumentDetail } from './ExternalTeacherDrawerHelper'
@@ -29,6 +30,8 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
     addDay,
     removeDay,
     resetDetail,
+    toggleIsCompensated,
+    onRemarkChange,
     currentDate,
     month,
     setMonth,
@@ -87,17 +90,44 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
                 currentDate.startOf('month'),
                 currentDate.endOf('month'),
               ]}
-              onChange={(value) =>
+              onSelect={(value) =>
                 isDaySelected(subject.id, value)
                   ? removeDay(subject.id, value)
                   : addDay(subject.id, value)
               }
             />
-            {subject.dayList.map(({ day }, index) => (
-              <Card key={index} title={day.format('DD MMMM BBBB')}>
-                <Checkbox />
-              </Card>
-            ))}
+            <ConfigProvider renderEmpty={() => 'คลิกปฎิทินเพื่อเลือกวันสอน'}>
+              <List
+                itemLayout="vertical"
+                dataSource={subject.dayList}
+                renderItem={(item) => (
+                  <List.Item>
+                    <Row>
+                      <Text>{item.day.format('DD MMMM BBBB')}</Text>
+                      <Checkbox
+                        className={style.listCheckbox}
+                        checked={item.isCompensated}
+                        onChange={() =>
+                          toggleIsCompensated(subject.id, item.day)
+                        }
+                      >
+                        สอนชดเชย
+                      </Checkbox>
+                    </Row>
+                    {item.isCompensated && (
+                      <Input
+                        placeholder="หมายเหตุ"
+                        className={style.listRemark}
+                        value={item.remark}
+                        onChange={(e) =>
+                          onRemarkChange(subject.id, item.day, e.target.value)
+                        }
+                      />
+                    )}
+                  </List.Item>
+                )}
+              />
+            </ConfigProvider>
           </Collapse.Panel>
         ))}
       </Collapse>
