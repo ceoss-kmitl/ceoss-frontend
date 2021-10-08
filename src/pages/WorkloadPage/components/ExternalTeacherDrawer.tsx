@@ -72,14 +72,14 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
         </div>
       }
     >
-      <Text bold>เลือกเดือนที่จะทำรายการ</Text>
+      <Text className={style.labelMonthPicker}>เลือกเดือนที่จะทำรายการ</Text>
       <Select
         value={month}
         onChange={(value) => setMonth(value)}
         options={monthOptionList}
       />
 
-      <Text bold>รายชื่อวิชาที่สอน</Text>
+      <Text className={style.labelCalendarPicker}>รายชื่อวิชาที่สอน</Text>
       <Collapse accordion defaultActiveKey={0}>
         {detail.subjectList.map((subject, index) => (
           <Collapse.Panel header={subject.name} key={index}>
