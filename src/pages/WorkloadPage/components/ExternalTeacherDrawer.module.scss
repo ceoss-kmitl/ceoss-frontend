@@ -61,9 +61,22 @@
 }
 
 .listCheckbox {
-    margin-left: auto;
+    &:global(.ant-checkbox-wrapper) {
+        margin-left: auto;
+    }
 }
 
 .listRemark {
     margin-top: 0.5rem;
+}
+
+.labelMonthPicker {
+    display: block;
+    margin: 0.5rem 0;
+}
+
+.labelCalendarPicker {
+    display: block;
+    margin: 0.5rem 0;
+    margin-top: 1.5rem;
 }
