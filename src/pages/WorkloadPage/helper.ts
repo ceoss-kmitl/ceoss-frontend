@@ -1,5 +1,6 @@
 import { Dayjs } from 'dayjs'
 import { useState, useEffect } from 'react'
+import { saveAs } from 'file-saver'
 
 import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
 import { http } from 'libs/http'
@@ -44,10 +45,20 @@ export function useAcademicYear() {
   }
 }
 
+interface ITeacher {
+  id: string
+  name: string
+  isExternal: boolean
+}
+
 export function useWorkload(academicYear: number, semester: number) {
-  const [currentTeacherId, setCurrentTeacherId] = useState('')
+  const [teacher, setTeacher] = useState<ITeacher>({} as ITeacher)
   const [workload, setWorkload] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
+
+  function setCurrentTeacher(teacher: ITeacher) {
+    setTeacher(teacher)
+  }
 
   async function getWorkloadByTeacherId(id: string) {
     if (!id) return
@@ -73,14 +84,12 @@ export function useWorkload(academicYear: number, semester: number) {
       }))
 
       setWorkload(workloadWithDayjs)
-      setCurrentTeacherId(id)
     } catch (err) {
       Modal.error({
         title: 'เกิดข้อผิดพลาด',
         description: 'ไม่สามารถเรียกดูภาระงานได้',
       })
       setWorkload([])
-      setCurrentTeacherId('')
     }
     setIsLoading(false)
   }
@@ -97,7 +106,7 @@ export function useWorkload(academicYear: number, semester: number) {
     delete payload.id
 
     await http.post(`/workload`, payload)
-    await getWorkloadByTeacherId(currentTeacherId)
+    await getWorkloadByTeacherId(teacher.id)
     setIsLoading(false)
   }
 
@@ -106,14 +115,14 @@ export function useWorkload(academicYear: number, semester: number) {
     await http.put(`/workload/${workload.id}`, {
       teacherList: workload.teacherList,
     })
-    await getWorkloadByTeacherId(currentTeacherId)
+    await getWorkloadByTeacherId(teacher.id)
     setIsLoading(false)
   }
 
   async function deleteWorkload(workload: any) {
     setIsLoading(true)
     await http.delete(`/workload/${workload.id}`)
-    await getWorkloadByTeacherId(currentTeacherId)
+    await getWorkloadByTeacherId(teacher.id)
     setIsLoading(false)
   }
 
@@ -132,17 +141,43 @@ export function useWorkload(academicYear: number, semester: number) {
     })
   }
 
+  async function downloadExcel() {
+    try {
+      const res = await http.get('/workload/excel', {
+        params: {
+          teacher_id: teacher.id,
+          academic_year: academicYear,
+          semester,
+        },
+        responseType: 'arraybuffer',
+      })
+
+      const blob = new Blob([res.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+
+      const yearAndSemester = `${String(academicYear).substr(2, 2)}-${semester}`
+      const fileName = `${yearAndSemester} ${teacher.name}.xlsx`
+      saveAs(blob, fileName)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   useEffect(() => {
-    getWorkloadByTeacherId(currentTeacherId)
-  }, [academicYear, semester])
+    getWorkloadByTeacherId(teacher.id)
+  }, [academicYear, semester, teacher])
 
   return {
     isLoading,
     workload,
+    currentTeacher: teacher,
+    setCurrentTeacher,
     getWorkloadByTeacherId,
     addWorkload,
     editWorkload,
     deleteWorkload,
+    downloadExcel,
   }
 }
 

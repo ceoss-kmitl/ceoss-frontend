@@ -8,7 +8,7 @@ import style from './BigSearch.module.scss'
 import { useBigSearch } from './BigSearchHelper'
 
 interface IProps {
-  onSearch: (id: string) => void
+  onSearch: (record: Record<string, any>) => void
 }
 
 export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
@@ -20,12 +20,17 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
       <AutoComplete
         allowClear
         defaultActiveFirstOption
-        options={teacherList.map((each) => ({
-          key: each.id,
-          value: each.name,
+        options={teacherList.map((teacher) => ({
+          key: teacher.id,
+          value: `${teacher.title}${teacher.name}`,
           label: (
-            <div style={{ fontSize: 18, margin: '0.5rem' }}>{each.name}</div>
+            <div style={{ fontSize: 18, margin: '0.5rem' }}>
+              {teacher.title}
+              {teacher.name}
+            </div>
           ),
+          name: teacher.name,
+          isExternal: teacher.isExternal,
         }))}
         filterOption={(inputValue, option) =>
           option?.value.includes(inputValue)
@@ -41,7 +46,7 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
             </div>
           )
         }
-        onSelect={(_, option) => onSearch(option.key as string)}
+        onSelect={(_, option) => onSearch(option)}
       >
         <input placeholder="ค้นหาอาจารย์..." spellCheck={false} />
       </AutoComplete>
