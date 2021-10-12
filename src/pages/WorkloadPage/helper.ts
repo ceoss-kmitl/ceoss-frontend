@@ -1,4 +1,5 @@
 import { Dayjs } from 'dayjs'
+import { message } from 'antd'
 import { useState, useEffect } from 'react'
 import { saveAs } from 'file-saver'
 
@@ -55,6 +56,7 @@ export function useWorkload(academicYear: number, semester: number) {
   const [teacher, setTeacher] = useState<ITeacher>({} as ITeacher)
   const [workload, setWorkload] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   function setCurrentTeacher(teacher: ITeacher) {
     setTeacher(teacher)
@@ -142,26 +144,28 @@ export function useWorkload(academicYear: number, semester: number) {
   }
 
   async function downloadExcel() {
+    const messageKey = 'downloading'
+
+    message.loading({ key: messageKey, content: 'กำลังดาวน์โหลด...' })
+    setIsDownloading(true)
     try {
-      const res = await http.get('/workload/excel', {
+      const { data } = await http.get('/workload/excel', {
         params: {
           teacher_id: teacher.id,
           academic_year: academicYear,
           semester,
         },
-        responseType: 'arraybuffer',
       })
 
-      const blob = new Blob([res.data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      })
+      const bufferArray = [new Uint8Array(data.buffer).buffer]
+      const blob = new Blob(bufferArray, { type: data.fileType })
+      saveAs(blob, data.fileName)
 
-      const yearAndSemester = `${String(academicYear).substr(2, 2)}-${semester}`
-      const fileName = `${yearAndSemester} ${teacher.name}.xlsx`
-      saveAs(blob, fileName)
+      message.success({ key: messageKey, content: 'ดาวน์โหลดสำเร็จ' })
     } catch (err) {
-      console.log(err)
+      message.error({ key: messageKey, content: err.message })
     }
+    setIsDownloading(false)
   }
 
   useEffect(() => {
@@ -170,10 +174,10 @@ export function useWorkload(academicYear: number, semester: number) {
 
   return {
     isLoading,
+    isDownloading,
     workload,
     currentTeacher: teacher,
     setCurrentTeacher,
-    getWorkloadByTeacherId,
     addWorkload,
     editWorkload,
     deleteWorkload,

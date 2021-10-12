@@ -29,6 +29,7 @@ export const WorkloadPage = () => {
 
   const {
     isLoading,
+    isDownloading,
     workload,
     currentTeacher,
     setCurrentTeacher,
@@ -95,7 +96,11 @@ export const WorkloadPage = () => {
                 value={semester}
                 onChange={setSemester}
               />
-              <Button small onClick={handleDownloadExcel}>
+              <Button
+                small
+                onClick={handleDownloadExcel}
+                loading={isDownloading}
+              >
                 ดาวน์โหลดเอกสาร
               </Button>
 
