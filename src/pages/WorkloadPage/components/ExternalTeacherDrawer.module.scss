@@ -67,7 +67,9 @@
 }
 
 .listRemark {
-    margin-top: 0.5rem;
+    &:global(.ant-input) {
+        margin-top: 0.5rem;
+    }
 }
 
 .labelMonthPicker {

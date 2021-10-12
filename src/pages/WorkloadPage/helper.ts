@@ -143,19 +143,37 @@ export function useWorkload(academicYear: number, semester: number) {
     })
   }
 
-  async function downloadExcel() {
+  async function downloadExcel(externalTeacherOption?: any) {
     const messageKey = 'downloading'
 
     message.loading({ key: messageKey, content: 'กำลังดาวน์โหลด...' })
     setIsDownloading(true)
     try {
-      const { data } = await http.get('/workload/excel', {
-        params: {
-          teacher_id: teacher.id,
-          academic_year: academicYear,
-          semester,
-        },
-      })
+      let data
+
+      if (externalTeacherOption) {
+        const res = await http.post(
+          '/workload/excel-external',
+          externalTeacherOption,
+          {
+            params: {
+              teacher_id: teacher.id,
+              academic_year: academicYear,
+              semester,
+            },
+          }
+        )
+        data = res.data
+      } else {
+        const res = await http.get('/workload/excel', {
+          params: {
+            teacher_id: teacher.id,
+            academic_year: academicYear,
+            semester,
+          },
+        })
+        data = res.data
+      }
 
       const bufferArray = [new Uint8Array(data.buffer).buffer]
       const blob = new Blob(bufferArray, { type: data.fileType })
@@ -178,6 +196,7 @@ export function useWorkload(academicYear: number, semester: number) {
     workload,
     currentTeacher: teacher,
     setCurrentTeacher,
+    getWorkloadByTeacherId,
     addWorkload,
     editWorkload,
     deleteWorkload,
@@ -196,17 +215,8 @@ export function useExternalTeacherDrawer() {
     setIsDrawerVisible(false)
   }
 
-  const downloadFile = (
-    academicYear: number,
-    semester: number,
-    config: any
-  ) => {
-    console.log(academicYear, semester, config)
-  }
-
   return {
     openDrawer,
-    downloadFile,
     drawerProps: {
       isDrawerVisible,
       onClose: closeDrawer,

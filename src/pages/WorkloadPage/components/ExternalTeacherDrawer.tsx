@@ -11,9 +11,11 @@ import { Select } from 'components/Select'
 
 import style from './ExternalTeacherDrawer.module.scss'
 import { useDocumentDetail } from './ExternalTeacherDrawerHelper'
+import { Loader } from 'components/Loader'
 
 interface IProps {
   isDrawerVisible?: boolean
+  isDownloading: boolean
   onClose?: () => void
   workload: any[]
   onDownload: (config: any) => void
@@ -21,6 +23,7 @@ interface IProps {
 
 export const ExternalTeacherDrawer: React.FC<IProps> = ({
   isDrawerVisible,
+  isDownloading,
   onClose,
   workload,
   onDownload,
@@ -30,7 +33,6 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
     isDaySelected,
     addDay,
     removeDay,
-    resetDetail,
     toggleIsCompensated,
     onRemarkChange,
     currentDate,
@@ -44,17 +46,14 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
     <Drawer
       width={560}
       visible={isDrawerVisible}
-      onClose={() => {
-        onClose?.()
-        resetDetail()
-      }}
-      maskClosable={true}
+      onClose={() => onClose?.()}
+      maskClosable={!isDownloading}
       closable={false}
       keyboard={false}
       title={
         <div
           className={css(style.titleWrapper, {
-            [style.disabled]: false,
+            [style.disabled]: isDownloading,
           })}
         >
           <FiX className={style.closeIcon} onClick={onClose} />
@@ -64,7 +63,7 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
           <Button
             small
             onClick={() => handleDownload(onDownload)}
-            disabled={false}
+            disabled={isDownloading}
           >
             <FiDownload className={style.submitIcon} />
             ดาวน์โหลด
@@ -72,71 +71,73 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
         </div>
       }
     >
-      <Text className={style.labelMonthPicker}>เลือกเดือนที่จะทำรายการ</Text>
-      <Select
-        value={month}
-        onChange={(value) => setMonth(value)}
-        options={monthOptionList}
-      />
+      <Loader loading={isDownloading}>
+        <Text className={style.labelMonthPicker}>เลือกเดือนที่จะทำรายการ</Text>
+        <Select
+          value={month}
+          onChange={(value) => setMonth(value)}
+          options={monthOptionList}
+        />
 
-      <Text className={style.labelCalendarPicker}>รายชื่อวิชาที่สอน</Text>
-      <Collapse accordion defaultActiveKey={0}>
-        {detail.subjectList.map((subject, index) => (
-          <Collapse.Panel header={subject.name} key={index}>
-            <Calendar
-              className={style.calendar}
-              fullscreen={false}
-              dateCellRender={(date) =>
-                isDaySelected(subject.id, date) && (
-                  <div className={style.daySelected} />
-                )
-              }
-              value={currentDate.startOf('month')}
-              validRange={[
-                currentDate.startOf('month'),
-                currentDate.endOf('month'),
-              ]}
-              onSelect={(value) =>
-                isDaySelected(subject.id, value)
-                  ? removeDay(subject.id, value)
-                  : addDay(subject.id, value)
-              }
-            />
-            <ConfigProvider renderEmpty={() => 'คลิกปฎิทินเพื่อเลือกวันสอน'}>
-              <List
-                itemLayout="vertical"
-                dataSource={subject.dayList}
-                renderItem={(item) => (
-                  <List.Item>
-                    <Row>
-                      <Text>{item.day.format('DD MMMM BBBB')}</Text>
-                      <Checkbox
-                        className={style.listCheckbox}
-                        checked={item.isCompensated}
-                        onChange={() =>
-                          toggleIsCompensated(subject.id, item.day)
-                        }
-                      >
-                        สอนชดเชย
-                      </Checkbox>
-                    </Row>
-                    {item.isCompensated && (
-                      <Input
-                        placeholder="หมายเหตุ"
-                        className={style.listRemark}
-                        value={item.remark}
-                        onChange={(e) =>
-                          onRemarkChange(subject.id, item.day, e.target.value)
-                        }
-                      />
-                    )}
-                  </List.Item>
-                )}
+        <Text className={style.labelCalendarPicker}>รายชื่อวิชาที่สอน</Text>
+        <Collapse accordion defaultActiveKey={0}>
+          {detail.subjectList.map((subject, index) => (
+            <Collapse.Panel header={subject.name} key={index}>
+              <Calendar
+                className={style.calendar}
+                fullscreen={false}
+                dateCellRender={(date) =>
+                  isDaySelected(subject.id, date) && (
+                    <div className={style.daySelected} />
+                  )
+                }
+                value={currentDate.startOf('month')}
+                validRange={[
+                  currentDate.startOf('month'),
+                  currentDate.endOf('month'),
+                ]}
+                onSelect={(value) =>
+                  isDaySelected(subject.id, value)
+                    ? removeDay(subject.id, value)
+                    : addDay(subject.id, value)
+                }
               />
-            </ConfigProvider>
-          </Collapse.Panel>
-        ))}
-      </Collapse>
+              <ConfigProvider renderEmpty={() => 'คลิกปฎิทินเพื่อเลือกวันสอน'}>
+                <List
+                  itemLayout="vertical"
+                  dataSource={subject.dayList}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <Row>
+                        <Text>{item.day.format('DD MMMM BBBB')}</Text>
+                        <Checkbox
+                          className={style.listCheckbox}
+                          checked={item.isCompensated}
+                          onChange={() =>
+                            toggleIsCompensated(subject.id, item.day)
+                          }
+                        >
+                          สอนชดเชย
+                        </Checkbox>
+                      </Row>
+                      {item.isCompensated && (
+                        <Input
+                          placeholder="หมายเหตุ"
+                          className={style.listRemark}
+                          value={item.remark}
+                          onChange={(e) =>
+                            onRemarkChange(subject.id, item.day, e.target.value)
+                          }
+                        />
+                      )}
+                    </List.Item>
+                  )}
+                />
+              </ConfigProvider>
+            </Collapse.Panel>
+          ))}
+        </Collapse>
+      </Loader>
     </Drawer>
   )
 }

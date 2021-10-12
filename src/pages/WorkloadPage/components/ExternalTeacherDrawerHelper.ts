@@ -25,11 +25,6 @@ export function useDocumentDetail(workload: any[]) {
     }))
   }
 
-  const resetDetail = () => {
-    setCurrentDate(dayjs())
-    setDetail(initialDetail)
-  }
-
   const removeDay = (subjectId: string, day: Dayjs) =>
     setDetail((detail) => ({
       ...detail,
@@ -147,7 +142,6 @@ export function useDocumentDetail(workload: any[]) {
     isDaySelected,
     addDay,
     removeDay,
-    resetDetail,
     toggleIsCompensated,
     onRemarkChange,
     currentDate,
