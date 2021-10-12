@@ -84,13 +84,17 @@ export const columnList: IColumn[] = [
     showInTable: true,
     width: '20%',
   },
+  {
+    type: 'checkbox',
+    header: 'อาจารย์ภายนอก',
+    dataIndex: 'isExternal',
+    showInTable: false,
+    width: '20%',
+  },
 ]
 
 export const formLayout: IFormLayout = {
   addFormTitle: 'เพิ่มข้อมูลอาจารย์ใหม่',
   editFormTitle: 'แก้ไขข้อมูลอาจารย์',
-  layout: [
-    ['title', 'name'],
-    ['executiveRole', 'isActive'],
-  ],
+  layout: [['title', 'name'], ['executiveRole'], ['isActive', 'isExternal']],
 }
