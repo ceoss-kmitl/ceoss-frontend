@@ -29,11 +29,14 @@ export const WorkloadPage = () => {
 
   const {
     isLoading,
+    isDownloading,
     workload,
-    getWorkloadByTeacherId,
+    currentTeacher,
+    setCurrentTeacher,
     addWorkload,
     editWorkload,
     deleteWorkload,
+    downloadExcel,
   } = useWorkload(academicYear, semester)
 
   const timeTable = useTimeTable({
@@ -45,13 +48,29 @@ export const WorkloadPage = () => {
 
   const externalTeacherDrawer = useExternalTeacherDrawer()
 
+  const handleDownloadExcel = () => {
+    if (currentTeacher.isExternal) {
+      externalTeacherDrawer.openDrawer()
+    } else {
+      downloadExcel()
+    }
+  }
+
   return (
     <div className={style.page}>
       <Text size="head" bold>
         จัดการภาระงาน
       </Text>
 
-      <BigSearch onSearch={getWorkloadByTeacherId} />
+      <BigSearch
+        onSearch={(record) => {
+          setCurrentTeacher({
+            id: record.key,
+            name: record.name,
+            isExternal: record.isExternal,
+          })
+        }}
+      />
 
       {isLoading === null ? (
         <div className={style.monsterWrapper}>
@@ -77,21 +96,22 @@ export const WorkloadPage = () => {
                 value={semester}
                 onChange={setSemester}
               />
-              <Button small onClick={externalTeacherDrawer.openDrawer}>
+              <Button
+                small
+                onClick={handleDownloadExcel}
+                loading={isDownloading}
+              >
                 ดาวน์โหลดเอกสาร
               </Button>
 
-              <ExternalTeacherDrawer
-                {...externalTeacherDrawer.drawerProps}
-                workload={workload.flatMap((w) => w.workloadList)}
-                onDownload={(config) =>
-                  externalTeacherDrawer.downloadFile(
-                    academicYear,
-                    semester,
-                    config
-                  )
-                }
-              />
+              {currentTeacher.isExternal && (
+                <ExternalTeacherDrawer
+                  {...externalTeacherDrawer.drawerProps}
+                  workload={workload.flatMap((w) => w.workloadList)}
+                  onDownload={(config) => downloadExcel(config)}
+                  isDownloading={isDownloading}
+                />
+              )}
             </div>
           </div>
 

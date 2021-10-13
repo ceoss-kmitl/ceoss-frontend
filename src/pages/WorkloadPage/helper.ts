@@ -1,5 +1,7 @@
 import { Dayjs } from 'dayjs'
+import { message } from 'antd'
 import { useState, useEffect } from 'react'
+import { saveAs } from 'file-saver'
 
 import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
 import { http } from 'libs/http'
@@ -44,10 +46,21 @@ export function useAcademicYear() {
   }
 }
 
+interface ITeacher {
+  id: string
+  name: string
+  isExternal: boolean
+}
+
 export function useWorkload(academicYear: number, semester: number) {
-  const [currentTeacherId, setCurrentTeacherId] = useState('')
+  const [teacher, setTeacher] = useState<ITeacher>({} as ITeacher)
   const [workload, setWorkload] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
+  const [isDownloading, setIsDownloading] = useState(false)
+
+  function setCurrentTeacher(teacher: ITeacher) {
+    setTeacher(teacher)
+  }
 
   async function getWorkloadByTeacherId(id: string) {
     if (!id) return
@@ -73,14 +86,12 @@ export function useWorkload(academicYear: number, semester: number) {
       }))
 
       setWorkload(workloadWithDayjs)
-      setCurrentTeacherId(id)
     } catch (err) {
       Modal.error({
         title: 'เกิดข้อผิดพลาด',
         description: 'ไม่สามารถเรียกดูภาระงานได้',
       })
       setWorkload([])
-      setCurrentTeacherId('')
     }
     setIsLoading(false)
   }
@@ -97,7 +108,7 @@ export function useWorkload(academicYear: number, semester: number) {
     delete payload.id
 
     await http.post(`/workload`, payload)
-    await getWorkloadByTeacherId(currentTeacherId)
+    await getWorkloadByTeacherId(teacher.id)
     setIsLoading(false)
   }
 
@@ -106,14 +117,14 @@ export function useWorkload(academicYear: number, semester: number) {
     await http.put(`/workload/${workload.id}`, {
       teacherList: workload.teacherList,
     })
-    await getWorkloadByTeacherId(currentTeacherId)
+    await getWorkloadByTeacherId(teacher.id)
     setIsLoading(false)
   }
 
   async function deleteWorkload(workload: any) {
     setIsLoading(true)
     await http.delete(`/workload/${workload.id}`)
-    await getWorkloadByTeacherId(currentTeacherId)
+    await getWorkloadByTeacherId(teacher.id)
     setIsLoading(false)
   }
 
@@ -132,17 +143,64 @@ export function useWorkload(academicYear: number, semester: number) {
     })
   }
 
+  async function downloadExcel(externalTeacherOption?: any) {
+    const messageKey = 'downloading'
+
+    message.loading({ key: messageKey, content: 'กำลังดาวน์โหลด...' })
+    setIsDownloading(true)
+    try {
+      let data
+
+      if (externalTeacherOption) {
+        const res = await http.post(
+          '/workload/excel-external',
+          externalTeacherOption,
+          {
+            params: {
+              teacher_id: teacher.id,
+              academic_year: academicYear,
+              semester,
+            },
+          }
+        )
+        data = res.data
+      } else {
+        const res = await http.get('/workload/excel', {
+          params: {
+            teacher_id: teacher.id,
+            academic_year: academicYear,
+            semester,
+          },
+        })
+        data = res.data
+      }
+
+      const bufferArray = [new Uint8Array(data.buffer).buffer]
+      const blob = new Blob(bufferArray, { type: data.fileType })
+      saveAs(blob, data.fileName)
+
+      message.success({ key: messageKey, content: 'ดาวน์โหลดสำเร็จ' })
+    } catch (err) {
+      message.error({ key: messageKey, content: err.message })
+    }
+    setIsDownloading(false)
+  }
+
   useEffect(() => {
-    getWorkloadByTeacherId(currentTeacherId)
-  }, [academicYear, semester])
+    getWorkloadByTeacherId(teacher.id)
+  }, [academicYear, semester, teacher])
 
   return {
     isLoading,
+    isDownloading,
     workload,
+    currentTeacher: teacher,
+    setCurrentTeacher,
     getWorkloadByTeacherId,
     addWorkload,
     editWorkload,
     deleteWorkload,
+    downloadExcel,
   }
 }
 
@@ -157,17 +215,8 @@ export function useExternalTeacherDrawer() {
     setIsDrawerVisible(false)
   }
 
-  const downloadFile = (
-    academicYear: number,
-    semester: number,
-    config: any
-  ) => {
-    console.log(academicYear, semester, config)
-  }
-
   return {
     openDrawer,
-    downloadFile,
     drawerProps: {
       isDrawerVisible,
       onClose: closeDrawer,
