@@ -1,4 +1,5 @@
 import css from 'classnames'
+import { Row } from 'antd'
 import { VscAdd } from 'react-icons/vsc'
 
 import { TimeTable, useTimeTable } from 'components/TimeTable'
@@ -37,6 +38,7 @@ export const WorkloadPage = () => {
     editWorkload,
     deleteWorkload,
     downloadExcel,
+    downloadExcel5,
   } = useWorkload(academicYear, semester)
 
   const timeTable = useTimeTable({
@@ -58,9 +60,12 @@ export const WorkloadPage = () => {
 
   return (
     <div className={style.page}>
-      <Text size="head" bold>
-        จัดการภาระงาน
-      </Text>
+      <Row justify="space-between">
+        <Text size="head" bold>
+          จัดการภาระงาน
+        </Text>
+        <Button onClick={downloadExcel5}>ดาวน์โหลดหลักฐานการเบิกจ่าย</Button>
+      </Row>
 
       <BigSearch
         onSearch={(record) => {

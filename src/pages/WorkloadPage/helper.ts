@@ -186,6 +186,30 @@ export function useWorkload(academicYear: number, semester: number) {
     setIsDownloading(false)
   }
 
+  async function downloadExcel5() {
+    const messageKey = 'downloading'
+
+    message.loading({ key: messageKey, content: 'กำลังดาวน์โหลด...' })
+    setIsDownloading(true)
+    try {
+      const { data } = await http.get('/workload/excel-5', {
+        params: {
+          academic_year: academicYear,
+          semester,
+        },
+      })
+
+      const bufferArray = [new Uint8Array(data.buffer).buffer]
+      const blob = new Blob(bufferArray, { type: data.fileType })
+      saveAs(blob, data.fileName)
+
+      message.success({ key: messageKey, content: 'ดาวน์โหลดสำเร็จ' })
+    } catch (err) {
+      message.error({ key: messageKey, content: err.message })
+    }
+    setIsDownloading(false)
+  }
+
   useEffect(() => {
     getWorkloadByTeacherId(teacher.id)
   }, [academicYear, semester, teacher])
@@ -201,6 +225,7 @@ export function useWorkload(academicYear: number, semester: number) {
     editWorkload,
     deleteWorkload,
     downloadExcel,
+    downloadExcel5,
   }
 }
 
