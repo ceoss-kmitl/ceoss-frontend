@@ -6,6 +6,7 @@ import { Select } from 'components/Select'
 import style from './style.module.scss'
 import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
+import { CompensatedList } from './components/CompensatedList'
 import { useAcademicYear, useCompensatedHistory } from './helper'
 
 export const CompensationBookPage = () => {
@@ -18,7 +19,7 @@ export const CompensationBookPage = () => {
     setSemester,
   } = useAcademicYear()
 
-  const { isLoading, setSubjectId } = useCompensatedHistory(
+  const { isLoading, setSubjectId, compensatedList } = useCompensatedHistory(
     academicYear,
     semester
   )
@@ -59,7 +60,7 @@ export const CompensationBookPage = () => {
             </div>
           </div>
 
-          <div>eiei</div>
+          <CompensatedList list={compensatedList} />
         </Loader>
       )}
     </div>
