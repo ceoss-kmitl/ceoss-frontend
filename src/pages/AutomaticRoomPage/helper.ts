@@ -49,16 +49,15 @@ export function useAcademicYear() {
 interface IRoom {
   id: string
   name: string
-  capacity: number
 }
 
 export function useWorkload(academicYear: number, semester: number) {
-  const [room, setRoom] = useState<IRoom>({} as IRoom)
+  const [room, setRoom] = useState({} as IRoom)
   const [workload, setWorkload] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
   const [isDownloading, setIsDownloading] = useState(false)
 
-  function setCurrentRoom(room: IRoom) {
+  function setCurrentRoom(room: any) {
     setRoom(room)
   }
 
@@ -67,9 +66,8 @@ export function useWorkload(academicYear: number, semester: number) {
 
     setIsLoading(true)
     try {
-      const { data } = await http.get(`/workload`, {
+      const { data } = await http.get(`/room/${room.id}/workload`, {
         params: {
-          room_id: id,
           academic_year: academicYear,
           semester,
         },
@@ -89,58 +87,29 @@ export function useWorkload(academicYear: number, semester: number) {
     } catch (err) {
       Modal.error({
         title: 'เกิดข้อผิดพลาด',
-        description: 'ไม่สามารถเรียกดูภาระงานได้',
+        description: 'ไม่สามารถเรียกดูตารางการใช้ห้องได้',
       })
       setWorkload([])
     }
     setIsLoading(false)
   }
 
-  async function addWorkload(formValue: any) {
+  async function assignWorkload(form: any) {
     setIsLoading(true)
     const payload = {
-      ...formValue,
-      timeList: convertToWorkloadTime(formValue.timeList),
-      section: Number(formValue.section),
-      academicYear,
-      semester,
+      workloadIdList: form.workloadIdList,
     }
-    delete payload.id
 
-    await http.post(`/workload`, payload)
+    await http.post(`/room/${room.id}/workload`, payload)
     await getWorkloadByRoomId(room.id)
     setIsLoading(false)
   }
 
-  const editWorkload = async (workload: any) => {
+  async function unassignWorkload(workload: any) {
     setIsLoading(true)
-    await http.put(`/workload/${workload.id}`, {
-      roomList: workload.roomList,
-    })
+    await http.delete(`/room/${room.id}/workload/${workload.id}`)
     await getWorkloadByRoomId(room.id)
     setIsLoading(false)
-  }
-
-  async function deleteWorkload(workload: any) {
-    setIsLoading(true)
-    await http.delete(`/workload/${workload.id}`)
-    await getWorkloadByRoomId(room.id)
-    setIsLoading(false)
-  }
-
-  function convertToWorkloadTime(timeRangePicker: Dayjs[][]) {
-    return timeRangePicker.map(([start, end]) => {
-      return [
-        start.toDate().toLocaleTimeString('th-TH', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-        end.toDate().toLocaleTimeString('th-TH', {
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
-      ]
-    })
   }
 
   async function downloadExcel(externalTeacherOption?: any) {
@@ -188,7 +157,7 @@ export function useWorkload(academicYear: number, semester: number) {
 
   useEffect(() => {
     getWorkloadByRoomId(room.id)
-  }, [academicYear, semester, room])
+  }, [academicYear, semester, room.id])
 
   return {
     isLoading,
@@ -197,29 +166,8 @@ export function useWorkload(academicYear: number, semester: number) {
     currentRoom: room,
     setCurrentRoom,
     getWorkloadByRoomId,
-    addWorkload,
-    editWorkload,
-    deleteWorkload,
+    assignWorkload,
+    unassignWorkload,
     downloadExcel,
-  }
-}
-
-export function useExternalTeacherDrawer() {
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
-
-  const openDrawer = () => {
-    setIsDrawerVisible(true)
-  }
-
-  const closeDrawer = () => {
-    setIsDrawerVisible(false)
-  }
-
-  return {
-    openDrawer,
-    drawerProps: {
-      isDrawerVisible,
-      onClose: closeDrawer,
-    },
   }
 }

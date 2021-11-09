@@ -1,6 +1,6 @@
 import { VscAdd } from 'react-icons/vsc'
 
-import { TimeTable, useTimeTable } from 'components/TimeTable'
+import { RoomTable, useTimeTable } from 'components/RoomTable'
 import { Text } from 'components/Text'
 import { Select } from 'components/Select'
 import { Button } from 'components/Button'
@@ -26,17 +26,19 @@ export const AutomaticRoomPage = () => {
     isDownloading,
     workload,
     setCurrentRoom,
-    addWorkload,
-    editWorkload,
-    deleteWorkload,
+    assignWorkload,
+    unassignWorkload,
     downloadExcel,
+    currentRoom,
   } = useWorkload(academicYear, semester)
 
   const timeTable = useTimeTable({
     data: workload,
-    onAdd: addWorkload,
-    onEdit: editWorkload,
-    onDelete: deleteWorkload,
+    room: currentRoom,
+    academicYear,
+    semester,
+    onAdd: assignWorkload,
+    onDelete: unassignWorkload,
   })
 
   const handleDownloadExcel = () => {
@@ -53,8 +55,7 @@ export const AutomaticRoomPage = () => {
         onSearch={(record) => {
           setCurrentRoom({
             id: record.key,
-            name: record.name,
-            capacity: record.capacity,
+            name: record.value,
           })
         }}
       />
@@ -93,7 +94,7 @@ export const AutomaticRoomPage = () => {
             </div>
           </div>
 
-          <TimeTable use={timeTable} />
+          <RoomTable use={timeTable} />
 
           <div className={style.timeTableFooter}>
             <Button
