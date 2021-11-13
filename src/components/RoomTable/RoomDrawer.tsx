@@ -1,7 +1,6 @@
 import css from 'classnames'
 import { Drawer as AntdDrawer, Form, message } from 'antd'
-import { FiX } from 'react-icons/fi'
-import { AiFillEdit } from 'react-icons/ai'
+import { FiCheck, FiX } from 'react-icons/fi'
 
 import { Button } from 'components/Button'
 import { Checkbox } from 'components/Checkbox'
@@ -100,10 +99,14 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
               })
               roomForm.submit()
             }}
-            disabled={false}
+            disabled={
+              isLoading ||
+              isLoading2 ||
+              workloadList.filter((w) => w.checked).length < 1
+            }
           >
-            <AiFillEdit className={style.submitIcon} />
-            บันทึกข้อมูล
+            <FiCheck className={style.submitIcon} />
+            เพิ่มวิชาสอนที่เลือก
           </Button>
         </div>
       }
@@ -129,7 +132,7 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
             workloadList.map((workload) => (
               <div className={style.checkWrapper}>
                 <Checkbox
-                  className={style.left}
+                  className={style.checkbox}
                   checked={workload.checked}
                   onChange={(e) => {
                     const newWorkloadList = workloadList.map((w) =>
@@ -139,17 +142,18 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
                     )
                     setWorkloadList(newWorkloadList)
                   }}
-                />
-                <div className={style.right}>
-                  <div>
-                    {`${workload.subjectCode} ${workload.subjectName} กลุ่ม ${workload.section}`}
+                >
+                  <div className={style.right}>
+                    <div>
+                      {`${workload.subjectCode} ${workload.subjectName} กลุ่ม ${workload.section}`}
+                    </div>
+                    <div>
+                      {`${
+                        dayName[workload.dayOfWeek as keyof typeof dayName]
+                      } เวลา ${workload.startTime} - ${workload.endTime}`}
+                    </div>
                   </div>
-                  <div>
-                    {`${
-                      dayName[workload.dayOfWeek as keyof typeof dayName]
-                    } เวลา ${workload.startTime} - ${workload.endTime}`}
-                  </div>
-                </div>
+                </Checkbox>
               </div>
             ))
           )}

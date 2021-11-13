@@ -69,7 +69,13 @@ export const AutomaticRoomPage = () => {
           <AntdButton
             danger
             type="primary"
-            className={style.resetRoomButton}
+            style={{
+              borderRadius: '6px',
+              marginLeft: '0.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             icon={<VscDebugRestart />}
             onClick={triggerResetAutoRoom}
           />
