@@ -1,7 +1,7 @@
-import { VscAdd } from 'react-icons/vsc'
-import { FiDownload } from 'react-icons/fi'
+import { VscDebugRestart } from 'react-icons/vsc'
+import { FiDownload, FiPlus } from 'react-icons/fi'
 import { IoSparklesSharp } from 'react-icons/io5'
-import { Row } from 'antd'
+import { Row, Button as AntdButton } from 'antd'
 
 import { RoomTable, useTimeTable } from 'components/RoomTable'
 import { Text } from 'components/Text'
@@ -27,6 +27,7 @@ export const AutomaticRoomPage = () => {
     downloadExcel,
     currentRoom,
     triggerAutoRoom,
+    triggerResetAutoRoom,
   } = useWorkload(academicYear, semester)
 
   const timeTable = useTimeTable({
@@ -65,6 +66,13 @@ export const AutomaticRoomPage = () => {
           >
             จัดห้องอัตโนมัติ
           </Button>
+          <AntdButton
+            danger
+            type="primary"
+            className={style.resetRoomButton}
+            icon={<VscDebugRestart />}
+            onClick={triggerResetAutoRoom}
+          />
         </div>
       </Row>
 
@@ -95,11 +103,11 @@ export const AutomaticRoomPage = () => {
           <div className={style.timeTableFooter}>
             <Button
               small
-              white
+              blue
               className={style.roomAdder}
               onClick={timeTable.addWorkload}
             >
-              <VscAdd />
+              <FiPlus />
               เพิ่มวิชาสอนในห้องนี้
             </Button>
           </div>

@@ -119,6 +119,29 @@ export function useWorkload(academicYear: number, semester: number) {
     })
   }
 
+  async function triggerResetAutoRoom() {
+    Modal.warning({
+      title: 'รีเซตการจัดห้อง',
+      okText: 'รีเซต',
+      description: 'คุณต้องการรีเซตการจัดห้องทั้งหมดหรือไม่',
+      finishTitle: 'รีเซตการจัดห้องสำเร็จ',
+      finishFailTitle: 'เกิดข้อผิดพลาดบางอย่าง',
+      width: 400,
+      onAsyncOk: async () => {
+        try {
+          await http.delete('/room/reset-assign', {
+            params: {
+              academic_year: academicYear,
+              semester,
+            },
+          })
+        } catch (err) {
+          throw err
+        }
+      },
+    })
+  }
+
   useEffect(() => {
     getWorkloadByRoomId(room.id)
   }, [academicYear, semester, room.id])
@@ -134,5 +157,6 @@ export function useWorkload(academicYear: number, semester: number) {
     unassignWorkload,
     downloadExcel,
     triggerAutoRoom,
+    triggerResetAutoRoom,
   }
 }
