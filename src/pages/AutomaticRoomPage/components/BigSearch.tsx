@@ -1,5 +1,5 @@
 import css from 'classnames'
-import { AutoComplete } from 'antd'
+import { Select } from 'antd'
 import { FiSearch } from 'react-icons/fi'
 
 import { Loader } from 'components/Loader'
@@ -17,8 +17,11 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
   return (
     <div className={css(style.myInput, 'shadow')}>
       <FiSearch className={style.searchIcon} />
-      <AutoComplete
-        allowClear
+      <Select
+        bordered={false}
+        showArrow={false}
+        placeholder="ค้นหาห้อง..."
+        showSearch
         defaultActiveFirstOption
         options={roomList.map((room) => ({
           key: room.id,
@@ -43,9 +46,7 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
           )
         }
         onSelect={(_, option) => onSearch(option)}
-      >
-        <input placeholder="ค้นหาห้อง..." spellCheck={false} />
-      </AutoComplete>
+      />
     </div>
   )
 }

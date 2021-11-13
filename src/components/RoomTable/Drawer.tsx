@@ -9,9 +9,7 @@ import {
   Row,
 } from 'antd'
 import { FiX, FiTrash2 } from 'react-icons/fi'
-import { AiFillEdit } from 'react-icons/ai'
 
-import { Button } from 'components/Button'
 import { Checkbox } from 'components/Checkbox'
 import { Loader } from 'components/Loader'
 import { Text } from 'components/Text'
