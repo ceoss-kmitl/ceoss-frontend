@@ -22,7 +22,6 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
         showArrow={false}
         placeholder="ค้นหาห้อง..."
         showSearch
-        defaultActiveFirstOption
         options={roomList.map((room) => ({
           key: room.id,
           value: `${room.name}`,
