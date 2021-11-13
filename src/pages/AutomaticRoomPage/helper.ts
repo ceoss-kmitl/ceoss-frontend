@@ -112,6 +112,7 @@ export function useWorkload(academicYear: number, semester: number) {
               semester,
             },
           })
+          await getWorkloadByRoomId(room.id)
         } catch (err) {
           throw err
         }
@@ -135,6 +136,7 @@ export function useWorkload(academicYear: number, semester: number) {
               semester,
             },
           })
+          await getWorkloadByRoomId(room.id)
         } catch (err) {
           throw err
         }

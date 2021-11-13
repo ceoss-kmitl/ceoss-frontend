@@ -132,6 +132,7 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
             workloadList.map((workload) => (
               <div className={style.checkWrapper}>
                 <Checkbox
+                  style={{ padding: '0.5rem' }}
                   className={style.checkbox}
                   checked={workload.checked}
                   onChange={(e) => {
