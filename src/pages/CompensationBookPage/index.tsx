@@ -12,8 +12,13 @@ import { useCompensatedHistory } from './helper'
 export const CompensationBookPage = () => {
   const { academicYear, semester } = useAcademicYear()
 
-  const { isLoading, setSubjectId, compensatedList, createCompensated } =
-    useCompensatedHistory(academicYear, semester)
+  const {
+    isLoading,
+    setSubjectId,
+    compensatedList,
+    createCompensated,
+    deleteCompensated,
+  } = useCompensatedHistory(academicYear, semester)
 
   return (
     <div className={style.page}>
@@ -42,7 +47,10 @@ export const CompensationBookPage = () => {
             </div>
           </div>
 
-          <CompensatedList list={compensatedList} />
+          <CompensatedList
+            list={compensatedList}
+            onDelete={deleteCompensated}
+          />
         </Loader>
       )}
     </div>

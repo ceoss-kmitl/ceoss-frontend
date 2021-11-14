@@ -2,49 +2,9 @@ import dayjs from 'dayjs'
 import { message } from 'antd'
 import { useState, useEffect } from 'react'
 
-import { getCurrentAcademicYear } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 import { delay } from 'libs/delay'
-
-export function useAcademicYear() {
-  const [currentAcademicYear, setCurrentAcademicYear] = useState(0)
-  const [academicYear, setAcademicYear] = useState(0)
-  const [semester, setSemester] = useState(0)
-
-  function getAcademicYearOptionList() {
-    const academicYearOptionList = []
-    for (let i = 3; i >= 0; i--) {
-      const year = currentAcademicYear - i
-      academicYearOptionList.push({ label: year, value: year })
-    }
-    return academicYearOptionList
-  }
-
-  function getSemesterOptionList() {
-    const semesterOptionList = []
-    for (let i = 1; i <= 2; i++) {
-      semesterOptionList.push({ label: i, value: i })
-    }
-    return semesterOptionList
-  }
-
-  useEffect(() => {
-    const current = getCurrentAcademicYear()
-    setCurrentAcademicYear(current.academicYear)
-    setAcademicYear(current.academicYear)
-    setSemester(current.semester)
-  }, [])
-
-  return {
-    academicYear,
-    semester,
-    setAcademicYear,
-    setSemester,
-    academicYearOptionList: getAcademicYearOptionList(),
-    semesterOptionList: getSemesterOptionList(),
-  }
-}
 
 interface ICompensated {
   section: number
@@ -120,6 +80,18 @@ export function useCompensatedHistory(academicYear: number, semester: number) {
     setIsLoading(false)
   }
 
+  const deleteCompensated = async (compensatedId: string) => {
+    setIsLoading(true)
+    await delay(0.5)
+    try {
+      await http.delete(`/subject/compensated/${compensatedId}`)
+      await getCompensatedListBySubjectId(subjectId)
+    } catch (err) {
+      message.error(err.message, 10)
+    }
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     getCompensatedListBySubjectId(subjectId)
   }, [academicYear, semester, subjectId])
@@ -129,5 +101,6 @@ export function useCompensatedHistory(academicYear: number, semester: number) {
     setSubjectId,
     compensatedList,
     createCompensated,
+    deleteCompensated,
   }
 }
