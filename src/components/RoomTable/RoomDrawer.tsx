@@ -1,36 +1,14 @@
 import css from 'classnames'
-import localeTH from 'antd/es/date-picker/locale/th_TH'
-import {
-  Button as AntdButton,
-  Col,
-  Drawer as AntdDrawer,
-  Form,
-  message,
-  Popconfirm,
-  Row,
-} from 'antd'
-import { FiX, FiTrash2 } from 'react-icons/fi'
-import { AiFillEdit } from 'react-icons/ai'
+import { Drawer as AntdDrawer, Form, message } from 'antd'
+import { FiCheck, FiX } from 'react-icons/fi'
 
 import { Button } from 'components/Button'
 import { Checkbox } from 'components/Checkbox'
 import { Loader } from 'components/Loader'
 import { Text } from 'components/Text'
-import { DatePicker } from 'components/DatePicker'
-import { Select } from 'components/Select'
-import { Input } from 'components/Input'
-import {
-  dayOfWeekOptionList,
-  degreeOptionList,
-  typeOptionList,
-} from 'constants/selectOption'
 
 import style from './RoomDrawer.module.scss'
-import {
-  classYearOptionList,
-  IPrivateUseTimeTable,
-  useTimeTable,
-} from './helper'
+import { IPrivateUseTimeTable, useTimeTable } from './helper'
 import { http } from 'libs/http'
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -54,7 +32,6 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
   const { _ } = use as IPrivateUseTimeTable
   const [workloadList, setWorkloadList] = useState([] as any[])
   const [isLoading2, setIsLoading2] = useState(true)
-  const [workloadIdList, setWorkloadIdList] = useState([] as string[])
 
   const {
     config,
@@ -64,10 +41,6 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
     isDrawerVisible,
     closeDrawer,
     handleOnFinish,
-    handleOnDelete,
-    subjectOptionList,
-    teacherOptionList,
-    roomOptionList,
   } = _
 
   const getWorkloadNoRoom = async () => {
@@ -95,8 +68,6 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
   useEffect(() => {
     if (isDrawerVisible) getWorkloadNoRoom()
   }, [isDrawerVisible])
-
-  const isFormDisabled = formAction === 'EDIT'
 
   return (
     <AntdDrawer
@@ -128,10 +99,14 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
               })
               roomForm.submit()
             }}
-            disabled={false}
+            disabled={
+              isLoading ||
+              isLoading2 ||
+              workloadList.filter((w) => w.checked).length < 1
+            }
           >
-            <AiFillEdit className={style.submitIcon} />
-            บันทึกข้อมูล
+            <FiCheck className={style.submitIcon} />
+            เพิ่มวิชาสอนที่เลือก
           </Button>
         </div>
       }
@@ -148,35 +123,41 @@ export const RoomDrawer: React.FC<IProps> = ({ use }) => {
           }
         >
           <Text size="sub-head" bold className={style.topic}>
-            ภาระงานที่ยังไม่มีห้องเรียน
+            วิชาสอนที่ยังไม่มีห้องเรียน
           </Text>
           <Form.List name="workloadIdList">{() => <div></div>}</Form.List>
-          {workloadList.map((workload) => (
-            <div className={style.checkWrapper}>
-              <Checkbox
-                className={style.left}
-                checked={workload.checked}
-                onChange={(e) => {
-                  const newWorkloadList = workloadList.map((w) =>
-                    w.workloadId === workload.workloadId
-                      ? { ...w, checked: e.target.checked }
-                      : w
-                  )
-                  setWorkloadList(newWorkloadList)
-                }}
-              />
-              <div className={style.right}>
-                <div>
-                  {`${workload.subjectCode} ${workload.subjectName} กลุ่ม ${workload.section}`}
-                </div>
-                <div>
-                  {`${
-                    dayName[workload.dayOfWeek as keyof typeof dayName]
-                  } เวลา ${workload.startTime} - ${workload.endTime}`}
-                </div>
+          {!workloadList.length ? (
+            <Text>- ทุกวิชาสอนมีห้องแล้ว -</Text>
+          ) : (
+            workloadList.map((workload) => (
+              <div className={style.checkWrapper}>
+                <Checkbox
+                  style={{ padding: '0.5rem' }}
+                  className={style.checkbox}
+                  checked={workload.checked}
+                  onChange={(e) => {
+                    const newWorkloadList = workloadList.map((w) =>
+                      w.workloadId === workload.workloadId
+                        ? { ...w, checked: e.target.checked }
+                        : w
+                    )
+                    setWorkloadList(newWorkloadList)
+                  }}
+                >
+                  <div className={style.right}>
+                    <div>
+                      {`${workload.subjectCode} ${workload.subjectName} กลุ่ม ${workload.section}`}
+                    </div>
+                    <div>
+                      {`${
+                        dayName[workload.dayOfWeek as keyof typeof dayName]
+                      } เวลา ${workload.startTime} - ${workload.endTime}`}
+                    </div>
+                  </div>
+                </Checkbox>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </Form>
       </Loader>
     </AntdDrawer>

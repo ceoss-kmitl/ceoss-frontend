@@ -1,10 +1,17 @@
-import style from './MyHeader.module.scss'
 import { FiBox, FiLogOut } from 'react-icons/fi'
-import { Tooltip, Button } from 'antd'
-import { getCurrentAcademicYear } from 'libs/datetime'
+import { Tooltip, Button, Select } from 'antd'
+
+import { useAcademicYear } from 'contexts/AcademicYearContext'
+
+import { useSelectAcademicYear } from './helper'
+import style from './MyHeader.module.scss'
 
 export const MyHeader = () => {
-  const { academicYear, semester } = getCurrentAcademicYear()
+  const { academicYearOptionList, currentAcademicYear } =
+    useSelectAcademicYear()
+
+  const { changeAcademicYear } = useAcademicYear()
+
   return (
     <>
       <div className={style.logo}>
@@ -14,8 +21,13 @@ export const MyHeader = () => {
       </div>
 
       <div className={style.headerText}>
-        คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์ ภาคเรียนที่ {semester}{' '}
-        ปีการศึกษา {academicYear}
+        คณะวิศวกรรมศาสตร์ สาขาวิชาวิศวกรรมคอมพิวเตอร์
+        <Select
+          bordered={false}
+          defaultValue={currentAcademicYear}
+          options={academicYearOptionList}
+          onChange={(value) => changeAcademicYear(value)}
+        />
       </div>
 
       <Tooltip

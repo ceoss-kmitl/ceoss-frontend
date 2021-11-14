@@ -1,32 +1,21 @@
 import css from 'classnames'
 import { Row } from 'antd'
-import { VscAdd } from 'react-icons/vsc'
+import { FiDownload, FiPlus } from 'react-icons/fi'
 
 import { TimeTable, useTimeTable } from 'components/TimeTable'
 import { Text } from 'components/Text'
-import { Select } from 'components/Select'
 import { Button } from 'components/Button'
 import { Loader } from 'components/Loader'
+import { useAcademicYear } from 'contexts/AcademicYearContext'
 
 import style from './style.module.scss'
 import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
 import { ExternalTeacherDrawer } from './components/ExternalTeacherDrawer'
-import {
-  useAcademicYear,
-  useExternalTeacherDrawer,
-  useWorkload,
-} from './helper'
+import { useExternalTeacherDrawer, useWorkload } from './helper'
 
 export const WorkloadPage = () => {
-  const {
-    academicYear,
-    semester,
-    setAcademicYear,
-    setSemester,
-    academicYearOptionList,
-    semesterOptionList,
-  } = useAcademicYear()
+  const { academicYear, semester } = useAcademicYear()
 
   const {
     isLoading,
@@ -64,7 +53,14 @@ export const WorkloadPage = () => {
         <Text size="head" bold>
           จัดการภาระงาน
         </Text>
-        <Button onClick={downloadExcel5}>ดาวน์โหลดหลักฐานการเบิกจ่าย</Button>
+        <Button
+          small
+          icon={<FiDownload style={{ marginRight: '0.5rem' }} />}
+          onClick={downloadExcel5}
+          loading={isDownloading}
+        >
+          หลักฐานการเบิกจ่าย
+        </Button>
       </Row>
 
       <BigSearch
@@ -88,36 +84,6 @@ export const WorkloadPage = () => {
             <Text size="sub-head" bold>
               ตารางการปฏิบัติงานสอน
             </Text>
-            <div className={style.headerRight}>
-              <Text className={style.headerRightLabel}>ปีการศึกษา</Text>
-              <Select
-                options={academicYearOptionList}
-                value={academicYear}
-                onChange={setAcademicYear}
-              />
-              <Text className={style.headerRightLabel}>ภาคเรียน</Text>
-              <Select
-                options={semesterOptionList}
-                value={semester}
-                onChange={setSemester}
-              />
-              <Button
-                small
-                onClick={handleDownloadExcel}
-                loading={isDownloading}
-              >
-                ดาวน์โหลดเอกสาร
-              </Button>
-
-              {currentTeacher.isExternal && (
-                <ExternalTeacherDrawer
-                  {...externalTeacherDrawer.drawerProps}
-                  workload={workload.flatMap((w) => w.workloadList)}
-                  onDownload={(config) => downloadExcel(config)}
-                  isDownloading={isDownloading}
-                />
-              )}
-            </div>
           </div>
 
           <TimeTable use={timeTable} />
@@ -142,14 +108,33 @@ export const WorkloadPage = () => {
 
             <Button
               small
-              white
+              blue
+              onClick={handleDownloadExcel}
               className={style.workloadAdder}
-              onClick={timeTable.addWorkload}
+              icon={<FiDownload style={{ marginRight: '0.15rem' }} />}
+              loading={isDownloading}
+              style={{ marginRight: '0.5rem' }}
             >
-              <VscAdd />
+              เอกสารภาระงาน
+            </Button>
+            <Button
+              small
+              blue
+              onClick={timeTable.addWorkload}
+              icon={<FiPlus style={{ marginRight: '0.25rem' }} />}
+            >
               เพิ่มภาระงานใหม่
             </Button>
           </div>
+
+          {currentTeacher.isExternal && (
+            <ExternalTeacherDrawer
+              {...externalTeacherDrawer.drawerProps}
+              workload={workload.flatMap((w) => w.workloadList)}
+              onDownload={(config) => downloadExcel(config)}
+              isDownloading={isDownloading}
+            />
+          )}
         </Loader>
       )}
     </div>

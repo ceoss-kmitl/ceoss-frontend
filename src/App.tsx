@@ -1,5 +1,8 @@
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
+
 import { Layout } from 'components/Layout'
+import { AcademicYearProvider } from 'contexts/AcademicYearContext'
+
 import { WorkloadPage } from 'pages/WorkloadPage'
 import { AutomaticRoomPage } from 'pages/AutomaticRoomPage'
 import { CompensationBookPage } from 'pages/CompensationBookPage'
@@ -20,31 +23,36 @@ import { DemoText } from 'examples/Text'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Layout>
-        <Switch>
-          <Route path="/workload" component={WorkloadPage} />
-          <Route path="/automatic-room" component={AutomaticRoomPage} />
-          <Route path="/compensation-book" component={CompensationBookPage} />
-          <Route path="/assistant-document" component={AssistantDocumentPage} />
-          <Route path="/menu/teacher" component={MenuTeacherPage} />
-          <Route path="/menu/subject" component={MenuSubjectPage} />
-          <Route path="/menu/assistant" component={MenuAssistantPage} />
-          <Route path="/menu/room" component={MenuRoomPage} />
-          <Route path="/menu/setting" component={MenuSettingPage} />
+    <AcademicYearProvider>
+      <BrowserRouter>
+        <Layout>
+          <Switch>
+            <Route path="/workload" component={WorkloadPage} />
+            <Route path="/automatic-room" component={AutomaticRoomPage} />
+            <Route path="/compensation-book" component={CompensationBookPage} />
+            <Route
+              path="/assistant-document"
+              component={AssistantDocumentPage}
+            />
+            <Route path="/menu/teacher" component={MenuTeacherPage} />
+            <Route path="/menu/subject" component={MenuSubjectPage} />
+            <Route path="/menu/assistant" component={MenuAssistantPage} />
+            <Route path="/menu/room" component={MenuRoomPage} />
+            <Route path="/menu/setting" component={MenuSettingPage} />
 
-          {/* Start Example */}
-          <Route path="/demo/http" component={DemoHttp} />
-          <Route path="/demo/table" component={DemoTable} />
-          <Route path="/demo/button" component={DemoButton} />
-          <Route path="/demo/modal" component={DemoModal} />
-          <Route path="/demo/text" component={DemoText} />
-          {/* End Example */}
+            {/* Start Example */}
+            <Route path="/demo/http" component={DemoHttp} />
+            <Route path="/demo/table" component={DemoTable} />
+            <Route path="/demo/button" component={DemoButton} />
+            <Route path="/demo/modal" component={DemoModal} />
+            <Route path="/demo/text" component={DemoText} />
+            {/* End Example */}
 
-          <Redirect to="/workload" />
-        </Switch>
-      </Layout>
-    </BrowserRouter>
+            <Redirect to="/workload" />
+          </Switch>
+        </Layout>
+      </BrowserRouter>
+    </AcademicYearProvider>
   )
 }
 

@@ -272,7 +272,7 @@ export function useTimeTable(
     setIsLoading(true)
     try {
       await callback(form.getFieldsValue())
-      message.success('ลบข้อมูลแล้ว')
+      message.success('นำวิชาสอนออกแล้ว')
       closeDrawer()
     } catch (err) {
       message.error(err.message, 10)

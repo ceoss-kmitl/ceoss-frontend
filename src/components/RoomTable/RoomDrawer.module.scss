@@ -76,8 +76,14 @@
     margin-left: 00.5rem;
 }
 
-.left {
-    margin-top: 4px;
+.checkbox {
+    width: 100%;
+    border-radius: 6px;
+
+    &:hover {
+        color: var(--blue500);
+        background: var(--gray100);
+    }
 }
 
 .topic {

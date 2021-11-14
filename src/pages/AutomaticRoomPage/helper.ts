@@ -1,50 +1,10 @@
-import { Dayjs } from 'dayjs'
 import { message } from 'antd'
 import { useState, useEffect } from 'react'
 import { saveAs } from 'file-saver'
 
-import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
+import { toDayjsTime } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
-
-export function useAcademicYear() {
-  const [currentAcademicYear, setCurrentAcademicYear] = useState(0)
-  const [academicYear, setAcademicYear] = useState(0)
-  const [semester, setSemester] = useState(0)
-
-  function getAcademicYearOptionList() {
-    const academicYearOptionList = []
-    for (let i = 3; i >= 0; i--) {
-      const year = currentAcademicYear - i
-      academicYearOptionList.push({ label: year, value: year })
-    }
-    return academicYearOptionList
-  }
-
-  function getSemesterOptionList() {
-    const semesterOptionList = []
-    for (let i = 1; i <= 2; i++) {
-      semesterOptionList.push({ label: i, value: i })
-    }
-    return semesterOptionList
-  }
-
-  useEffect(() => {
-    const current = getCurrentAcademicYear()
-    setCurrentAcademicYear(current.academicYear)
-    setAcademicYear(current.academicYear)
-    setSemester(current.semester)
-  }, [])
-
-  return {
-    academicYear,
-    semester,
-    setAcademicYear,
-    setSemester,
-    academicYearOptionList: getAcademicYearOptionList(),
-    semesterOptionList: getSemesterOptionList(),
-  }
-}
 
 interface IRoom {
   id: string
@@ -112,37 +72,18 @@ export function useWorkload(academicYear: number, semester: number) {
     setIsLoading(false)
   }
 
-  async function downloadExcel(externalTeacherOption?: any) {
+  async function downloadExcel() {
     const messageKey = 'downloading'
 
     message.loading({ key: messageKey, content: 'กำลังดาวน์โหลด...' })
     setIsDownloading(true)
     try {
-      let data
-
-      if (externalTeacherOption) {
-        const res = await http.post(
-          '/workload/excel-external',
-          externalTeacherOption,
-          {
-            params: {
-              teacher_id: room.id,
-              academic_year: academicYear,
-              semester,
-            },
-          }
-        )
-        data = res.data
-      } else {
-        const res = await http.get('/workload/excel', {
-          params: {
-            teacher_id: room.id,
-            academic_year: academicYear,
-            semester,
-          },
-        })
-        data = res.data
-      }
+      const { data } = await http.get('/room/excel', {
+        params: {
+          academic_year: academicYear,
+          semester,
+        },
+      })
 
       const bufferArray = [new Uint8Array(data.buffer).buffer]
       const blob = new Blob(bufferArray, { type: data.fileType })
@@ -153,6 +94,54 @@ export function useWorkload(academicYear: number, semester: number) {
       message.error({ key: messageKey, content: err.message })
     }
     setIsDownloading(false)
+  }
+
+  async function triggerAutoRoom() {
+    Modal.loading({
+      loadingText: 'กำลังจัดห้องอัตโนมัติ',
+      finishTitle: 'จัดห้องอัตโนมัติสำเร็จ!',
+      finishText: 'ตกลง',
+      finishFailTitle: 'เกิดข้อผิดพลาดบางอย่าง',
+      finishFailText: 'ตกลง',
+      width: 400,
+      onAsyncOk: async () => {
+        try {
+          await http.get('/room/auto-assign', {
+            params: {
+              academic_year: academicYear,
+              semester,
+            },
+          })
+          await getWorkloadByRoomId(room.id)
+        } catch (err) {
+          throw err
+        }
+      },
+    })
+  }
+
+  async function triggerResetAutoRoom() {
+    Modal.warning({
+      title: 'รีเซตการจัดห้อง',
+      okText: 'รีเซต',
+      description: 'คุณต้องการรีเซตการจัดห้องทั้งหมดหรือไม่',
+      finishTitle: 'รีเซตการจัดห้องสำเร็จ',
+      finishFailTitle: 'เกิดข้อผิดพลาดบางอย่าง',
+      width: 400,
+      onAsyncOk: async () => {
+        try {
+          await http.delete('/room/reset-assign', {
+            params: {
+              academic_year: academicYear,
+              semester,
+            },
+          })
+          await getWorkloadByRoomId(room.id)
+        } catch (err) {
+          throw err
+        }
+      },
+    })
   }
 
   useEffect(() => {
@@ -169,5 +158,7 @@ export function useWorkload(academicYear: number, semester: number) {
     assignWorkload,
     unassignWorkload,
     downloadExcel,
+    triggerAutoRoom,
+    triggerResetAutoRoom,
   }
 }
