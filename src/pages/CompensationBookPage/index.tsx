@@ -1,23 +1,19 @@
+import { FiPlus } from 'react-icons/fi'
+
 import { Text } from 'components/Text'
 import { Loader } from 'components/Loader'
 import { Button } from 'components/Button'
-import { Select } from 'components/Select'
+import { useAcademicYear } from 'contexts/AcademicYearContext'
 
 import style from './style.module.scss'
 import monster from './monster.png'
 import { BigSearch } from './components/BigSearch'
 import { CompensatedList } from './components/CompensatedList'
-import { useAcademicYear, useCompensatedHistory } from './helper'
+import { AdderDrawer } from './components/AdderDrawer'
+import { useCompensatedHistory } from './helper'
 
 export const CompensationBookPage = () => {
-  const {
-    academicYear,
-    academicYearOptionList,
-    setAcademicYear,
-    semester,
-    semesterOptionList,
-    setSemester,
-  } = useAcademicYear()
+  const { academicYear, semester } = useAcademicYear()
 
   const { isLoading, setSubjectId, compensatedList } = useCompensatedHistory(
     academicYear,
@@ -44,19 +40,9 @@ export const CompensationBookPage = () => {
               ประวัติการสอนชดเชย
             </Text>
             <div className={style.headerRight}>
-              <Text className={style.headerRightLabel}>ปีการศึกษา</Text>
-              <Select
-                options={academicYearOptionList}
-                value={academicYear}
-                onChange={setAcademicYear}
+              <AdderDrawer
+                sectionList={compensatedList.map((c) => c.section)}
               />
-              <Text className={style.headerRightLabel}>ภาคเรียน</Text>
-              <Select
-                options={semesterOptionList}
-                value={semester}
-                onChange={setSemester}
-              />
-              <Button small>เพิ่มการสอนชดเชย</Button>
             </div>
           </div>
 
