@@ -12,7 +12,7 @@ interface IProps {
 }
 
 export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
-  const { teacherList, isLoading } = useBigSearch()
+  const { roomList, isLoading } = useBigSearch()
 
   return (
     <div className={css(style.myInput, 'shadow')}>
@@ -20,19 +20,15 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
       <Select
         bordered={false}
         showArrow={false}
-        placeholder="ค้นหาอาจารย์..."
+        placeholder="ค้นหาห้อง..."
         showSearch
-        options={teacherList.map((teacher) => ({
-          key: teacher.id,
-          value: `${teacher.title}${teacher.name}`,
+        options={roomList.map((room) => ({
+          key: room.id,
+          value: `${room.name}`,
           label: (
-            <div style={{ fontSize: 18, margin: '0.5rem' }}>
-              {teacher.title}
-              {teacher.name}
-            </div>
+            <div style={{ fontSize: 18, margin: '0.5rem' }}>{room.name}</div>
           ),
-          name: teacher.name,
-          isExternal: teacher.isExternal,
+          name: room.name,
         }))}
         filterOption={(inputValue, option) =>
           option?.value.includes(inputValue)
@@ -44,7 +40,7 @@ export const BigSearch: React.FC<IProps> = ({ onSearch }) => {
             </div>
           ) : (
             <div style={{ fontSize: 18, margin: '0.5rem' }}>
-              ไม่พบรายชื่อดังกล่าว
+              ไม่พบห้องดังกล่าว
             </div>
           )
         }

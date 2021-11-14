@@ -58,7 +58,7 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
         >
           <FiX className={style.closeIcon} onClick={onClose} />
           <Text size="sub-head" bold className={style.title}>
-            รายละเอียดเอกสาร
+            ตั้งค่าเอกสาร (อาจารย์ภายนอก)
           </Text>
           <Button
             small

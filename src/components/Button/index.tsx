@@ -1,7 +1,7 @@
 import css from 'classnames'
 import style from './style.module.scss'
 import { Button } from 'antd'
-import { HTMLProps } from 'react'
+import React, { HTMLProps } from 'react'
 
 interface IProps extends HTMLProps<HTMLButtonElement> {
   className?: string
@@ -12,6 +12,7 @@ interface IProps extends HTMLProps<HTMLButtonElement> {
   loading?: boolean
   shadow?: boolean
   children: React.ReactNode
+  icon?: React.ReactNode
   htmlType?: 'button' | 'submit' | 'reset'
 }
 

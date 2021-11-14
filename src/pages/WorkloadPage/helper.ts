@@ -3,48 +3,9 @@ import { message } from 'antd'
 import { useState, useEffect } from 'react'
 import { saveAs } from 'file-saver'
 
-import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
+import { toDayjsTime } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
-
-export function useAcademicYear() {
-  const [currentAcademicYear, setCurrentAcademicYear] = useState(0)
-  const [academicYear, setAcademicYear] = useState(0)
-  const [semester, setSemester] = useState(0)
-
-  function getAcademicYearOptionList() {
-    const academicYearOptionList = []
-    for (let i = 3; i >= 0; i--) {
-      const year = currentAcademicYear - i
-      academicYearOptionList.push({ label: year, value: year })
-    }
-    return academicYearOptionList
-  }
-
-  function getSemesterOptionList() {
-    const semesterOptionList = []
-    for (let i = 1; i <= 2; i++) {
-      semesterOptionList.push({ label: i, value: i })
-    }
-    return semesterOptionList
-  }
-
-  useEffect(() => {
-    const current = getCurrentAcademicYear()
-    setCurrentAcademicYear(current.academicYear)
-    setAcademicYear(current.academicYear)
-    setSemester(current.semester)
-  }, [])
-
-  return {
-    academicYear,
-    semester,
-    setAcademicYear,
-    setSemester,
-    academicYearOptionList: getAcademicYearOptionList(),
-    semesterOptionList: getSemesterOptionList(),
-  }
-}
 
 interface ITeacher {
   id: string
@@ -67,9 +28,8 @@ export function useWorkload(academicYear: number, semester: number) {
 
     setIsLoading(true)
     try {
-      const { data } = await http.get(`/workload`, {
+      const { data } = await http.get(`/workload/teacher/${id}`, {
         params: {
-          teacher_id: id,
           academic_year: academicYear,
           semester,
         },

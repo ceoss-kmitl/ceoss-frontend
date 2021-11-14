@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { IconType } from 'react-icons/lib'
 import { FiCalendar, FiMonitor, FiBook, FiFileText } from 'react-icons/fi'
+
+import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { getCurrentAcademicYear } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
@@ -99,4 +101,24 @@ export function useWebScrap() {
   }, [])
 
   return { date, triggerWebScrap }
+}
+
+export function useSelectAcademicYear() {
+  const { academicYear: currentAcademicYear, semester: currentSemester } =
+    getCurrentAcademicYear()
+
+  function createAcademicYearOptionList() {
+    const academicYearOptionList = []
+    for (let i = 2; i >= 0; i--) {
+      const year = currentAcademicYear - i
+      academicYearOptionList.push({ label: `${year}/1`, value: `${year}/1` })
+      academicYearOptionList.push({ label: `${year}/2`, value: `${year}/2` })
+    }
+    return academicYearOptionList
+  }
+
+  return {
+    currentAcademicYear: `${currentAcademicYear}/${currentSemester}`,
+    academicYearOptionList: createAcademicYearOptionList(),
+  }
 }
