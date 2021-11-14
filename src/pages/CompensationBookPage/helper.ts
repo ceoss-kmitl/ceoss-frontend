@@ -1,8 +1,8 @@
-import { Dayjs } from 'dayjs'
+import dayjs from 'dayjs'
 import { message } from 'antd'
 import { useState, useEffect } from 'react'
 
-import { getCurrentAcademicYear, toDayjsTime } from 'libs/datetime'
+import { getCurrentAcademicYear } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 import { delay } from 'libs/delay'
@@ -59,7 +59,7 @@ interface ICompensated {
 }
 
 export function useCompensatedHistory(academicYear: number, semester: number) {
-  const [subjectId, setSubjectId] = useState(null)
+  const [subjectId, setSubjectId] = useState('')
   const [compensatedList, setCompensatedList] = useState<ICompensated[]>([])
   const [isLoading, setIsLoading] = useState<boolean | null>(null)
 
@@ -90,6 +90,36 @@ export function useCompensatedHistory(academicYear: number, semester: number) {
     setIsLoading(false)
   }
 
+  const createCompensated = async (formData: any) => {
+    setIsLoading(true)
+    await delay(0.5)
+    try {
+      const payload = {
+        section: formData.section,
+        academicYear,
+        semester,
+        originalDate: dayjs(formData.oldDate).toISOString(),
+        compensatedDate: dayjs(formData.compensatedDate).toISOString(),
+        originalTimeList: [
+          formData.oldTime.map((t: any) => dayjs(t).format('HH:mm')),
+        ],
+        compensatedTimeList: [
+          formData.compensatedTime.map((t: any) => dayjs(t).format('HH:mm')),
+        ],
+      } as any
+      if (formData.roomId) {
+        payload.roomId = formData.roomId
+      }
+
+      await http.post(`/subject/${subjectId}/compensated`, payload)
+      await getCompensatedListBySubjectId(subjectId)
+      message.success('เพิ่มสำเร็จ!')
+    } catch (err) {
+      message.error(err.message, 10)
+    }
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     getCompensatedListBySubjectId(subjectId)
   }, [academicYear, semester, subjectId])
@@ -98,5 +128,6 @@ export function useCompensatedHistory(academicYear: number, semester: number) {
     isLoading,
     setSubjectId,
     compensatedList,
+    createCompensated,
   }
 }

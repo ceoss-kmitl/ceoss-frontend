@@ -20,9 +20,10 @@ import { delay } from 'libs/delay'
 
 interface IProps {
   sectionList: number[]
+  onFinish: (formData: any) => Promise<void>
 }
 
-export const AdderDrawer: React.FC<IProps> = ({ sectionList }) => {
+export const AdderDrawer: React.FC<IProps> = ({ sectionList, onFinish }) => {
   const [form] = Form.useForm()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [roomList, setRoomList] = useState([{ value: 0, label: 'ไม่มี' }])
@@ -66,6 +67,11 @@ export const AdderDrawer: React.FC<IProps> = ({ sectionList }) => {
     setIsLoading(false)
   }
 
+  const handleFinish = async () => {
+    await onFinish(form.getFieldsValue())
+    closeDrawer()
+  }
+
   useEffect(() => {
     form.resetFields()
   }, [isDrawerOpen])
@@ -98,7 +104,7 @@ export const AdderDrawer: React.FC<IProps> = ({ sectionList }) => {
             <Text size="sub-head" bold className={style.title}>
               เพิ่มการสอนชดเชยใหม่
             </Text>
-            <Button small onClick={undefined}>
+            <Button small onClick={form.submit}>
               <AiFillEdit className={style.submitIcon} />
               บันทึกข้อมูล
             </Button>
@@ -110,7 +116,7 @@ export const AdderDrawer: React.FC<IProps> = ({ sectionList }) => {
             form={form}
             layout="vertical"
             hideRequiredMark
-            onFinish={undefined}
+            onFinish={handleFinish}
           >
             <Row gutter={16}>
               <Col span={24}>

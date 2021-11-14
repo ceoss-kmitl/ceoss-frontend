@@ -79,6 +79,7 @@
 .checkbox {
     width: 100%;
     border-radius: 6px;
+    user-select: none;
 
     &:hover {
         color: var(--blue500);
