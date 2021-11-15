@@ -13,10 +13,9 @@ import { Button } from 'components/Button'
 import { Select } from 'components/Select'
 import { DatePicker } from 'components/DatePicker'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { http } from 'libs/http'
 
 import style from './AdderDrawer.module.scss'
-import { http } from 'libs/http'
-import { delay } from 'libs/delay'
 
 interface IProps {
   sectionList: number[]
@@ -38,7 +37,6 @@ export const AdderDrawer: React.FC<IProps> = ({ sectionList, onFinish }) => {
       const formData = form.getFieldsValue()
       if (!formData.compensatedDate || !formData.compensatedTime) return
       setIsLoading(true)
-      await delay(0.5)
 
       const compensatedDate = dayjs(formData.compensatedDate).toISOString()
       const [startTime, endTime] = formData.compensatedTime.map((each: any) =>

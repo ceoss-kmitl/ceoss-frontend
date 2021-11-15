@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
-import { delay } from 'libs/delay'
 
 interface ICompensated {
   section: number
@@ -28,7 +27,6 @@ export function useCompensatedHistory(academicYear: number, semester: number) {
 
     setIsLoading(true)
     try {
-      await delay(1)
       const { data } = await http.get<ICompensated[]>(
         `/subject/${subjectId}/compensated`,
         {
@@ -52,7 +50,6 @@ export function useCompensatedHistory(academicYear: number, semester: number) {
 
   const createCompensated = async (formData: any) => {
     setIsLoading(true)
-    await delay(0.5)
     try {
       const payload = {
         section: formData.section,
@@ -82,7 +79,6 @@ export function useCompensatedHistory(academicYear: number, semester: number) {
 
   const deleteCompensated = async (compensatedId: string) => {
     setIsLoading(true)
-    await delay(0.5)
     try {
       await http.delete(`/subject/compensated/${compensatedId}`)
       await getCompensatedListBySubjectId(subjectId)
