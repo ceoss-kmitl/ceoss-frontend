@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { IconType } from 'react-icons/lib'
 import { FiCalendar, FiMonitor, FiBook, FiFileText } from 'react-icons/fi'
 
-import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { getCurrentAcademicYear } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
