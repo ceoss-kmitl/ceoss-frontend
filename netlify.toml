@@ -1,8 +1,0 @@
-[context.deploy-preview.environment]
-  REACT_APP_API_URL = "https://dev-ceoss-backend.herokuapp.com/api"
-
-[context.branch-deploy.environment]
-  REACT_APP_API_URL = "https://dev-ceoss-backend.herokuapp.com/api"
-
-[context.production.environment]
-  REACT_APP_API_URL = "https://ceoss-backend.herokuapp.com/api"

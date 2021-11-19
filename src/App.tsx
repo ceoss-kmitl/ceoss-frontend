@@ -24,7 +24,7 @@ import { DemoText } from 'examples/Text'
 function App() {
   return (
     <AcademicYearProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/ceoss">
         <Layout>
           <Switch>
             <Route path="/workload" component={WorkloadPage} />
