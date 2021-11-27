@@ -1,51 +1,48 @@
 import css from 'classnames'
 import { Row } from 'antd'
+import { useState } from 'react'
 import { FiDownload, FiPlus } from 'react-icons/fi'
 
 import { TimeTable, useTimeTable } from 'components/TimeTable'
 import { Text } from 'components/Text'
 import { Button } from 'components/Button'
 import { Loader } from 'components/Loader'
-import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { BigSearch } from 'components/BigSearch'
 
 import style from './style.module.scss'
 import monster from './monster.png'
-import { BigSearch } from './components/BigSearch'
 import { ExternalTeacherDrawer } from './components/ExternalTeacherDrawer'
-import { useExternalTeacherDrawer, useWorkload } from './helper'
+import { useTeacherList } from './hooks/useTeacherList'
+import { useWorkload } from './hooks/useWorkload'
+import { useDownloadFile } from './hooks/useDownloadFile'
 
 export const WorkloadPage = () => {
-  const { academicYear, semester } = useAcademicYear()
+  // NOTE: Drawer for external teacher only
+  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
 
   const {
-    isLoading,
-    isDownloading,
-    workload,
+    isLoading: isTeacherListLoading,
+    teacherList,
     currentTeacher,
     setCurrentTeacher,
-    addWorkload,
-    editWorkload,
-    deleteWorkload,
+  } = useTeacherList()
+
+  const { isLoading, workloadList, addWorkload, editWorkload, deleteWorkload } =
+    useWorkload(currentTeacher?.id)
+
+  const {
+    isDownloading,
     downloadExcel,
+    downloadExcelExternal,
     downloadExcel5,
-  } = useWorkload(academicYear, semester)
+  } = useDownloadFile(currentTeacher?.id)
 
   const timeTable = useTimeTable({
-    data: workload,
+    data: workloadList,
     onAdd: addWorkload,
     onEdit: editWorkload,
     onDelete: deleteWorkload,
   })
-
-  const externalTeacherDrawer = useExternalTeacherDrawer()
-
-  const handleDownloadExcel = () => {
-    if (currentTeacher.isExternal) {
-      externalTeacherDrawer.openDrawer()
-    } else {
-      downloadExcel()
-    }
-  }
 
   return (
     <div className={style.page}>
@@ -64,13 +61,11 @@ export const WorkloadPage = () => {
       </Row>
 
       <BigSearch
-        onSearch={(record) => {
-          setCurrentTeacher({
-            id: record.key,
-            name: record.name,
-            isExternal: record.isExternal,
-          })
-        }}
+        isLoading={isTeacherListLoading}
+        placeholder="ค้นหาอาจารย์..."
+        notFoundText="ไม่พบรายชื่อดังกล่าว"
+        options={teacherList}
+        onSelect={(teacher) => setCurrentTeacher(teacher)}
       />
 
       {isLoading === null ? (
@@ -109,7 +104,13 @@ export const WorkloadPage = () => {
             <Button
               small
               blue
-              onClick={handleDownloadExcel}
+              onClick={() => {
+                if (currentTeacher?.isExternal) {
+                  setIsDrawerVisible(true)
+                } else {
+                  downloadExcel()
+                }
+              }}
               className={style.workloadAdder}
               icon={<FiDownload style={{ marginRight: '0.15rem' }} />}
               loading={isDownloading}
@@ -127,11 +128,12 @@ export const WorkloadPage = () => {
             </Button>
           </div>
 
-          {currentTeacher.isExternal && (
+          {currentTeacher?.isExternal && (
             <ExternalTeacherDrawer
-              {...externalTeacherDrawer.drawerProps}
-              workload={workload.flatMap((w) => w.workloadList)}
-              onDownload={(config) => downloadExcel(config)}
+              isDrawerVisible={isDrawerVisible}
+              onClose={() => setIsDrawerVisible(false)}
+              workload={workloadList.flatMap((w) => w.workloadList)}
+              onDownload={() => downloadExcelExternal()}
               isDownloading={isDownloading}
             />
           )}
