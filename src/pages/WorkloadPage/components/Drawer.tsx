@@ -11,9 +11,7 @@ import {
 } from 'antd'
 import { FiX, FiTrash2 } from 'react-icons/fi'
 import { AiFillEdit } from 'react-icons/ai'
-import { Dayjs } from 'dayjs'
 
-import { Modify } from 'libs/utils'
 import { Button } from 'components/Button'
 import { Checkbox } from 'components/Checkbox'
 import { Loader } from 'components/Loader'
@@ -23,17 +21,13 @@ import { Select } from 'components/Select'
 import { Input } from 'components/Input'
 import { FormMode } from 'constants/common'
 import { OptionList } from 'constants/option'
-import { IRawWorkloadOfTeacher } from 'apis/workload'
+import { IRawWorkloadOfTeacherWithDayjs } from 'apis/workload'
 
 import style from './Drawer.module.scss'
 import { useOption } from './DrawerHelper'
 
-type IRawWorkloadOfTeacherWithDayjs = Modify<
-  IRawWorkloadOfTeacher,
-  { timeList: Dayjs[][] }
->
-
 interface IProps {
+  teacherId: string
   mode: FormMode
   form: FormInstance<IRawWorkloadOfTeacherWithDayjs>
   isOpen: boolean
@@ -50,6 +44,7 @@ const FORM_TITLE = {
 }
 
 export const Drawer: React.FC<IProps> = ({
+  teacherId,
   mode,
   form,
   isOpen,
@@ -73,6 +68,7 @@ export const Drawer: React.FC<IProps> = ({
       width={560}
       visible={isOpen}
       onClose={() => onClose()}
+      destroyOnClose
       maskClosable={!isLoading}
       closable={false}
       keyboard={false}
@@ -140,7 +136,6 @@ export const Drawer: React.FC<IProps> = ({
                 name="subjectId"
                 label="วิชา"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
                 <Select
                   disabled={isFormDisabled}
@@ -163,7 +158,6 @@ export const Drawer: React.FC<IProps> = ({
                 name="type"
                 label="รูปแบบการสอน"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
                 <Select
                   disabled={isFormDisabled}
@@ -179,7 +173,6 @@ export const Drawer: React.FC<IProps> = ({
                   { required: true, message: '' },
                   { pattern: /^\d+$/, message: 'ตัวเลขเท่านั้น' },
                 ]}
-                hasFeedback
               >
                 <Input disabled={isFormDisabled} />
               </Form.Item>
@@ -193,7 +186,6 @@ export const Drawer: React.FC<IProps> = ({
                   { pattern: /^[A-Z]+$/i, message: 'อักษรอังกฤษเท่านั้น' },
                 ]}
                 normalize={(value) => String(value).toLocaleUpperCase()}
-                hasFeedback
               >
                 <Input disabled={isFormDisabled} />
               </Form.Item>
@@ -206,7 +198,6 @@ export const Drawer: React.FC<IProps> = ({
                 name="degree"
                 label="ระดับการศึกษา"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
                 <Select disabled={isFormDisabled} options={OptionList.degree} />
               </Form.Item>
@@ -216,7 +207,6 @@ export const Drawer: React.FC<IProps> = ({
                 name="classYear"
                 label="ชั้นปี"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
                 <Select
                   disabled={isFormDisabled}
@@ -232,7 +222,6 @@ export const Drawer: React.FC<IProps> = ({
                 name="dayOfWeek"
                 label="วันที่สอน"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
                 <Select
                   disabled={isFormDisabled}
@@ -325,7 +314,7 @@ export const Drawer: React.FC<IProps> = ({
           <Row gutter={16}>
             <Form.List
               name="teacherList"
-              initialValue={[{ weekCount: 15, isClaim: true }]}
+              initialValue={[{ teacherId, weekCount: 15, isClaim: true }]}
             >
               {(fields, formTeacherList) => (
                 <Col span={24}>

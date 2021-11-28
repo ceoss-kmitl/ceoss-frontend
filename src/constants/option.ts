@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { DayOfWeek, Degree, WorkloadType } from './enum'
+import { DayOfWeek, Degree, WorkloadType } from './common'
 
 export interface IOption {
   label: string

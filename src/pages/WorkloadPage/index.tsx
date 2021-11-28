@@ -32,7 +32,7 @@ export const WorkloadPage = () => {
     addWorkload,
     editWorkload,
     deleteWorkload,
-  } = useWorkload(currentTeacher?.id)
+  } = useWorkload(currentTeacher.id)
 
   const {
     form,
@@ -78,7 +78,7 @@ export const WorkloadPage = () => {
         onSelect={(teacher) => setCurrentTeacher(teacher)}
       />
 
-      {!currentTeacher?.id ? (
+      {!currentTeacher.id ? (
         <div className={style.monsterWrapper}>
           <img src={monster} />
           <span>เริ่มค้นหาอาจารย์เพื่อดูภาระงาน</span>
@@ -156,6 +156,7 @@ export const WorkloadPage = () => {
           </div>
 
           <Drawer
+            teacherId={currentTeacher.id}
             form={form}
             mode={formMode}
             isOpen={isOpen}

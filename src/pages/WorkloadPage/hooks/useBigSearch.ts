@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 import { message } from 'antd'
 
+import { Modify } from 'libs/utils'
 import { getManyTeacher, ITeacher } from 'apis/teacher'
 import { ErrorCode } from 'constants/error'
+import { IOption } from 'constants/option'
+
+type ITeacherOption = Modify<ITeacher, IOption>
 
 export const useBigSearch = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [teacherList, setTeacherList] = useState<any[]>([])
-  const [currentTeacher, setCurrentTeacher] = useState<ITeacher | null>(null)
+  const [teacherList, setTeacherList] = useState<ITeacherOption[]>([])
+  const [currentTeacher, setCurrentTeacher] = useState(<ITeacherOption>{})
 
   const fetchTeacherList = async () => {
     setIsLoading(true)

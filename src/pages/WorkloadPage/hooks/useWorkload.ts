@@ -137,7 +137,6 @@ export const useWorkload = (teacherId?: string) => {
   return {
     isLoading,
     workloadList,
-    fetchWorkloadOfTeacher,
     addWorkload,
     editWorkload,
     deleteWorkload,

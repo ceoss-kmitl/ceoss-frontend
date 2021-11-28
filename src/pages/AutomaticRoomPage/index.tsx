@@ -3,45 +3,45 @@ import { FiDownload, FiPlus } from 'react-icons/fi'
 import { IoSparklesSharp } from 'react-icons/io5'
 import { Row, Button as AntdButton } from 'antd'
 
-import { RoomTable, useTimeTable } from 'components/RoomTable'
+import monster from 'img/monster.png'
+import { TimeTable } from 'components/TimeTable'
 import { Text } from 'components/Text'
 import { Button } from 'components/Button'
 import { Loader } from 'components/Loader'
-import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { BigSearch } from 'components/BigSearch'
 
 import style from './style.module.scss'
-import monster from './monster.png'
-import { BigSearch } from './components/BigSearch'
-import { useWorkload } from './helper'
+import { Drawer } from './components/Drawer'
+import { AdderDrawer } from './components/AdderDrawer'
+import { useBigSearch } from './hooks/useBigSearch'
+import { useAutoRoom } from './hooks/useAutoRoom'
+import { useDownloadFile } from './hooks/useDownloadFile'
+import { useDrawerForm } from './hooks/useDrawerForm'
+import { useAdderDrawerForm } from './hooks/useAdderDrawerForm'
 
 export const AutomaticRoomPage = () => {
-  const { academicYear, semester } = useAcademicYear()
+  const {
+    isLoading: isRoomListLoading,
+    roomList,
+    currentRoom,
+    setCurrentRoom,
+  } = useBigSearch()
 
   const {
     isLoading,
-    isDownloading,
-    workload,
-    setCurrentRoom,
-    assignWorkload,
-    unassignWorkload,
-    downloadExcel,
-    currentRoom,
+    workloadList,
+    addWorkloadToRoom,
+    removeWorkloadFromRoom,
     triggerAutoRoom,
-    triggerResetAutoRoom,
-  } = useWorkload(academicYear, semester)
+    triggerResetRoom,
+  } = useAutoRoom(currentRoom.id)
 
-  const timeTable = useTimeTable({
-    data: workload,
-    room: currentRoom,
-    academicYear,
-    semester,
-    onAdd: assignWorkload,
-    onDelete: unassignWorkload,
-  })
+  const { form, isOpen, openDrawer, closeDrawer } = useDrawerForm()
 
-  const handleDownloadExcel = () => {
-    downloadExcel()
-  }
+  const { isOpenAdder, openAdderDrawer, closeAdderDrawer } =
+    useAdderDrawerForm()
+
+  const { isDownloading, downloadExcel } = useDownloadFile()
 
   return (
     <div className={style.page}>
@@ -53,7 +53,7 @@ export const AutomaticRoomPage = () => {
           <Button
             small
             icon={<FiDownload style={{ marginRight: '0.5rem' }} />}
-            onClick={handleDownloadExcel}
+            onClick={() => downloadExcel()}
             loading={isDownloading}
           >
             ตารางรวมการใช้ห้อง
@@ -61,7 +61,7 @@ export const AutomaticRoomPage = () => {
           <Button
             small
             icon={<IoSparklesSharp style={{ marginRight: '0.5rem' }} />}
-            onClick={triggerAutoRoom}
+            onClick={() => triggerAutoRoom()}
             style={{ marginLeft: '0.5rem' }}
           >
             จัดห้องอัตโนมัติ
@@ -77,21 +77,20 @@ export const AutomaticRoomPage = () => {
               justifyContent: 'center',
             }}
             icon={<VscDebugRestart />}
-            onClick={triggerResetAutoRoom}
+            onClick={() => triggerResetRoom()}
           />
         </div>
       </Row>
 
       <BigSearch
-        onSearch={(record) => {
-          setCurrentRoom({
-            id: record.key,
-            name: record.value,
-          })
-        }}
+        isLoading={isRoomListLoading}
+        placeholder="ค้นหาห้อง..."
+        notFoundText="ไม่พบห้องดังกล่าว"
+        options={roomList}
+        onSelect={(room) => setCurrentRoom(room)}
       />
 
-      {isLoading === null ? (
+      {!currentRoom.id ? (
         <div className={style.monsterWrapper}>
           <img src={monster} />
           <span>เริ่มค้นหาห้องเพื่อจัดห้อง</span>
@@ -104,19 +103,41 @@ export const AutomaticRoomPage = () => {
             </Text>
           </div>
 
-          <RoomTable use={timeTable} />
+          <TimeTable
+            data={workloadList}
+            onWorkloadClick={(workload) => openDrawer(workload)}
+          />
 
           <div className={style.timeTableFooter}>
             <Button
               small
               blue
               className={style.roomAdder}
-              onClick={timeTable.addWorkload}
+              onClick={() => openAdderDrawer()}
             >
               <FiPlus />
               เพิ่มวิชาสอนในห้องนี้
             </Button>
           </div>
+
+          <Drawer
+            form={form}
+            isOpen={isOpen}
+            isLoading={isLoading}
+            onClose={() => closeDrawer()}
+            onDelete={(formValue) =>
+              removeWorkloadFromRoom(formValue, closeDrawer)
+            }
+          />
+          <AdderDrawer
+            roomName={currentRoom.name}
+            isOpen={isOpenAdder}
+            isLoading={isLoading}
+            onClose={() => closeAdderDrawer()}
+            onSubmit={(workloadIdList) =>
+              addWorkloadToRoom(workloadIdList, closeAdderDrawer)
+            }
+          />
         </Loader>
       )}
     </div>

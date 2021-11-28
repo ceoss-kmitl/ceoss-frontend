@@ -24,7 +24,7 @@ export const useOption = () => {
       setTeacherList(teacherOptionList)
     } catch (error) {
       setTeacherList([])
-      message.error(ErrorCode.R07)
+      message.error(ErrorCode.W05)
       console.error(error)
     }
   }
@@ -39,7 +39,7 @@ export const useOption = () => {
       setSubjectList(subjectOptionList)
     } catch (error) {
       setSubjectList([])
-      message.error(ErrorCode.R08)
+      message.error(ErrorCode.W06)
       console.error(error)
     }
   }
@@ -54,7 +54,7 @@ export const useOption = () => {
       setRoomList(roomOptionList)
     } catch (error) {
       setRoomList([])
-      message.error(ErrorCode.R09)
+      message.error(ErrorCode.W07)
       console.error(error)
     }
   }

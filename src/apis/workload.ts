@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs'
 
 import { http } from 'libs/http'
 import { Modify } from 'libs/utils'
-import { DayOfWeek, Degree, WorkloadType } from 'constants/enum'
+import { DayOfWeek, Degree, WorkloadType } from 'constants/common'
 
 export interface IRawWorkloadOfTeacher {
   id: string
@@ -43,6 +43,17 @@ export type IWorkloadOfTeacherWithDayjs = Modify<
   { workloadList: IRawWorkloadOfTeacherWithDayjs[] }
 >
 
+export interface IUnAssignedWorkload {
+  workloadId: string
+  subjectCode: string
+  subjectName: string
+  section: number
+  dayOfWeek: DayOfWeek
+  startTime: string
+  endTime: string
+  teacherList: string[]
+}
+
 export const getManyWorkloadOfTeacher = async (
   teacherId: string,
   query?: Record<string, any>
@@ -53,6 +64,13 @@ export const getManyWorkloadOfTeacher = async (
       params: query,
     }
   )
+  return data
+}
+
+export const getManyUnAssignedWorkload = async (query: any) => {
+  const { data } = await http.get<IUnAssignedWorkload[]>('/workload/no-room', {
+    params: query,
+  })
   return data
 }
 
