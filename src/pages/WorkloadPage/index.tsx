@@ -12,7 +12,7 @@ import { BigSearch } from 'components/BigSearch'
 import style from './style.module.scss'
 import { Drawer } from './components/Drawer'
 import { ExtDrawer } from './components/ExtDrawer'
-import { useTeacherList } from './hooks/useTeacherList'
+import { useBigSearch } from './hooks/useBigSearch'
 import { useWorkload } from './hooks/useWorkload'
 import { useDrawerForm } from './hooks/useDrawerForm'
 import { useDownloadFile } from './hooks/useDownloadFile'
@@ -24,7 +24,7 @@ export const WorkloadPage = () => {
     teacherList,
     currentTeacher,
     setCurrentTeacher,
-  } = useTeacherList()
+  } = useBigSearch()
 
   const {
     isLoading: isWorkloadLoading,

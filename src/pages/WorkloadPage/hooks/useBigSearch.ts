@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { getManyTeacher, ITeacher } from 'apis/teacher'
 import { ErrorCode } from 'constants/error'
 
-export const useTeacherList = () => {
+export const useBigSearch = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [teacherList, setTeacherList] = useState<any[]>([])
   const [currentTeacher, setCurrentTeacher] = useState<ITeacher | null>(null)
