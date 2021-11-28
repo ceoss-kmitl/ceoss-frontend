@@ -3,7 +3,7 @@ import { Dayjs } from 'dayjs'
 import { useState, useEffect } from 'react'
 
 import { DAY_OF_WEEK, DEGREE, SUBJECT_TYPE } from 'constants/enum'
-import { ISelectOption } from 'constants/selectOption'
+import { IOption } from 'constants/option'
 
 import { http } from 'libs/http'
 import { isNull } from 'libs/utils'
@@ -206,9 +206,9 @@ export interface IPrivateUseTimeTable {
     ) => (workload: any) => Promise<void>
     handleOnDelete: (callback: (workload: any) => void) => () => Promise<void>
     startEditWorkload: () => void
-    subjectOptionList: ISelectOption[] | null
-    teacherOptionList: ISelectOption[] | null
-    roomOptionList: ISelectOption[] | null
+    subjectOptionList: IOption[] | null
+    teacherOptionList: IOption[] | null
+    roomOptionList: IOption[] | null
   }
 }
 
@@ -232,15 +232,13 @@ export function useTimeTable(
   const [formAction, setFormAction] = useState<'ADD' | 'EDIT'>('ADD')
   const [isLoading, setIsLoading] = useState(false)
 
-  const [subjectOptionList, setSubjectOptionList] = useState<
-    ISelectOption[] | null
-  >(null)
-  const [teacherOptionList, setTeacherOptionList] = useState<
-    ISelectOption[] | null
-  >(null)
-  const [roomOptionList, setRoomOptionList] = useState<ISelectOption[] | null>(
+  const [subjectOptionList, setSubjectOptionList] = useState<IOption[] | null>(
     null
   )
+  const [teacherOptionList, setTeacherOptionList] = useState<IOption[] | null>(
+    null
+  )
+  const [roomOptionList, setRoomOptionList] = useState<IOption[] | null>(null)
 
   const startAddWorkload = () => {
     form.resetFields()

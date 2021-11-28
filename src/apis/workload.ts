@@ -1,32 +1,47 @@
+import { Dayjs } from 'dayjs'
+
 import { http } from 'libs/http'
+import { Modify } from 'libs/utils'
 import { DayOfWeek, Degree, WorkloadType } from 'constants/enum'
 
-export interface IWorkloadOfTeacher {
-  workloadList: {
-    id: string
-    subjectId: string
-    code: string
-    name: string
-    section: number
-    type: WorkloadType
-    fieldOfStudy: string
-    degree: Degree
-    classYear: number
-    dayOfWeek: DayOfWeek
-    startSlot: number
-    endSlot: number
-    timeList: {
-      start: string
-      end: string
-    }[]
-    teacherList: {
-      teacherId: string
-      weekCount: number
-      isClaim: boolean
-    }[]
+export interface IRawWorkloadOfTeacher {
+  id: string
+  subjectId: string
+  code: string
+  name: string
+  section: number
+  type: WorkloadType
+  fieldOfStudy: string
+  degree: Degree
+  classYear: number
+  dayOfWeek: DayOfWeek
+  startSlot: number
+  endSlot: number
+  timeList: {
+    start: string
+    end: string
+  }[]
+  teacherList: {
+    teacherId: string
+    weekCount: number
     isClaim: boolean
   }[]
+  isClaim: boolean
 }
+
+export type IRawWorkloadOfTeacherWithDayjs = Modify<
+  IRawWorkloadOfTeacher,
+  { timeList: Dayjs[][] }
+>
+
+export interface IWorkloadOfTeacher {
+  workloadList: IRawWorkloadOfTeacher[]
+}
+
+export type IWorkloadOfTeacherWithDayjs = Modify<
+  IWorkloadOfTeacher,
+  { workloadList: IRawWorkloadOfTeacherWithDayjs[] }
+>
 
 export const getManyWorkloadOfTeacher = async (
   teacherId: string,
@@ -64,9 +79,10 @@ export const downloadOneExcelFile = async (query: Record<string, any>) => {
 }
 
 export const downloadOneExcelExternalFile = async (
+  payload: any,
   query: Record<string, any>
 ) => {
-  const { data } = await http.get('/workload/excel-external', {
+  const { data } = await http.post('/workload/excel-external', payload, {
     params: query,
   })
   return data

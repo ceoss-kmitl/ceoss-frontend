@@ -10,6 +10,8 @@ import {
   deleteOneWorkload,
   editOneWorkload,
   getManyWorkloadOfTeacher,
+  IRawWorkloadOfTeacherWithDayjs,
+  IWorkloadOfTeacherWithDayjs,
 } from 'apis/workload'
 
 const convertToWorkloadTime = (timeRangePicker: Dayjs[][]) => {
@@ -31,7 +33,9 @@ export const useWorkload = (teacherId?: string) => {
   const { academicYear, semester } = useAcademicYear()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [workloadList, setWorkloadList] = useState<any[]>([])
+  const [workloadList, setWorkloadList] = useState<
+    IWorkloadOfTeacherWithDayjs[]
+  >([])
 
   const fetchWorkloadOfTeacher = async () => {
     if (!teacherId) {
@@ -47,10 +51,10 @@ export const useWorkload = (teacherId?: string) => {
       const workloadListWithDayjs = workloadList.map((day) => ({
         workloadList: day.workloadList.map((workload) => ({
           ...workload,
-          timeList: workload.timeList.map((time) => [
-            toDayjsTime(time.start),
-            toDayjsTime(time.end),
-          ]),
+          timeList: workload.timeList.map(
+            (time) =>
+              <[Dayjs, Dayjs]>[toDayjsTime(time.start), toDayjsTime(time.end)]
+          ),
         })),
       }))
       setWorkloadList(workloadListWithDayjs)
@@ -62,7 +66,10 @@ export const useWorkload = (teacherId?: string) => {
     setIsLoading(false)
   }
 
-  const addWorkload = async (formValue: any) => {
+  const addWorkload = async (
+    formValue: IRawWorkloadOfTeacherWithDayjs,
+    onSuccess = () => {}
+  ) => {
     const payload = {
       ...formValue,
       timeList: convertToWorkloadTime(formValue.timeList),
@@ -70,29 +77,56 @@ export const useWorkload = (teacherId?: string) => {
       academicYear,
       semester,
     }
-    delete payload.id
+    const { id: _, ...payloadWithoutId } = payload
 
     setIsLoading(true)
-    await createOneWorkload(payload)
-    await fetchWorkloadOfTeacher()
+    try {
+      await createOneWorkload(payloadWithoutId)
+      message.success('เพิ่มข้อมูลสำเร็จ')
+      onSuccess()
+      fetchWorkloadOfTeacher()
+    } catch (error) {
+      message.error(ErrorCode.W08)
+      console.error(error)
+    }
     setIsLoading(false)
   }
 
-  const editWorkload = async (workload: any) => {
+  const editWorkload = async (
+    formValue: IRawWorkloadOfTeacherWithDayjs,
+    onSuccess = () => {}
+  ) => {
     const payload = {
-      teacherList: workload.teacherList,
+      teacherList: formValue.teacherList,
     }
 
     setIsLoading(true)
-    await editOneWorkload(workload.id, payload)
-    await fetchWorkloadOfTeacher()
+    try {
+      await editOneWorkload(formValue.id, payload)
+      message.success('แก้ไขข้อมูลสำเร็จ')
+      onSuccess()
+      fetchWorkloadOfTeacher()
+    } catch (error) {
+      message.error(ErrorCode.W09)
+      console.error(error)
+    }
     setIsLoading(false)
   }
 
-  const deleteWorkload = async (workload: any) => {
+  const deleteWorkload = async (
+    formValue: IRawWorkloadOfTeacherWithDayjs,
+    onSuccess = () => {}
+  ) => {
     setIsLoading(true)
-    await deleteOneWorkload(workload.id)
-    await fetchWorkloadOfTeacher()
+    try {
+      await deleteOneWorkload(formValue.id)
+      message.success('ลบข้อมูลสำเร็จ')
+      onSuccess()
+      fetchWorkloadOfTeacher()
+    } catch (error) {
+      message.error(ErrorCode.W10)
+      console.error(error)
+    }
     setIsLoading(false)
   }
 

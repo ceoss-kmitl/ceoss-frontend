@@ -9,3 +9,5 @@ export const saveFile = (data: any) => {
   const blob = new Blob(bufferArray, { type: data.fileType })
   saveAs(blob, data.fileName)
 }
+
+export type Modify<T, R> = Omit<T, keyof R> & R

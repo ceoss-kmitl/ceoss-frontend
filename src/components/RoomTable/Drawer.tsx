@@ -16,11 +16,7 @@ import { Text } from 'components/Text'
 import { DatePicker } from 'components/DatePicker'
 import { Select } from 'components/Select'
 import { Input } from 'components/Input'
-import {
-  dayOfWeekOptionList,
-  degreeOptionList,
-  typeOptionList,
-} from 'constants/selectOption'
+import { OptionList } from 'constants/option'
 
 import style from './Drawer.module.scss'
 import {
@@ -145,7 +141,10 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                 rules={[{ required: true, message: '' }]}
                 hasFeedback
               >
-                <Select disabled={isFormDisabled} options={typeOptionList} />
+                <Select
+                  disabled={isFormDisabled}
+                  options={OptionList.workloadType}
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -185,7 +184,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                 rules={[{ required: true, message: '' }]}
                 hasFeedback
               >
-                <Select disabled={isFormDisabled} options={degreeOptionList} />
+                <Select disabled={isFormDisabled} options={OptionList.degree} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -213,7 +212,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
               >
                 <Select
                   disabled={isFormDisabled}
-                  options={dayOfWeekOptionList}
+                  options={OptionList.dayOfWeek}
                 />
               </Form.Item>
             </Col>

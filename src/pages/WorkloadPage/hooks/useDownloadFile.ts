@@ -36,7 +36,7 @@ export const useDownloadFile = (teacherId?: string) => {
     setIsDownloading(false)
   }
 
-  const downloadExcelExternal = async () => {
+  const downloadExcelExt = async (payload: any) => {
     message.loading({ key: MESSAGE_KEY, content: 'กำลังดาวน์โหลด...' })
     setIsDownloading(true)
     try {
@@ -45,7 +45,7 @@ export const useDownloadFile = (teacherId?: string) => {
         academic_year: academicYear,
         semester,
       }
-      const file = await downloadOneExcelExternalFile(query)
+      const file = await downloadOneExcelExternalFile(payload, query)
       saveFile(file)
       message.success({ key: MESSAGE_KEY, content: 'ดาวน์โหลดสำเร็จ' })
     } catch (error) {
@@ -76,7 +76,7 @@ export const useDownloadFile = (teacherId?: string) => {
   return {
     isDownloading,
     downloadExcel,
-    downloadExcelExternal,
+    downloadExcelExt,
     downloadExcel5,
   }
 }
