@@ -12,20 +12,20 @@ import { IPrivateUseTimeTable, useTimeTable } from './helper'
 import { http } from 'libs/http'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { DAY_OF_WEEK } from 'constants/enum'
+import { DayOfWeek } from 'constants/enum'
 
 interface IProps {
   use: ReturnType<typeof useTimeTable>
 }
 
 const dayName = {
-  [DAY_OF_WEEK.MONDAY]: 'วันจันทร์',
-  [DAY_OF_WEEK.TUESDAY]: 'วันอังคาร',
-  [DAY_OF_WEEK.WEDNESDAY]: 'วันพุธ',
-  [DAY_OF_WEEK.THURSDAY]: 'วันพฤหัสบดี',
-  [DAY_OF_WEEK.FRIDAY]: 'วันศุกร์',
-  [DAY_OF_WEEK.SATURDAY]: 'วันเสาร์',
-  [DAY_OF_WEEK.SUNDAY]: 'วันอาทิตย์',
+  [DayOfWeek.MONDAY]: 'วันจันทร์',
+  [DayOfWeek.TUESDAY]: 'วันอังคาร',
+  [DayOfWeek.WEDNESDAY]: 'วันพุธ',
+  [DayOfWeek.THURSDAY]: 'วันพฤหัสบดี',
+  [DayOfWeek.FRIDAY]: 'วันศุกร์',
+  [DayOfWeek.SATURDAY]: 'วันเสาร์',
+  [DayOfWeek.SUNDAY]: 'วันอาทิตย์',
 }
 
 export const RoomDrawer: React.FC<IProps> = ({ use }) => {

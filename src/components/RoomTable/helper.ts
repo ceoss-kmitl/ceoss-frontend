@@ -2,7 +2,7 @@ import { Form, FormInstance, message } from 'antd'
 import { Dayjs } from 'dayjs'
 import { useState, useEffect } from 'react'
 
-import { DAY_OF_WEEK, DEGREE, SUBJECT_TYPE } from 'constants/enum'
+import { DayOfWeek, Degree, WorkloadType } from 'constants/enum'
 import { IOption } from 'constants/option'
 
 import { http } from 'libs/http'
@@ -18,11 +18,11 @@ export interface IWorkload {
   code: string
   name: string
   section: number
-  type: SUBJECT_TYPE
+  type: WorkloadType
   fieldOfStudy: string
-  degree: DEGREE
+  degree: Degree
   classYear: number
-  dayOfWeek: DAY_OF_WEEK
+  dayOfWeek: DayOfWeek
   startSlot: number
   endSlot: number
   timeList: [Dayjs, Dayjs][]
