@@ -13,21 +13,12 @@ import { BsArrowRight } from 'react-icons/bs'
 
 import { Text } from 'components/Text'
 import { Loader } from 'components/Loader'
+import { ICompensated } from 'apis/subject'
 
 import style from './CompensatedList.module.scss'
 
 interface IProps {
-  list: {
-    section: number
-    compensatedList: {
-      compensatedId: string
-      originalDate: string
-      originalTimeList: { start: string; end: string }[]
-      compensatedDate: string
-      compensatedTimeList: { start: string; end: string }[]
-      room: string
-    }[]
-  }[]
+  list: ICompensated[]
   onDelete: (id: string) => Promise<void>
 }
 

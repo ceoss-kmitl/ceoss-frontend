@@ -8,6 +8,11 @@ export interface IRoom {
   capacity: number
 }
 
+export interface IAvailableRoom {
+  roomId: string
+  roomName: string
+}
+
 export const getManyRoom = async () => {
   const { data } = await http.get<IRoom[]>('/room')
   return data
@@ -22,6 +27,14 @@ export const getManyWorkloadOfRoom = async (
     {
       params: query,
     }
+  )
+  return data
+}
+
+export const getManyAvailableRoom = async (query: any) => {
+  const { data } = await http.get<IAvailableRoom[]>(
+    '/room/available/compensated',
+    { params: query }
   )
   return data
 }

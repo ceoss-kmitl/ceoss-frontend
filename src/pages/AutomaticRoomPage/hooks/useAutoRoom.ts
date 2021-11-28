@@ -14,7 +14,7 @@ import {
 } from 'apis/room'
 import { ErrorCode } from 'constants/error'
 
-export const useAutoRoom = (roomId?: string) => {
+export const useAutoRoom = (roomId: string) => {
   const { academicYear, semester } = useAcademicYear()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -55,9 +55,6 @@ export const useAutoRoom = (roomId?: string) => {
     workloadIdList: string[],
     onSuccess = () => {}
   ) => {
-    if (!roomId) {
-      return
-    }
     const payload = {
       workloadIdList,
     }
@@ -79,10 +76,6 @@ export const useAutoRoom = (roomId?: string) => {
     formValue: any,
     onSuccess = () => {}
   ) => {
-    if (!roomId) {
-      return
-    }
-
     setIsLoading(true)
     try {
       await deleteOneWorkloadOfRoom(roomId, formValue.id)

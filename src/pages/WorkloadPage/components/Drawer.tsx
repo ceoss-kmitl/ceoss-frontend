@@ -82,7 +82,7 @@ export const Drawer: React.FC<IProps> = ({
           <Text size="sub-head" bold className={style.title}>
             {FORM_TITLE[mode]}
           </Text>
-          <Button small onClick={form.submit} disabled={false}>
+          <Button small onClick={() => form.submit()} disabled={false}>
             <AiFillEdit className={style.submitIcon} />
             บันทึกข้อมูล
           </Button>

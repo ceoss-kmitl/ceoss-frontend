@@ -29,7 +29,7 @@ const convertToWorkloadTime = (timeRangePicker: Dayjs[][]) => {
   })
 }
 
-export const useWorkload = (teacherId?: string) => {
+export const useWorkload = (teacherId: string) => {
   const { academicYear, semester } = useAcademicYear()
 
   const [isLoading, setIsLoading] = useState(false)
