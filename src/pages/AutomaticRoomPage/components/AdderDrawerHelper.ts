@@ -34,7 +34,7 @@ export const useUnAssignedWorkload = () => {
       setWorkloadList(workloadCheckList)
     } catch (error) {
       setWorkloadList([])
-      message.error(ErrorCode.W05)
+      message.error(ErrorCode.R10)
       console.error(error)
     }
     setIsLoading(false)
