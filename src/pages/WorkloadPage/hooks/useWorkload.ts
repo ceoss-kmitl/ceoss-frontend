@@ -51,10 +51,10 @@ export const useWorkload = (teacherId?: string) => {
       const workloadListWithDayjs = workloadList.map((day) => ({
         workloadList: day.workloadList.map((workload) => ({
           ...workload,
-          timeList: workload.timeList.map(
-            (time) =>
-              <[Dayjs, Dayjs]>[toDayjsTime(time.start), toDayjsTime(time.end)]
-          ),
+          timeList: workload.timeList.map((time) => [
+            toDayjsTime(time.start),
+            toDayjsTime(time.end),
+          ]),
         })),
       }))
       setWorkloadList(workloadListWithDayjs)
