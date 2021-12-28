@@ -77,15 +77,6 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
     }
   }
 
-  const getHasFeedback = (column: IColumn) => {
-    switch (column.type) {
-      case 'text':
-      case 'credit':
-      case 'number':
-        return true
-    }
-  }
-
   const getValuePropName = (column: IColumn) => {
     switch (column.type) {
       case 'checkbox':
@@ -220,7 +211,6 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
                       label={col.header}
                       rules={getRules(col)}
                       normalize={getNormalize(col)}
-                      hasFeedback={getHasFeedback(col)}
                       initialValue={getInitialValues(col)}
                       valuePropName={getValuePropName(col)}
                     >

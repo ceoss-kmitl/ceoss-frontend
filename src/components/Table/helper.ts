@@ -51,7 +51,7 @@ export type IColumn =
   | ICreditColumn
   | IStatusColumn
 
-export type IRecord = Record<string, string | number | boolean>
+export type IRecord = Record<string, any>
 
 export type IFormLayout = {
   addFormTitle: string
@@ -79,15 +79,15 @@ interface ITableConfig {
   /**
    * Function that run when add
    */
-  onAdd?: (record: IRecord) => void
+  onAdd?: (record: any) => void
   /**
    * Function that run when edit
    */
-  onEdit?: (record: IRecord) => void
+  onEdit?: (record: any) => void
   /**
    * Function that run when delete
    */
-  onDelete?: (record: IRecord) => void
+  onDelete?: (record: any) => void
 }
 
 export interface IPrivateUseTable {

@@ -15,3 +15,16 @@ export const getManyTeacher = async (query?: Record<string, any>) => {
   })
   return data
 }
+
+export const createOneTeacher = async (teacher: ITeacher) => {
+  await http.post('/teacher', teacher)
+}
+
+export const editOneTeacher = async (teacher: ITeacher) => {
+  const { id, ...payload } = teacher
+  await http.put(`/teacher/${id}`, payload)
+}
+
+export const deleteOneTeacher = async (id: string) => {
+  await http.delete(`/teacher/${id}`)
+}
