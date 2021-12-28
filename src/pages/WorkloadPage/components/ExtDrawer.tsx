@@ -8,25 +8,27 @@ import { Calendar } from 'components/DatePicker'
 import { Checkbox } from 'components/Checkbox'
 import { Input } from 'components/Input'
 import { Select } from 'components/Select'
-
-import style from './ExternalTeacherDrawer.module.scss'
-import { useDocumentDetail } from './ExternalTeacherDrawerHelper'
 import { Loader } from 'components/Loader'
+import { IWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { OptionList } from 'constants/option'
+
+import style from './ExtDrawer.module.scss'
+import { useDocumentDetail } from './ExtDrawerHelper'
 
 interface IProps {
-  isDrawerVisible?: boolean
-  isDownloading: boolean
+  isOpen: boolean
+  isLoading?: boolean
+  workloadList?: IWorkloadOfTeacherWithDayjs[]
   onClose?: () => void
-  workload: any[]
-  onDownload: (config: any) => void
+  onDownload?: (formValue: any) => void
 }
 
-export const ExternalTeacherDrawer: React.FC<IProps> = ({
-  isDrawerVisible,
-  isDownloading,
-  onClose,
-  workload,
-  onDownload,
+export const ExtDrawer: React.FC<IProps> = ({
+  isOpen,
+  isLoading = false,
+  workloadList = [],
+  onClose = () => {},
+  onDownload = () => {},
 }) => {
   const {
     detail,
@@ -38,32 +40,35 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
     currentDate,
     month,
     setMonth,
-    monthOptionList,
     handleDownload,
-  } = useDocumentDetail(workload)
+    resetForm,
+  } = useDocumentDetail(workloadList)
 
   return (
     <Drawer
       width={560}
-      visible={isDrawerVisible}
-      onClose={() => onClose?.()}
-      maskClosable={!isDownloading}
+      visible={isOpen}
+      onClose={() => {
+        onClose()
+        resetForm()
+      }}
+      maskClosable={!isLoading}
       closable={false}
       keyboard={false}
       title={
         <div
           className={css(style.titleWrapper, {
-            [style.disabled]: isDownloading,
+            [style.disabled]: isLoading,
           })}
         >
-          <FiX className={style.closeIcon} onClick={onClose} />
+          <FiX className={style.closeIcon} onClick={() => onClose()} />
           <Text size="sub-head" bold className={style.title}>
             ตั้งค่าเอกสาร (อาจารย์ภายนอก)
           </Text>
           <Button
             small
             onClick={() => handleDownload(onDownload)}
-            disabled={isDownloading}
+            disabled={isLoading}
           >
             <FiDownload className={style.submitIcon} />
             ดาวน์โหลด
@@ -71,12 +76,12 @@ export const ExternalTeacherDrawer: React.FC<IProps> = ({
         </div>
       }
     >
-      <Loader loading={isDownloading}>
+      <Loader loading={isLoading}>
         <Text className={style.labelMonthPicker}>เลือกเดือนที่จะทำรายการ</Text>
         <Select
           value={month}
           onChange={(value) => setMonth(value)}
-          options={monthOptionList}
+          options={OptionList.month}
         />
 
         <Text className={style.labelCalendarPicker}>รายชื่อวิชาที่สอน</Text>

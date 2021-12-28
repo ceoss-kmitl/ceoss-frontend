@@ -1,24 +1,23 @@
+import {
+  IRawWorkloadOfTeacherWithDayjs,
+  IWorkloadOfTeacherWithDayjs,
+} from 'apis/workload'
+
 import style from './style.module.scss'
 import { OutlineTable } from './OutlineTable'
 import { Workload } from './Workload'
-import { Drawer } from './Drawer'
-import {
-  IPrivateUseTimeTable,
-  timeSlot,
-  useTimeSlot,
-  useTimeTable,
-} from './helper'
+import { timeSlot, useTimeSlot } from './helper'
 
 interface IProps {
-  /**
-   * Use with hooks `useTimeTable`
-   */
-  use: ReturnType<typeof useTimeTable>
+  data: IWorkloadOfTeacherWithDayjs[]
+  onWorkloadClick?: (workload: IRawWorkloadOfTeacherWithDayjs) => void
 }
 
-export const TimeTable: React.FC<IProps> = ({ use }) => {
-  const { _ } = use as IPrivateUseTimeTable
-  const tableSlotList = useTimeSlot(_.config.data)
+export const TimeTable: React.FC<IProps> = ({
+  data,
+  onWorkloadClick = () => {},
+}) => {
+  const tableSlotList = useTimeSlot(data)
 
   // This component is render by 2 <table /> overlap together
   // Layer 1 is for rendering border outline and header text
@@ -44,7 +43,7 @@ export const TimeTable: React.FC<IProps> = ({ use }) => {
               <th className={style.dayHeader} colSpan={4}></th>
               {day.map((slot, j) => {
                 return slot ? (
-                  <Workload key={j} data={slot} onClick={_.startEditWorkload} />
+                  <Workload key={j} data={slot} onClick={onWorkloadClick} />
                 ) : (
                   <td key={j} colSpan={1} />
                 )
@@ -53,10 +52,6 @@ export const TimeTable: React.FC<IProps> = ({ use }) => {
           ))}
         </tbody>
       </table>
-
-      <Drawer use={use} />
     </div>
   )
 }
-
-export { useTimeTable }

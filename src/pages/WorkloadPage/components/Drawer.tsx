@@ -5,58 +5,70 @@ import {
   Col,
   Drawer as AntdDrawer,
   Form,
+  FormInstance,
   Popconfirm,
   Row,
 } from 'antd'
 import { FiX, FiTrash2 } from 'react-icons/fi'
+import { AiFillEdit } from 'react-icons/ai'
 
+import { Button } from 'components/Button'
 import { Checkbox } from 'components/Checkbox'
 import { Loader } from 'components/Loader'
 import { Text } from 'components/Text'
 import { DatePicker } from 'components/DatePicker'
 import { Select } from 'components/Select'
 import { Input } from 'components/Input'
-import {
-  dayOfWeekOptionList,
-  degreeOptionList,
-  typeOptionList,
-} from 'constants/selectOption'
+import { FormMode } from 'constants/common'
+import { OptionList } from 'constants/option'
+import { IRawWorkloadOfTeacherWithDayjs } from 'apis/workload'
 
 import style from './Drawer.module.scss'
-import {
-  classYearOptionList,
-  IPrivateUseTimeTable,
-  useTimeTable,
-} from './helper'
+import { useOption } from './DrawerHelper'
 
 interface IProps {
-  use: ReturnType<typeof useTimeTable>
+  teacherId: string
+  mode: FormMode
+  form: FormInstance<IRawWorkloadOfTeacherWithDayjs>
+  isOpen: boolean
+  onClose: () => void
+  isLoading?: boolean
+  onCreate?: (formValue: IRawWorkloadOfTeacherWithDayjs) => void
+  onEdit?: (formValue: IRawWorkloadOfTeacherWithDayjs) => void
+  onDelete?: (formValue: IRawWorkloadOfTeacherWithDayjs) => void
 }
 
-export const Drawer: React.FC<IProps> = ({ use }) => {
-  const { _ } = use as IPrivateUseTimeTable
+const FORM_TITLE = {
+  [FormMode.CREATE]: 'เพิ่มภาระงานใหม่',
+  [FormMode.EDIT]: 'แก้ไขภาระงาน',
+}
+
+export const Drawer: React.FC<IProps> = ({
+  teacherId,
+  mode,
+  form,
+  isOpen,
+  onClose,
+  isLoading = false,
+  onCreate = () => {},
+  onEdit = () => {},
+  onDelete = () => {},
+}) => {
+  const isFormDisabled = mode === FormMode.EDIT
 
   const {
-    config,
-    isLoading,
-    form,
-    formAction,
-    isDrawerVisible,
-    closeDrawer,
-    handleOnFinish,
-    handleOnDelete,
-    subjectOptionList,
-    teacherOptionList,
-    roomOptionList,
-  } = _
-
-  const isFormDisabled = formAction === 'EDIT'
+    isLoading: isOptionLoading,
+    teacherList,
+    subjectList,
+    roomList,
+  } = useOption()
 
   return (
     <AntdDrawer
       width={560}
-      visible={isDrawerVisible && formAction === 'EDIT'}
-      onClose={closeDrawer}
+      visible={isOpen}
+      onClose={() => onClose()}
+      destroyOnClose
       maskClosable={!isLoading}
       closable={false}
       keyboard={false}
@@ -66,18 +78,22 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
             [style.disabled]: isLoading,
           })}
         >
-          <FiX className={style.closeIcon} onClick={closeDrawer} />
+          <FiX className={style.closeIcon} onClick={() => onClose()} />
           <Text size="sub-head" bold className={style.title}>
-            {formAction === 'ADD' ? 'เพิ่มวิชาสอน' : 'รายละเอียดวิชาสอน'}
+            {FORM_TITLE[mode]}
           </Text>
+          <Button small onClick={() => form.submit()} disabled={false}>
+            <AiFillEdit className={style.submitIcon} />
+            บันทึกข้อมูล
+          </Button>
         </div>
       }
       footer={
-        formAction === 'EDIT' && (
+        mode === FormMode.EDIT && (
           <Popconfirm
             disabled={isLoading}
-            title="ต้องการนำวิชาสอนนี้ออกใช่ไหม"
-            okText="นำออก"
+            title="ต้องการลบข้อมูลใช่ไหม"
+            okText="ลบ"
             cancelText="ยกเลิก"
             okButtonProps={{
               type: 'primary',
@@ -86,7 +102,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
             cancelButtonProps={{
               type: 'text',
             }}
-            onConfirm={handleOnDelete(config.onDelete!)}
+            onConfirm={() => onDelete(form.getFieldsValue())}
           >
             <AntdButton
               block
@@ -95,21 +111,21 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
               icon={<FiTrash2 className={style.deleteIcon} />}
               disabled={isLoading}
             >
-              นำวิชาสอนออก
+              ลบข้อมูล
             </AntdButton>
           </Popconfirm>
         )
       }
     >
-      <Loader loading={isLoading}>
+      <Loader loading={isLoading || isOptionLoading}>
         <Form
           form={form}
           layout="vertical"
           hideRequiredMark
-          onFinish={
-            formAction === 'ADD'
-              ? handleOnFinish(config.onAdd!)
-              : handleOnFinish(config.onEdit!)
+          onFinish={() =>
+            mode === FormMode.CREATE
+              ? onCreate(form.getFieldsValue())
+              : onEdit(form.getFieldsValue())
           }
         >
           <Form.Item name="id" style={{ display: 'none' }} />
@@ -120,7 +136,6 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                 name="subjectId"
                 label="วิชา"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
                 <Select
                   disabled={isFormDisabled}
@@ -131,7 +146,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                       .includes(input.toLowerCase())
                   }
                   notFoundContent="ไม่พบวิชา"
-                  options={subjectOptionList!}
+                  options={subjectList}
                 />
               </Form.Item>
             </Col>
@@ -143,9 +158,11 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                 name="type"
                 label="รูปแบบการสอน"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
-                <Select disabled={isFormDisabled} options={typeOptionList} />
+                <Select
+                  disabled={isFormDisabled}
+                  options={OptionList.workloadType}
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -156,7 +173,6 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                   { required: true, message: '' },
                   { pattern: /^\d+$/, message: 'ตัวเลขเท่านั้น' },
                 ]}
-                hasFeedback
               >
                 <Input disabled={isFormDisabled} />
               </Form.Item>
@@ -170,7 +186,6 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                   { pattern: /^[A-Z]+$/i, message: 'อักษรอังกฤษเท่านั้น' },
                 ]}
                 normalize={(value) => String(value).toLocaleUpperCase()}
-                hasFeedback
               >
                 <Input disabled={isFormDisabled} />
               </Form.Item>
@@ -183,9 +198,8 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                 name="degree"
                 label="ระดับการศึกษา"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
-                <Select disabled={isFormDisabled} options={degreeOptionList} />
+                <Select disabled={isFormDisabled} options={OptionList.degree} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -193,11 +207,10 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                 name="classYear"
                 label="ชั้นปี"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
                 <Select
                   disabled={isFormDisabled}
-                  options={classYearOptionList}
+                  options={OptionList.classYear}
                 />
               </Form.Item>
             </Col>
@@ -209,11 +222,10 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                 name="dayOfWeek"
                 label="วันที่สอน"
                 rules={[{ required: true, message: '' }]}
-                hasFeedback
               >
                 <Select
                   disabled={isFormDisabled}
-                  options={dayOfWeekOptionList}
+                  options={OptionList.dayOfWeek}
                 />
               </Form.Item>
             </Col>
@@ -228,7 +240,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                       .includes(input.toLowerCase())
                   }
                   notFoundContent="ไม่พบห้องเรียน"
-                  options={roomOptionList!}
+                  options={roomList}
                 />
               </Form.Item>
             </Col>
@@ -302,9 +314,9 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
           <Row gutter={16}>
             <Form.List
               name="teacherList"
-              initialValue={[{ weekCount: 15, isClaim: true }]}
+              initialValue={[{ teacherId, weekCount: 15, isClaim: true }]}
             >
-              {(fields, teacherList) => (
+              {(fields, formTeacherList) => (
                 <Col span={24}>
                   {fields.map(({ name, ...rest }) => (
                     <Row gutter={16} align="middle">
@@ -324,7 +336,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                                 .includes(input.toLowerCase())
                             }
                             notFoundContent="ไม่พบรายชื่อนี้"
-                            options={teacherOptionList!}
+                            options={teacherList}
                           />
                         </Form.Item>
                       </Col>
@@ -335,7 +347,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                           className={style.listInput}
                           rules={[{ required: true, message: '' }]}
                         >
-                          <Input type="number" disabled />
+                          <Input type="number" />
                         </Form.Item>
                       </Col>
                       <Col span={!isFormDisabled && fields.length > 1 ? 2 : 3}>
@@ -345,14 +357,14 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                           valuePropName="checked"
                           className={style.listInput}
                         >
-                          <Checkbox disabled />
+                          <Checkbox />
                         </Form.Item>
                       </Col>
 
                       {!isFormDisabled && fields.length > 1 && (
                         <FiTrash2
                           className={style.removeListIcon}
-                          onClick={() => teacherList.remove(name)}
+                          onClick={() => formTeacherList.remove(name)}
                         />
                       )}
                     </Row>
@@ -363,7 +375,7 @@ export const Drawer: React.FC<IProps> = ({ use }) => {
                       block
                       type="dashed"
                       onClick={() =>
-                        teacherList.add({ weekCount: 15, isClaim: true })
+                        formTeacherList.add({ weekCount: 15, isClaim: true })
                       }
                     >
                       + คลิกเพื่อเพิ่มผู้สอน

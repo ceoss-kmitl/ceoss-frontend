@@ -2,12 +2,14 @@ import css from 'classnames'
 import { Tooltip } from 'antd'
 import { FiAlertTriangle } from 'react-icons/fi'
 
+import { IRawWorkloadOfTeacherWithDayjs } from 'apis/workload'
+
 import style from './Workload.module.scss'
-import { ISlot, IWorkload, useWorkloadSlot } from './helper'
+import { ISlot, useWorkloadSlot } from './helper'
 
 interface IProps {
   data: ISlot
-  onClick: (workload: IWorkload) => void
+  onClick: (workload: IRawWorkloadOfTeacherWithDayjs) => void
 }
 
 export const Workload: React.FC<IProps> = ({ data, onClick }) => {

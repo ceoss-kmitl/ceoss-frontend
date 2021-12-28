@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 
+import { IWorkloadOfTeacherWithDayjs } from 'apis/workload'
+
 interface IDetail {
   month: string
   subjectList: {
@@ -10,9 +12,15 @@ interface IDetail {
   }[]
 }
 
-export function useDocumentDetail(workload: any[]) {
+export const useDocumentDetail = (
+  workloadList: IWorkloadOfTeacherWithDayjs[]
+) => {
+  const flatWorkloadList = workloadList.flatMap((w) => w.workloadList)
   const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs())
-  const [detail, setDetail] = useState<IDetail>(initialDetail)
+  const [detail, setDetail] = useState<IDetail>({
+    month: dayjs().format('MMMM'),
+    subjectList: [],
+  })
 
   const setMonth = (index: number) => {
     setCurrentDate(dayjs().month(index))
@@ -101,17 +109,21 @@ export function useDocumentDetail(workload: any[]) {
 
   const isDaySelected = (subjectId: string, day: Dayjs) => {
     const list = detail.subjectList.find((subject) => subject.id === subjectId)
-    if (!list) return false
+    if (!list) {
+      return false
+    }
 
     const found = list.dayList
       .map((obj) => obj.day.startOf('day'))
       .find((obj) => obj.isSame(day))
-    if (!found) return false
+    if (!found) {
+      return false
+    }
 
     return true
   }
 
-  const handleDownload = (callback: (config: any) => void) => {
+  const handleDownload = (callback: (payload: any) => void) => {
     const payload = {
       ...detail,
       subjectList: detail.subjectList.map((subject) => ({
@@ -126,16 +138,20 @@ export function useDocumentDetail(workload: any[]) {
     callback(payload)
   }
 
-  useEffect(() => {
+  const resetForm = () => {
     setDetail({
       month: dayjs().format('MMMM'),
-      subjectList: workload.map((w) => ({
+      subjectList: flatWorkloadList.map((w) => ({
         id: w.subjectId,
         name: w.name,
         dayList: [],
       })),
     })
-  }, [workload])
+  }
+
+  useEffect(() => {
+    resetForm()
+  }, [workloadList])
 
   return {
     detail,
@@ -147,22 +163,7 @@ export function useDocumentDetail(workload: any[]) {
     currentDate,
     month: currentDate.month(),
     setMonth,
-    monthOptionList,
     handleDownload,
+    resetForm,
   }
 }
-
-const initialDetail: IDetail = {
-  month: dayjs().format('MMMM'),
-  subjectList: [],
-}
-
-const monthOptionList = Array(12)
-  .fill('')
-  .map((_, index) => {
-    const thatDay = dayjs().month(index)
-    return {
-      label: thatDay.toDate().toLocaleDateString('th-TH', { month: 'long' }),
-      value: thatDay.month(),
-    }
-  })

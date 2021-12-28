@@ -1,24 +1,31 @@
+import { FiPlus } from 'react-icons/fi'
+
+import monster from 'img/monster.png'
 import { Text } from 'components/Text'
 import { Loader } from 'components/Loader'
-import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { BigSearch } from 'components/BigSearch'
+import { Button } from 'components/Button'
 
 import style from './style.module.scss'
-import monster from './monster.png'
-import { BigSearch } from './components/BigSearch'
 import { CompensatedList } from './components/CompensatedList'
 import { AdderDrawer } from './components/AdderDrawer'
-import { useCompensatedHistory } from './helper'
+import { useBigSearch } from './hooks/useBigSearch'
+import { useCompensatedHistory } from './hooks/useCompensatedHistory'
+import { useAdderDrawerForm } from './hooks/useAdderDrawerForm'
 
 export const CompensationBookPage = () => {
-  const { academicYear, semester } = useAcademicYear()
-
   const {
-    isLoading,
-    setSubjectId,
-    compensatedList,
-    createCompensated,
-    deleteCompensated,
-  } = useCompensatedHistory(academicYear, semester)
+    isLoading: isSubjectListLoading,
+    subjectList,
+    currentSubject,
+    setCurrentSubject,
+  } = useBigSearch()
+
+  const { isLoading, compensatedList, createCompensated, deleteCompensated } =
+    useCompensatedHistory(currentSubject.id)
+
+  const { formAdder, isOpenAdder, openAdderDrawer, closeAdderDrawer } =
+    useAdderDrawerForm()
 
   return (
     <div className={style.page}>
@@ -26,9 +33,15 @@ export const CompensationBookPage = () => {
         หนังสือสอนชดเชย
       </Text>
 
-      <BigSearch onSearch={(record) => setSubjectId(record.key)} />
+      <BigSearch
+        isLoading={isSubjectListLoading}
+        placeholder="ค้นหาวิชา..."
+        notFoundText="ไม่พบรายวิชาดังกล่าว"
+        options={subjectList}
+        onSelect={(subject) => setCurrentSubject(subject)}
+      />
 
-      {isLoading === null ? (
+      {!currentSubject.id ? (
         <div className={style.monsterWrapper}>
           <img src={monster} />
           <span>เริ่มค้นหารายวิชาเพื่อดูประวัติการสอนชดเชย</span>
@@ -40,16 +53,31 @@ export const CompensationBookPage = () => {
               ประวัติการสอนชดเชย
             </Text>
             <div className={style.headerRight}>
-              <AdderDrawer
-                sectionList={compensatedList.map((c) => c.section)}
-                onFinish={createCompensated}
-              />
+              <Button
+                small
+                blue
+                icon={<FiPlus style={{ marginRight: '0.5rem' }} />}
+                onClick={() => openAdderDrawer()}
+              >
+                เพิ่มการสอนชดเชย
+              </Button>
             </div>
           </div>
 
           <CompensatedList
             list={compensatedList}
             onDelete={deleteCompensated}
+          />
+
+          <AdderDrawer
+            compensatedList={compensatedList}
+            form={formAdder}
+            isOpen={isOpenAdder}
+            isLoading={isLoading}
+            onClose={() => closeAdderDrawer()}
+            onSubmit={(formValue) =>
+              createCompensated(formValue, closeAdderDrawer)
+            }
           />
         </Loader>
       )}

@@ -2,50 +2,51 @@ import css from 'classnames'
 import { Row } from 'antd'
 import { FiDownload, FiPlus } from 'react-icons/fi'
 
-import { TimeTable, useTimeTable } from 'components/TimeTable'
+import monster from 'img/monster.png'
+import { TimeTable } from 'components/TimeTable'
 import { Text } from 'components/Text'
 import { Button } from 'components/Button'
 import { Loader } from 'components/Loader'
-import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { BigSearch } from 'components/BigSearch'
 
 import style from './style.module.scss'
-import monster from './monster.png'
-import { BigSearch } from './components/BigSearch'
-import { ExternalTeacherDrawer } from './components/ExternalTeacherDrawer'
-import { useExternalTeacherDrawer, useWorkload } from './helper'
+import { Drawer } from './components/Drawer'
+import { ExtDrawer } from './components/ExtDrawer'
+import { useBigSearch } from './hooks/useBigSearch'
+import { useWorkload } from './hooks/useWorkload'
+import { useDrawerForm } from './hooks/useDrawerForm'
+import { useDownloadFile } from './hooks/useDownloadFile'
+import { useExtDrawerForm } from './hooks/useExtDrawerForm'
 
 export const WorkloadPage = () => {
-  const { academicYear, semester } = useAcademicYear()
-
   const {
-    isLoading,
-    isDownloading,
-    workload,
+    isLoading: isTeacherListLoading,
+    teacherList,
     currentTeacher,
     setCurrentTeacher,
+  } = useBigSearch()
+
+  const {
+    isLoading: isWorkloadLoading,
+    workloadList,
     addWorkload,
     editWorkload,
     deleteWorkload,
-    downloadExcel,
-    downloadExcel5,
-  } = useWorkload(academicYear, semester)
+  } = useWorkload(currentTeacher.id)
 
-  const timeTable = useTimeTable({
-    data: workload,
-    onAdd: addWorkload,
-    onEdit: editWorkload,
-    onDelete: deleteWorkload,
-  })
+  const {
+    form,
+    formMode,
+    isOpen,
+    openDrawerCreateMode,
+    openDrawerEditMode,
+    closeDrawer,
+  } = useDrawerForm()
 
-  const externalTeacherDrawer = useExternalTeacherDrawer()
+  const { isOpenExt, openExtDrawer, closeExtDrawer } = useExtDrawerForm()
 
-  const handleDownloadExcel = () => {
-    if (currentTeacher.isExternal) {
-      externalTeacherDrawer.openDrawer()
-    } else {
-      downloadExcel()
-    }
-  }
+  const { isDownloading, downloadExcel, downloadExcelExt, downloadExcel5 } =
+    useDownloadFile(currentTeacher?.id)
 
   return (
     <div className={style.page}>
@@ -55,7 +56,13 @@ export const WorkloadPage = () => {
         </Text>
         <Button
           small
-          icon={<FiDownload style={{ marginRight: '0.5rem' }} />}
+          icon={
+            <FiDownload
+              style={{
+                marginRight: '0.5rem',
+              }}
+            />
+          }
           onClick={downloadExcel5}
           loading={isDownloading}
         >
@@ -64,29 +71,30 @@ export const WorkloadPage = () => {
       </Row>
 
       <BigSearch
-        onSearch={(record) => {
-          setCurrentTeacher({
-            id: record.key,
-            name: record.name,
-            isExternal: record.isExternal,
-          })
-        }}
+        isLoading={isTeacherListLoading}
+        placeholder="ค้นหาอาจารย์..."
+        notFoundText="ไม่พบรายชื่อดังกล่าว"
+        options={teacherList}
+        onSelect={(teacher) => setCurrentTeacher(teacher)}
       />
 
-      {isLoading === null ? (
+      {!currentTeacher.id ? (
         <div className={style.monsterWrapper}>
           <img src={monster} />
           <span>เริ่มค้นหาอาจารย์เพื่อดูภาระงาน</span>
         </div>
       ) : (
-        <Loader loading={isLoading}>
+        <Loader loading={isWorkloadLoading}>
           <div className={style.timeTableHeader}>
             <Text size="sub-head" bold>
               ตารางการปฏิบัติงานสอน
             </Text>
           </div>
 
-          <TimeTable use={timeTable} />
+          <TimeTable
+            data={workloadList}
+            onWorkloadClick={(workload) => openDrawerEditMode(workload)}
+          />
 
           <div className={style.timeTableFooter}>
             <label className={style.label}>
@@ -109,32 +117,62 @@ export const WorkloadPage = () => {
             <Button
               small
               blue
-              onClick={handleDownloadExcel}
+              onClick={() => {
+                if (currentTeacher?.isExternal) {
+                  openExtDrawer()
+                } else {
+                  downloadExcel()
+                }
+              }}
               className={style.workloadAdder}
-              icon={<FiDownload style={{ marginRight: '0.15rem' }} />}
+              icon={
+                <FiDownload
+                  style={{
+                    marginRight: '0.15rem',
+                  }}
+                />
+              }
               loading={isDownloading}
-              style={{ marginRight: '0.5rem' }}
+              style={{
+                marginRight: '0.5rem',
+              }}
             >
               เอกสารภาระงาน
             </Button>
             <Button
               small
               blue
-              onClick={timeTable.addWorkload}
-              icon={<FiPlus style={{ marginRight: '0.25rem' }} />}
+              onClick={() => openDrawerCreateMode()}
+              icon={
+                <FiPlus
+                  style={{
+                    marginRight: '0.25rem',
+                  }}
+                />
+              }
             >
               เพิ่มภาระงานใหม่
             </Button>
           </div>
 
-          {currentTeacher.isExternal && (
-            <ExternalTeacherDrawer
-              {...externalTeacherDrawer.drawerProps}
-              workload={workload.flatMap((w) => w.workloadList)}
-              onDownload={(config) => downloadExcel(config)}
-              isDownloading={isDownloading}
-            />
-          )}
+          <Drawer
+            teacherId={currentTeacher.id}
+            form={form}
+            mode={formMode}
+            isOpen={isOpen}
+            isLoading={isWorkloadLoading}
+            onClose={() => closeDrawer()}
+            onCreate={(formValue) => addWorkload(formValue, closeDrawer)}
+            onEdit={(formValue) => editWorkload(formValue, closeDrawer)}
+            onDelete={(formValue) => deleteWorkload(formValue, closeDrawer)}
+          />
+          <ExtDrawer
+            workloadList={workloadList}
+            isOpen={isOpenExt}
+            isLoading={isDownloading}
+            onClose={() => closeExtDrawer()}
+            onDownload={(formValue) => downloadExcelExt(formValue)}
+          />
         </Loader>
       )}
     </div>

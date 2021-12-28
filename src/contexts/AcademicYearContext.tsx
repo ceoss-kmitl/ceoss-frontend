@@ -1,4 +1,6 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+
+import { getCurrentAcademicYear } from 'libs/datetime'
 
 interface IAcademicYearContext {
   academicYear: number
@@ -14,6 +16,11 @@ const AcademicYearContext = createContext<IAcademicYearContext>({
 
 export const AcademicYearProvider: React.FC = ({ children }) => {
   const [data, setData] = useState({ academicYear: 0, semester: 0 })
+
+  useEffect(() => {
+    const { academicYear, semester } = getCurrentAcademicYear()
+    setData({ academicYear, semester })
+  }, [])
 
   const changeAcademicYear = (academicYearAndSemester: string) => {
     const [a, s] = academicYearAndSemester.split('/')
