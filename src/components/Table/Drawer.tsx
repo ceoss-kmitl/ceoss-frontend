@@ -98,7 +98,7 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
         if (column.pattern)
           formRules.push({
             pattern: column.pattern,
-            message: `${column.header} ไม่ถูกต้อง`,
+            message: column.patternMsg || `${column.header} ไม่ถูกต้อง`,
           })
         break
       case 'credit':

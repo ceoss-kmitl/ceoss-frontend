@@ -43,6 +43,19 @@ export const getManyCompensatedOfSubject = async (
   return data
 }
 
+export const createOneSubject = async (subject: ISubject) => {
+  await http.post('/subject', subject)
+}
+
+export const editOneSubject = async (subject: ISubject) => {
+  const { id, ...payload } = subject
+  await http.put(`/subject/${id}`, payload)
+}
+
+export const deleteOneSubject = async (id: string) => {
+  await http.delete(`/subject/${id}`)
+}
+
 export const createOneCompensatedOfSubject = async (
   subjectId: string,
   payload: any

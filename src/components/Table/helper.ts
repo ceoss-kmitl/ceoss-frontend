@@ -13,6 +13,7 @@ interface IBaseColumn {
 interface ITextColumn extends IBaseColumn {
   type: 'text'
   pattern?: RegExp
+  patternMsg?: string
   maxLength?: number
   placeholder?: string
   normalize?: (value: string) => string

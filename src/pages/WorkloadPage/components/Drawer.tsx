@@ -241,6 +241,8 @@ export const Drawer: React.FC<IProps> = ({
                   }
                   notFoundContent="ไม่พบห้องเรียน"
                   options={roomList}
+                  placeholder="ไม่มี"
+                  allowClear
                 />
               </Form.Item>
             </Col>
@@ -273,6 +275,7 @@ export const Drawer: React.FC<IProps> = ({
                             hideDisabledOptions
                             minuteStep={15}
                             showNow={false}
+                            allowClear={false}
                           />
                         </Form.Item>
                       </Col>

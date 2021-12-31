@@ -1,15 +1,31 @@
 import { useState, useEffect } from 'react'
 import { message } from 'antd'
 
-import { http } from 'libs/http'
+import {
+  createOneSubject,
+  deleteOneSubject,
+  editOneSubject,
+  getManySubject,
+  ISubject,
+} from 'apis/subject'
 import { IColumn, IFormLayout } from 'components/Table'
 
+type IParsedSubject = {
+  credit: string
+  id: string
+  code: string
+  name: string
+  isRequired: boolean
+  curriculumCode: string
+  isInter: boolean
+}
+
 export function useMenuSubject() {
-  const [data, setData] = useState<any[]>([])
+  const [data, setData] = useState<IParsedSubject[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  function parseCredit(data: any[]) {
-    return data.map((subject) => {
+  function parseCredit(subjectList: ISubject[]): IParsedSubject[] {
+    return subjectList.map((subject) => {
       const { credit, lectureHours, labHours, independentHours, ...record } =
         subject
 
@@ -20,8 +36,8 @@ export function useMenuSubject() {
     })
   }
 
-  function extractCredit(input: string) {
-    const result = String(input).match(/\d{1}/g) || []
+  function extractCredit(creditStr: string) {
+    const result = String(creditStr).match(/\d{1}/g) || []
     return {
       credit: Number(result[0] ?? 0),
       lectureHours: Number(result[1] ?? 0),
@@ -33,8 +49,8 @@ export function useMenuSubject() {
   async function getAllSubject() {
     setIsLoading(true)
     try {
-      const { data } = await http.get('/subject')
-      setData(parseCredit(data))
+      const subjectList = await getManySubject()
+      setData(parseCredit(subjectList))
     } catch (err) {
       message.error(err.message)
       console.error(err)
@@ -43,29 +59,28 @@ export function useMenuSubject() {
     setIsLoading(false)
   }
 
-  async function addSubject(record: any) {
+  async function addSubject(record: IParsedSubject) {
     const credit = extractCredit(record.credit)
-    const subject = {
+    const subject: ISubject = {
       ...record,
       ...credit,
     }
-    await http.post(`/subject`, subject)
+    await createOneSubject(subject)
     await getAllSubject()
   }
 
-  async function editSubject(record: any) {
+  async function editSubject(record: IParsedSubject) {
     const credit = extractCredit(record.credit)
-    const subject = {
+    const subject: ISubject = {
       ...record,
       ...credit,
     }
-    const { id, ...subjectData } = subject
-    await http.put(`/subject/${id}`, subjectData)
+    await editOneSubject(subject)
     await getAllSubject()
   }
 
-  async function deleteSubject(record: any) {
-    await http.delete(`/subject/${record.id}`)
+  async function deleteSubject(record: IParsedSubject) {
+    await deleteOneSubject(record.id)
     await getAllSubject()
   }
 
@@ -89,6 +104,7 @@ export const columnList: IColumn[] = [
     header: 'รหัสวิชา',
     dataIndex: 'code',
     pattern: /^\d{8}$/,
+    patternMsg: 'กรุณาใส่ตัวเลข 8 ตัว',
     maxLength: 8,
     placeholder: 'รหัสวิชา',
     showInTable: true,

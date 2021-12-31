@@ -16,7 +16,7 @@ export const useBigSearch = () => {
   const fetchTeacherList = async () => {
     setIsLoading(true)
     try {
-      const query = { is_active: true }
+      const query: Partial<ITeacher> = { isActive: true }
       const teacherList = await getManyTeacher(query)
       const teacherOptionList = teacherList.map((t) => ({
         ...t,
