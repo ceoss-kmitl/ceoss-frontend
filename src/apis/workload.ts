@@ -12,6 +12,7 @@ import {
 export interface IRawWorkloadOfTeacher {
   id: string
   subjectId: string
+  roomId?: string
   code: string
   name: string
   section: number
@@ -48,7 +49,7 @@ export type IWorkloadOfTeacherWithDayjs = Modify<
   { workloadList: IRawWorkloadOfTeacherWithDayjs[] }
 >
 
-export interface IUnAssignedWorkload {
+export interface IWorkload {
   workloadId: string
   subjectCode: string
   subjectName: string
@@ -57,6 +58,23 @@ export interface IUnAssignedWorkload {
   startTime: string
   endTime: string
   teacherList: string[]
+}
+
+// =============
+// CRUD Endpoint
+// =============
+
+export const getManyWorkload = async (
+  query: { room?: string } & IAcademicTime
+) => {
+  const { data } = await http.get<IWorkload[]>('/workload', {
+    params: query,
+  })
+  return data
+}
+
+export const createOneWorkload = async (payload: any) => {
+  await http.post(`/workload`, payload)
 }
 
 export const getManyWorkloadOfTeacher = async (
@@ -70,17 +88,6 @@ export const getManyWorkloadOfTeacher = async (
     }
   )
   return data
-}
-
-export const getManyUnAssignedWorkload = async (query: any) => {
-  const { data } = await http.get<IUnAssignedWorkload[]>('/workload/no-room', {
-    params: query,
-  })
-  return data
-}
-
-export const createOneWorkload = async (payload: any) => {
-  await http.post<string>(`/workload`, payload)
 }
 
 /**

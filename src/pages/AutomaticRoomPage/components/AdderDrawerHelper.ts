@@ -2,14 +2,10 @@ import { message } from 'antd'
 import { useEffect, useState } from 'react'
 
 import { useAcademicYear } from 'contexts/AcademicYearContext'
-import { getManyUnAssignedWorkload, IUnAssignedWorkload } from 'apis/workload'
+import { getManyWorkload, IWorkload } from 'apis/workload'
 import { ErrorCode } from 'constants/error'
-import { Modify } from 'libs/utils'
 
-type IUnAssignedWorkloadWithCheck = Modify<
-  IUnAssignedWorkload,
-  { checked: boolean }
->
+type IUnAssignedWorkloadWithCheck = IWorkload & { checked: boolean }
 
 export const useUnAssignedWorkload = () => {
   const { academicYear, semester } = useAcademicYear()
@@ -22,11 +18,11 @@ export const useUnAssignedWorkload = () => {
   const fetchUnAssignedWorkloadList = async () => {
     setIsLoading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const workloadList = await getManyWorkload({
+        academicYear,
         semester,
-      }
-      const workloadList = await getManyUnAssignedWorkload(query)
+        room: 'NULL',
+      })
       const workloadCheckList = workloadList.map((w) => ({
         ...w,
         checked: false,
