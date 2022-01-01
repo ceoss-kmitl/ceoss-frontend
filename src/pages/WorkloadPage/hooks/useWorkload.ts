@@ -43,11 +43,10 @@ export const useWorkload = (teacherId: string) => {
     }
     setIsLoading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const workloadList = await getManyWorkloadOfTeacher(teacherId, {
+        academicYear,
         semester,
-      }
-      const workloadList = await getManyWorkloadOfTeacher(teacherId, query)
+      })
       const workloadListWithDayjs = workloadList.map((day) => ({
         workloadList: day.workloadList.map((workload) => ({
           ...workload,

@@ -35,3 +35,8 @@ export enum WorkloadType {
   LECTURE = 'LECTURE',
   LAB = 'LAB',
 }
+
+export interface IAcademicTime {
+  academicYear: number
+  semester: number
+}

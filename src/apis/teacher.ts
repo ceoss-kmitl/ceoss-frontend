@@ -9,7 +9,7 @@ export interface ITeacher {
   isExternal: boolean
 }
 
-export const getManyTeacher = async (query?: Record<string, any>) => {
+export const getManyTeacher = async (query?: Partial<ITeacher>) => {
   const { data } = await http.get<ITeacher[]>('/teacher', {
     params: query,
   })

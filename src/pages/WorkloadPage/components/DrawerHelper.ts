@@ -15,8 +15,9 @@ export const useOption = () => {
 
   const fetchTeacherList = async () => {
     try {
-      const query = { is_active: true }
-      const teacherList = await getManyTeacher(query)
+      const teacherList = await getManyTeacher({
+        isActive: true,
+      })
       const teacherOptionList = teacherList.map((t) => ({
         label: `${t.title}${t.name}`,
         value: t.id,
