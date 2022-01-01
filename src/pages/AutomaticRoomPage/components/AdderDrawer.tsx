@@ -17,6 +17,7 @@ interface IProps {
   onClose: () => void
   isLoading?: boolean
   onSubmit?: (workloadIdList: string[]) => void
+  refetchWhenValueChange?: any[]
 }
 
 export const AdderDrawer: React.FC<IProps> = ({
@@ -25,6 +26,7 @@ export const AdderDrawer: React.FC<IProps> = ({
   onClose,
   isLoading: isApiLoading = false,
   onSubmit = () => {},
+  refetchWhenValueChange = [],
 }) => {
   const {
     isLoading: isWorkloadListLoading,
@@ -32,7 +34,7 @@ export const AdderDrawer: React.FC<IProps> = ({
     handleOnChange,
     handleOnSubmit,
     handleOnClose,
-  } = useUnAssignedWorkload()
+  } = useUnAssignedWorkload(refetchWhenValueChange)
 
   const isLoading = isApiLoading || isWorkloadListLoading
 
@@ -41,7 +43,6 @@ export const AdderDrawer: React.FC<IProps> = ({
       width={560}
       visible={isOpen}
       onClose={() => handleOnClose(onClose)}
-      destroyOnClose
       maskClosable={!isLoading}
       closable={false}
       keyboard={false}

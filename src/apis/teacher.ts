@@ -9,6 +9,10 @@ export interface ITeacher {
   isExternal: boolean
 }
 
+// =============
+// CRUD Endpoint
+// =============
+
 export const getManyTeacher = async (query?: Partial<ITeacher>) => {
   const { data } = await http.get<ITeacher[]>('/teacher', {
     params: query,

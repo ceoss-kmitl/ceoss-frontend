@@ -28,11 +28,10 @@ export const useAutoRoom = (roomId: string) => {
     }
     setIsLoading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const workloadList = await getManyWorkloadOfRoom(roomId, {
+        academicYear,
         semester,
-      }
-      const workloadList = await getManyWorkloadOfRoom(roomId, query)
+      })
       const workloadListWithDayjs = workloadList.map((day) => ({
         workloadList: day.workloadList.map((workload) => ({
           ...workload,

@@ -13,11 +13,6 @@ export interface IAvailableRoom {
   roomName: string
 }
 
-export const getManyRoom = async () => {
-  const { data } = await http.get<IRoom[]>('/room')
-  return data
-}
-
 export const getManyWorkloadOfRoom = async (
   roomId: string,
   query?: Record<string, any>
@@ -70,4 +65,26 @@ export const downloadOneExcelFile = async (query: any) => {
     params: query,
   })
   return data
+}
+
+// =============
+// CRUD Endpoint
+// =============
+
+export const getManyRoom = async () => {
+  const { data } = await http.get<IRoom[]>('/room')
+  return data
+}
+
+export const createOneRoom = async (room: IRoom) => {
+  await http.post('/room', room)
+}
+
+export const editOneRoom = async (room: IRoom) => {
+  const { id, ...payload } = room
+  await http.put(`/room/${id}`, payload)
+}
+
+export const deleteOneRoom = async (id: string) => {
+  await http.delete(`/room/${id}`)
 }

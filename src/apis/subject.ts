@@ -25,11 +25,6 @@ export interface ICompensated {
   }[]
 }
 
-export const getManySubject = async () => {
-  const { data } = await http.get<ISubject[]>('/subject')
-  return data
-}
-
 export const getManyCompensatedOfSubject = async (
   subjectId: string,
   query: any
@@ -40,6 +35,26 @@ export const getManyCompensatedOfSubject = async (
       params: query,
     }
   )
+  return data
+}
+
+export const createOneCompensatedOfSubject = async (
+  subjectId: string,
+  payload: any
+) => {
+  await http.post(`/subject/${subjectId}/compensated`, payload)
+}
+
+export const deleteOneCompensated = async (compensatedId: string) => {
+  await http.delete(`/subject/compensated/${compensatedId}`)
+}
+
+// =============
+// CRUD Endpoint
+// =============
+
+export const getManySubject = async () => {
+  const { data } = await http.get<ISubject[]>('/subject')
   return data
 }
 
@@ -54,15 +69,4 @@ export const editOneSubject = async (subject: ISubject) => {
 
 export const deleteOneSubject = async (id: string) => {
   await http.delete(`/subject/${id}`)
-}
-
-export const createOneCompensatedOfSubject = async (
-  subjectId: string,
-  payload: any
-) => {
-  await http.post(`/subject/${subjectId}/compensated`, payload)
-}
-
-export const deleteOneCompensated = async (compensatedId: string) => {
-  await http.delete(`/subject/compensated/${compensatedId}`)
 }

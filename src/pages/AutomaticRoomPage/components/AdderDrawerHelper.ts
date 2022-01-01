@@ -7,7 +7,7 @@ import { ErrorCode } from 'constants/error'
 
 type IUnAssignedWorkloadWithCheck = IWorkload & { checked: boolean }
 
-export const useUnAssignedWorkload = () => {
+export const useUnAssignedWorkload = (refetchWhenValueChange = <any>[]) => {
   const { academicYear, semester } = useAcademicYear()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -62,13 +62,12 @@ export const useUnAssignedWorkload = () => {
       .filter((w) => w.checked)
       .map((w) => w.workloadId)
 
-    await callback(workloadIdList)
-    fetchUnAssignedWorkloadList()
+    callback(workloadIdList)
   }
 
   useEffect(() => {
     fetchUnAssignedWorkloadList()
-  }, [academicYear, semester])
+  }, [academicYear, semester, ...refetchWhenValueChange])
 
   return {
     isLoading,

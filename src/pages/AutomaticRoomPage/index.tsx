@@ -137,6 +137,7 @@ export const AutomaticRoomPage = () => {
             onSubmit={(workloadIdList) =>
               addWorkloadToRoom(workloadIdList, closeAdderDrawer)
             }
+            refetchWhenValueChange={[workloadList]}
           />
         </Loader>
       )}
