@@ -98,3 +98,17 @@ export const getManyWorkloadOfTeacher = async (
   )
   return data
 }
+
+// =============
+// Teacher Excel
+// =============
+
+export const downloadOneExcelFile = async (
+  teacherId: string,
+  query: IAcademicTime
+) => {
+  const { data } = await http.get(`/teacher/${teacherId}/workload/excel`, {
+    params: query,
+  })
+  return data
+}
