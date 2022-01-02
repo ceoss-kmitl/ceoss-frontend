@@ -115,7 +115,7 @@ export const useWorkload = (subjectId: string) => {
 
   useEffect(() => {
     fetchWorkloadList()
-  }, [subjectId])
+  }, [subjectId, academicYear, semester])
 
   return {
     isLoading,
