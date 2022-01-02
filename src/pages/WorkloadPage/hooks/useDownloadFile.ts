@@ -4,10 +4,10 @@ import { message } from 'antd'
 import { saveFile } from 'libs/utils'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { ErrorCode } from 'constants/error'
-import { downloadOneExcel5File } from 'apis/workload'
 import {
   downloadOneExcelFile,
   downloadOneExcelExternalFile,
+  downloadOneExcel5File,
 } from 'apis/teacher'
 import { omit } from 'lodash'
 
@@ -65,11 +65,10 @@ export const useDownloadFile = (teacherId?: string) => {
     message.loading({ key: MESSAGE_KEY, content: 'กำลังดาวน์โหลด...' })
     setIsDownloading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const file = await downloadOneExcel5File({
+        academicYear,
         semester,
-      }
-      const file = await downloadOneExcel5File(query)
+      })
       saveFile(file)
       message.success({ key: MESSAGE_KEY, content: 'ดาวน์โหลดสำเร็จ' })
     } catch (error) {

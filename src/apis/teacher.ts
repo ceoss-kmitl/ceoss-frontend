@@ -116,8 +116,6 @@ export const downloadOneExcelExternalFile = async (
   teacherId: string,
   query: Record<string, any>
 ) => {
-  console.log('fasdfs', query)
-
   const { data } = await http.get(
     `/teacher-external/${teacherId}/workload/excel`,
     {
@@ -125,5 +123,12 @@ export const downloadOneExcelExternalFile = async (
       paramsSerializer: qs.stringify,
     }
   )
+  return data
+}
+
+export const downloadOneExcel5File = async (query: IAcademicTime) => {
+  const { data } = await http.get('/teacher/workload/excel-5', {
+    params: query,
+  })
   return data
 }
