@@ -17,11 +17,10 @@ export const useDownloadFile = () => {
     message.loading({ key: MESSAGE_KEY, content: 'กำลังดาวน์โหลด...' })
     setIsDownloading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const file = await downloadOneExcelFile({
+        academicYear,
         semester,
-      }
-      const file = await downloadOneExcelFile(query)
+      })
       saveFile(file)
       message.success({ key: MESSAGE_KEY, content: 'ดาวน์โหลดสำเร็จ' })
     } catch (error) {

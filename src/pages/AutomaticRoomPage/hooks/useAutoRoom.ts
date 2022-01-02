@@ -98,12 +98,11 @@ export const useAutoRoom = (roomId: string) => {
       finishFailText: 'ตกลง',
       width: 400,
       onAsyncOk: async () => {
-        const query = {
-          academic_year: academicYear,
-          semester,
-        }
         try {
-          await triggerManyRoomAutoAssign(query)
+          await triggerManyRoomAutoAssign({
+            academicYear,
+            semester,
+          })
           fetchWorkloadOfRoom()
         } catch (error) {
           message.error(ErrorCode.R04)
@@ -123,12 +122,11 @@ export const useAutoRoom = (roomId: string) => {
       finishFailTitle: 'เกิดข้อผิดพลาดบางอย่าง',
       width: 400,
       onAsyncOk: async () => {
-        const query = {
-          academic_year: academicYear,
-          semester,
-        }
         try {
-          await triggerManyRoomResetAssign(query)
+          await triggerManyRoomResetAssign({
+            academicYear,
+            semester,
+          })
           fetchWorkloadOfRoom()
         } catch (error) {
           message.error(ErrorCode.R05)

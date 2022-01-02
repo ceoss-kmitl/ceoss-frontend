@@ -85,14 +85,12 @@ export const deleteOneWorkloadOfRoom = async (
 // Room Action
 // ===========
 
-export const triggerManyRoomAutoAssign = async (query: any) => {
-  await http.get('/room/auto-assign', {
-    params: query,
-  })
+export const triggerManyRoomAutoAssign = async (query: IAcademicTime) => {
+  await http.post('/room/auto-assign', null, { params: query })
 }
 
-export const triggerManyRoomResetAssign = async (query: any) => {
-  await http.delete('/room/reset-assign', {
+export const triggerManyRoomResetAssign = async (query: IAcademicTime) => {
+  await http.post('/room/reset-assign', null, {
     params: query,
   })
 }
@@ -101,7 +99,7 @@ export const triggerManyRoomResetAssign = async (query: any) => {
 // Room Excel
 // ==========
 
-export const downloadOneExcelFile = async (query: any) => {
+export const downloadOneExcelFile = async (query: IAcademicTime) => {
   const { data } = await http.get('/room/excel', {
     params: query,
   })
