@@ -9,10 +9,12 @@ import {
   createOneWorkload,
   deleteOneWorkload,
   editOneWorkload,
+} from 'apis/workload'
+import {
   getManyWorkloadOfTeacher,
   IRawWorkloadOfTeacherWithDayjs,
   IWorkloadOfTeacherWithDayjs,
-} from 'apis/workload'
+} from 'apis/teacher'
 
 const convertToWorkloadTime = (timeRangePicker: Dayjs[][]) => {
   return timeRangePicker.map(([start, end]) => {

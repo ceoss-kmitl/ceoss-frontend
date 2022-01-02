@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { toDayjsTime } from 'libs/datetime'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { Modal } from 'components/Modal'
-import { IWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { IWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 import {
   createManyWorkloadOfRoom,
   deleteOneWorkloadOfRoom,

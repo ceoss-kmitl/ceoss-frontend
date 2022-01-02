@@ -2,7 +2,7 @@ import css from 'classnames'
 import { Tooltip } from 'antd'
 import { FiAlertTriangle } from 'react-icons/fi'
 
-import { IRawWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { IRawWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 
 import style from './Workload.module.scss'
 import { ISlot, useWorkloadSlot } from './helper'

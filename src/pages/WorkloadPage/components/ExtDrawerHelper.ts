@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 
-import { IWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { IWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 
 interface IDetail {
   month: string

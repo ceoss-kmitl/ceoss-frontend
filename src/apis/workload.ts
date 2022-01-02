@@ -1,53 +1,9 @@
-import { Dayjs } from 'dayjs'
-
 import { http } from 'libs/http'
-import { Modify } from 'libs/utils'
-import {
-  DayOfWeek,
-  Degree,
-  IAcademicTime,
-  WorkloadType,
-} from 'constants/common'
+import { DayOfWeek, IAcademicTime } from 'constants/common'
 
-export interface IRawWorkloadOfTeacher {
-  id: string
-  subjectId: string
-  roomId?: string
-  code: string
-  name: string
-  section: number
-  type: WorkloadType
-  fieldOfStudy: string
-  degree: Degree
-  classYear: number
-  dayOfWeek: DayOfWeek
-  startSlot: number
-  endSlot: number
-  timeList: {
-    start: string
-    end: string
-  }[]
-  teacherList: {
-    teacherId: string
-    weekCount: number
-    isClaim: boolean
-  }[]
-  isClaim: boolean
-}
-
-export type IRawWorkloadOfTeacherWithDayjs = Modify<
-  IRawWorkloadOfTeacher,
-  { timeList: Dayjs[][] }
->
-
-export interface IWorkloadOfTeacher {
-  workloadList: IRawWorkloadOfTeacher[]
-}
-
-export type IWorkloadOfTeacherWithDayjs = Modify<
-  IWorkloadOfTeacher,
-  { workloadList: IRawWorkloadOfTeacherWithDayjs[] }
->
+// =============
+// CRUD Endpoint
+// =============
 
 export interface IWorkload {
   workloadId: string
@@ -60,21 +16,6 @@ export interface IWorkload {
   endTime: string
   teacherList: string[]
 }
-
-// ============
-// Compensation
-// ============
-
-export const createOneCompensationWorkload = async (
-  workloadId: string,
-  payload: any
-) => {
-  await http.post(`/workload/${workloadId}/compensation`, payload)
-}
-
-// =============
-// CRUD Endpoint
-// =============
 
 export const getManyWorkload = async (
   query: {
@@ -93,22 +34,6 @@ export const createOneWorkload = async (payload: any) => {
   await http.post(`/workload`, payload)
 }
 
-export const getManyWorkloadOfTeacher = async (
-  teacherId: string,
-  query?: IAcademicTime & { compensation?: boolean }
-) => {
-  const { data } = await http.get<IWorkloadOfTeacher[]>(
-    `/teacher/${teacherId}/workload`,
-    {
-      params: query,
-    }
-  )
-  return data
-}
-
-/**
- * NOTE: Can edit only teacherList of the workload
- */
 export const editOneWorkload = async (id: string, payload: any) => {
   await http.put(`/workload/${id}`, payload)
 }
@@ -117,12 +42,27 @@ export const deleteOneWorkload = async (id: string) => {
   await http.delete(`/workload/${id}`)
 }
 
+// =====================
+// Workload Compensation
+// =====================
+
+export const createOneCompensationWorkload = async (
+  workloadId: string,
+  payload: any
+) => {
+  await http.post(`/workload/${workloadId}/compensation`, payload)
+}
+
 export const downloadOneExcelFile = async (query: Record<string, any>) => {
   const { data } = await http.get('/workload/excel', {
     params: query,
   })
   return data
 }
+
+// ==============
+// Workload Excel
+// ==============
 
 export const downloadOneExcelExternalFile = async (
   payload: any,

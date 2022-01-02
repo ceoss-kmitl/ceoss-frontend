@@ -3,11 +3,7 @@ import { message } from 'antd'
 import { useState, useEffect } from 'react'
 
 import { useAcademicYear } from 'contexts/AcademicYearContext'
-import {
-  deleteOneCompensated,
-  getManyCompensatedOfSubject,
-  ICompensated,
-} from 'apis/subject'
+import { getManyCompensatedOfSubject, ICompensated } from 'apis/subject'
 import { createOneCompensationWorkload, deleteOneWorkload } from 'apis/workload'
 import { ErrorCode } from 'constants/error'
 

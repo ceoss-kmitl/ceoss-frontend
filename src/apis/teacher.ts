@@ -1,4 +1,17 @@
+import { Dayjs } from 'dayjs'
+
 import { http } from 'libs/http'
+import { Modify } from 'libs/utils'
+import {
+  DayOfWeek,
+  Degree,
+  IAcademicTime,
+  WorkloadType,
+} from 'constants/common'
+
+// =============
+// CRUD Endpoint
+// =============
 
 export interface ITeacher {
   id: string
@@ -8,10 +21,6 @@ export interface ITeacher {
   isActive: boolean
   isExternal: boolean
 }
-
-// =============
-// CRUD Endpoint
-// =============
 
 export const getManyTeacher = async (query?: Partial<ITeacher>) => {
   const { data } = await http.get<ITeacher[]>('/teacher', {
@@ -31,4 +40,61 @@ export const editOneTeacher = async (teacher: ITeacher) => {
 
 export const deleteOneTeacher = async (id: string) => {
   await http.delete(`/teacher/${id}`)
+}
+
+// ==================
+// Teacher x Worklaod
+// ==================
+
+export interface IRawWorkloadOfTeacher {
+  id: string
+  subjectId: string
+  roomId?: string
+  code: string
+  name: string
+  section: number
+  type: WorkloadType
+  fieldOfStudy: string
+  degree: Degree
+  classYear: number
+  dayOfWeek: DayOfWeek
+  startSlot: number
+  endSlot: number
+  timeList: {
+    start: string
+    end: string
+  }[]
+  teacherList: {
+    teacherId: string
+    weekCount: number
+    isClaim: boolean
+  }[]
+  isClaim: boolean
+}
+
+export type IRawWorkloadOfTeacherWithDayjs = Modify<
+  IRawWorkloadOfTeacher,
+  { timeList: Dayjs[][] }
+>
+
+export interface IWorkloadOfTeacher {
+  workloadList: IRawWorkloadOfTeacher[]
+}
+
+export type IWorkloadOfTeacherWithDayjs = Modify<
+  IWorkloadOfTeacher,
+  { workloadList: IRawWorkloadOfTeacherWithDayjs[] }
+>
+
+export const getManyWorkloadOfTeacher = async (
+  teacherId: string,
+  query?: IAcademicTime & { compensation?: boolean }
+) => {
+  const { data } = await http.get<IWorkloadOfTeacher[]>(
+    `/teacher/${teacherId}/workload`,
+    {
+      params: query,
+    }
+  )
+  return data
 }

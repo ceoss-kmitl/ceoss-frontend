@@ -1,13 +1,39 @@
 import { IAcademicTime } from 'constants/common'
 import { http } from 'libs/http'
 
-import { IWorkloadOfTeacher } from './workload'
+import { IWorkloadOfTeacher } from './teacher'
+
+// =============
+// CRUD Endpoint
+// =============
 
 export interface IRoom {
   id: string
   name: string
   capacity: number
 }
+
+export const getManyRoom = async () => {
+  const { data } = await http.get<IRoom[]>('/room')
+  return data
+}
+
+export const createOneRoom = async (room: IRoom) => {
+  await http.post('/room', room)
+}
+
+export const editOneRoom = async (room: IRoom) => {
+  const { id, ...payload } = room
+  await http.put(`/room/${id}`, payload)
+}
+
+export const deleteOneRoom = async (id: string) => {
+  await http.delete(`/room/${id}`)
+}
+
+// ===============
+// Room x Workload
+// ===============
 
 export interface IAvailableRoom {
   roomId: string
@@ -55,6 +81,10 @@ export const deleteOneWorkloadOfRoom = async (
   await http.delete(`/room/${roomId}/workload/${workloadId}`)
 }
 
+// ===========
+// Room Action
+// ===========
+
 export const triggerManyRoomAutoAssign = async (query: any) => {
   await http.get('/room/auto-assign', {
     params: query,
@@ -67,31 +97,13 @@ export const triggerManyRoomResetAssign = async (query: any) => {
   })
 }
 
+// ==========
+// Room Excel
+// ==========
+
 export const downloadOneExcelFile = async (query: any) => {
   const { data } = await http.get('/room/excel', {
     params: query,
   })
   return data
-}
-
-// =============
-// CRUD Endpoint
-// =============
-
-export const getManyRoom = async () => {
-  const { data } = await http.get<IRoom[]>('/room')
-  return data
-}
-
-export const createOneRoom = async (room: IRoom) => {
-  await http.post('/room', room)
-}
-
-export const editOneRoom = async (room: IRoom) => {
-  const { id, ...payload } = room
-  await http.put(`/room/${id}`, payload)
-}
-
-export const deleteOneRoom = async (id: string) => {
-  await http.delete(`/room/${id}`)
 }
