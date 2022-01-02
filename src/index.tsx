@@ -4,9 +4,10 @@ import App from './App'
 import 'styles/global.css'
 
 import { ConfigProvider } from 'antd'
-import th_TH from 'antd/lib/locale-provider/th_TH'
+import th_TH from 'antd/lib/locale/th_TH'
 
 import dayjs from 'dayjs'
+import localeData from 'dayjs/plugin/localeData'
 import weekday from 'dayjs/plugin/weekday'
 import buddhistEra from 'dayjs/plugin/buddhistEra'
 import thLocale from 'dayjs/locale/th'
@@ -15,6 +16,7 @@ import thLocale from 'dayjs/locale/th'
 // apply changes to the file `/components/DatePicker`
 thLocale.weekStart = 1
 dayjs.locale(thLocale)
+dayjs.extend(localeData)
 dayjs.extend(weekday)
 dayjs.extend(buddhistEra)
 

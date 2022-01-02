@@ -1,4 +1,5 @@
 import { Dayjs } from 'dayjs'
+import qs from 'qs'
 
 import { http } from 'libs/http'
 import { Modify } from 'libs/utils'
@@ -92,9 +93,7 @@ export const getManyWorkloadOfTeacher = async (
 ) => {
   const { data } = await http.get<IWorkloadOfTeacher[]>(
     `/teacher/${teacherId}/workload`,
-    {
-      params: query,
-    }
+    { params: query }
   )
   return data
 }
@@ -110,5 +109,21 @@ export const downloadOneExcelFile = async (
   const { data } = await http.get(`/teacher/${teacherId}/workload/excel`, {
     params: query,
   })
+  return data
+}
+
+export const downloadOneExcelExternalFile = async (
+  teacherId: string,
+  query: Record<string, any>
+) => {
+  console.log('fasdfs', query)
+
+  const { data } = await http.get(
+    `/teacher-external/${teacherId}/workload/excel`,
+    {
+      params: query,
+      paramsSerializer: qs.stringify,
+    }
+  )
   return data
 }

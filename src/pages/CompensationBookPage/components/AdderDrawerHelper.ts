@@ -2,7 +2,6 @@ import { message } from 'antd'
 import { useEffect, useState } from 'react'
 import { Dayjs } from 'dayjs'
 import { compact } from 'lodash'
-import thLocale from 'dayjs/locale/th'
 
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { getManyAvailableRoom, getManyRoom } from 'apis/room'
@@ -11,8 +10,6 @@ import { ErrorCode } from 'constants/error'
 import { getManyWorkload, IWorkload } from 'apis/workload'
 
 const NO_ROOM = { value: 'NULL', label: 'ไม่ใช้ห้อง' }
-let isThDayjsConfiged = false
-thLocale.weekStart = 1
 
 export const useCompensation = (selectedWorkload: IWorkload) => {
   const { academicYear, semester } = useAcademicYear()
@@ -66,19 +63,12 @@ export const useCompensation = (selectedWorkload: IWorkload) => {
     setIsLoading(false)
   }
 
-  const configThDayjs = (date: Dayjs) => {
-    if (isThDayjsConfiged) return false
-
-    // Config locale here again because of `dayjsGenerateConfig`
+  const handleDisabledDate = (date: Dayjs) => {
+    // Config offset here again because of `dayjsGenerateConfig`
     // that provide to custom `DatePicker` in folder components is
     // generated before the config in `index.ts` has run
-    date.locale(thLocale)
-    isThDayjsConfiged = true
-    return false
-  }
-
-  const handleDisabledDate = (date: Dayjs) => {
-    return date.locale(thLocale).weekday() !== selectedWorkload.dayOfWeek
+    const offsetWeekDay = (date.weekday() - 1) % 7
+    return offsetWeekDay !== selectedWorkload.dayOfWeek
   }
 
   useEffect(() => {
@@ -92,7 +82,6 @@ export const useCompensation = (selectedWorkload: IWorkload) => {
     setAvailableRoomList,
     fetchAvailableRoom,
     handleDisabledDate,
-    configThDayjs,
   }
 }
 

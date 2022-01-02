@@ -57,16 +57,6 @@ export const createOneCompensationWorkload = async (
 // Workload Excel
 // ==============
 
-export const downloadOneExcelExternalFile = async (
-  payload: any,
-  query: Record<string, any>
-) => {
-  const { data } = await http.post('/workload/excel-external', payload, {
-    params: query,
-  })
-  return data
-}
-
 export const downloadOneExcel5File = async (query: Record<string, any>) => {
   const { data } = await http.get('/workload/excel-5', {
     params: query,

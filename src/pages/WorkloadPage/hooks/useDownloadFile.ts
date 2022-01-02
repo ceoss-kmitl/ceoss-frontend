@@ -4,11 +4,12 @@ import { message } from 'antd'
 import { saveFile } from 'libs/utils'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { ErrorCode } from 'constants/error'
+import { downloadOneExcel5File } from 'apis/workload'
 import {
-  downloadOneExcel5File,
+  downloadOneExcelFile,
   downloadOneExcelExternalFile,
-} from 'apis/workload'
-import { downloadOneExcelFile } from 'apis/teacher'
+} from 'apis/teacher'
+import { omit } from 'lodash'
 
 const MESSAGE_KEY = 'WORKLOAD_SYSTEM'
 
@@ -37,15 +38,20 @@ export const useDownloadFile = (teacherId?: string) => {
   }
 
   const downloadExcelExt = async (payload: any) => {
+    if (!teacherId) return
+
     message.loading({ key: MESSAGE_KEY, content: 'กำลังดาวน์โหลด...' })
     setIsDownloading(true)
     try {
-      const query = {
-        teacher_id: teacherId,
-        academic_year: academicYear,
+      const file = await downloadOneExcelExternalFile(teacherId, {
+        month: payload.month,
+        workloadList: payload.subjectList.map((s: any) => ({
+          ...omit(s, 'subjectId'),
+          workloadId: s.subjectId,
+        })),
+        academicYear,
         semester,
-      }
-      const file = await downloadOneExcelExternalFile(payload, query)
+      })
       saveFile(file)
       message.success({ key: MESSAGE_KEY, content: 'ดาวน์โหลดสำเร็จ' })
     } catch (error) {

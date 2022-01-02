@@ -50,7 +50,6 @@ export const AdderDrawer: React.FC<IProps> = ({
     setAvailableRoomList,
     fetchAvailableRoom,
     handleDisabledDate,
-    configThDayjs,
   } = useCompensation(selectedWorkload)
 
   const [isInnerOpen, setIsInnerOpen] = useState(false)
@@ -242,7 +241,6 @@ export const AdderDrawer: React.FC<IProps> = ({
                             })
                           }
                           allowClear={false}
-                          disabledDate={configThDayjs}
                         />
                       </Form.Item>
                     </Col>
