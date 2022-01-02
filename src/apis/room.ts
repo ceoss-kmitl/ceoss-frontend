@@ -1,3 +1,4 @@
+import { IAcademicTime } from 'constants/common'
 import { http } from 'libs/http'
 
 import { IWorkloadOfTeacher } from './workload'
@@ -15,7 +16,7 @@ export interface IAvailableRoom {
 
 export const getManyWorkloadOfRoom = async (
   roomId: string,
-  query?: Record<string, any>
+  query?: IAcademicTime & { compensation?: boolean }
 ) => {
   const { data } = await http.get<IWorkloadOfTeacher[]>(
     `/room/${roomId}/workload`,
@@ -26,9 +27,15 @@ export const getManyWorkloadOfRoom = async (
   return data
 }
 
-export const getManyAvailableRoom = async (query: any) => {
+export const getManyAvailableRoom = async (
+  query: {
+    compensatedDate: Date
+    startTime: string
+    endTime: string
+  } & IAcademicTime
+) => {
   const { data } = await http.get<IAvailableRoom[]>(
-    '/room/available/compensated',
+    '/room/available-workload',
     { params: query }
   )
   return data

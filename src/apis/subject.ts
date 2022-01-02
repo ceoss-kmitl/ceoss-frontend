@@ -21,28 +21,26 @@ export interface ICompensated {
     originalTimeList: { start: string; end: string }[]
     compensatedDate: string
     compensatedTimeList: { start: string; end: string }[]
-    room: string
+    originalRoom: string
+    compensatedRoom: string
   }[]
 }
+
+// ==================
+// Subject x Workload
+// ==================
 
 export const getManyCompensatedOfSubject = async (
   subjectId: string,
   query: any
 ) => {
   const { data } = await http.get<ICompensated[]>(
-    `/subject/${subjectId}/compensated`,
+    `/subject/${subjectId}/compensation-workload`,
     {
       params: query,
     }
   )
   return data
-}
-
-export const createOneCompensatedOfSubject = async (
-  subjectId: string,
-  payload: any
-) => {
-  await http.post(`/subject/${subjectId}/compensated`, payload)
 }
 
 export const deleteOneCompensated = async (compensatedId: string) => {

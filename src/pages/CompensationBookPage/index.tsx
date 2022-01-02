@@ -70,7 +70,7 @@ export const CompensationBookPage = () => {
           />
 
           <AdderDrawer
-            compensatedList={compensatedList}
+            subject={currentSubject}
             form={formAdder}
             isOpen={isOpenAdder}
             isLoading={isLoading}

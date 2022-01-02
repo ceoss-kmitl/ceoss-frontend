@@ -10,6 +10,7 @@ import {
 } from 'antd'
 import { FiX, FiTrash2 } from 'react-icons/fi'
 import { BsArrowRight } from 'react-icons/bs'
+import dayjs from 'dayjs'
 
 import { Text } from 'components/Text'
 import { Loader } from 'components/Loader'
@@ -36,7 +37,8 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
       compensatedDate: compensated.compensatedDate,
       compensatedTimeStart: compensated.compensatedTimeList[0].start,
       compensatedTimeEnd: compensated.compensatedTimeList[0].end,
-      room: compensated.room,
+      originalRoom: compensated.originalRoom,
+      compensatedRoom: compensated.compensatedRoom,
     })
     setIsDrawerOpen(true)
   }
@@ -69,8 +71,13 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
                     className={style.item}
                     onClick={() => openDrawerAndSetData(cp)}
                   >
+                    <Text>{dayjs(cp.originalDate).format('D MMMM BBBB')}</Text>
+                    <BsArrowRight
+                      size={18}
+                      className={style.arrowDividerInline}
+                    />
                     <Text>
-                      {cp.compensatedDate} : ห้องเรียน {cp.room}
+                      {dayjs(cp.compensatedDate).format('D MMMM BBBB')}
                     </Text>
                   </div>
                 ))
@@ -102,8 +109,8 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
         footer={
           <Popconfirm
             disabled={isLoading}
-            title="ต้องการนำวิชาสอนนี้ออกใช่ไหม"
-            okText="นำออก"
+            title="ต้องการลบการสอนชดเชยนี้ใช่ไหม"
+            okText="ลบ"
             cancelText="ยกเลิก"
             okButtonProps={{
               type: 'primary',
@@ -121,7 +128,7 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
               icon={<FiTrash2 className={style.deleteIcon} />}
               disabled={isLoading}
             >
-              นำวิชาสอนออก
+              ลบการสอนชดเชย
             </AntdButton>
           </Popconfirm>
         }
@@ -133,7 +140,11 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
                 <Row>
                   <Col span={24}>
                     <Form.Item label="วันสอนเดิม">
-                      <Text>{form.getFieldValue('oldDate')}</Text>
+                      <Text>
+                        {dayjs(form.getFieldValue('oldDate')).format(
+                          'dddd D MMMM BBBB'
+                        )}
+                      </Text>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -161,7 +172,11 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
                 <Row>
                   <Col span={24}>
                     <Form.Item label="วันสอนชดเชย">
-                      <Text>{form.getFieldValue('compensatedDate')}</Text>
+                      <Text>
+                        {dayjs(form.getFieldValue('compensatedDate')).format(
+                          'dddd D MMMM BBBB'
+                        )}
+                      </Text>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -175,15 +190,29 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
               </Col>
             </Row>
 
-            <Row gutter={16}>
-              <Col span={24}>
+            <Row gutter={16} justify="space-between">
+              <Col span={11}>
                 <Form.Item
-                  name="roomId"
-                  label="ห้องสำหรับสอนชดเชย"
+                  label="ห้องเดิม"
                   rules={[{ required: true, message: '' }]}
                   hasFeedback
                 >
-                  <Text>{form.getFieldValue('room')}</Text>
+                  <Text>
+                    {form.getFieldValue('originalRoom') ||
+                      '- ไม่ใช้ห้องเรียน -'}
+                  </Text>
+                </Form.Item>
+              </Col>
+              <Col span={11}>
+                <Form.Item
+                  label="ห้องสำหรับชดเชย"
+                  rules={[{ required: true, message: '' }]}
+                  hasFeedback
+                >
+                  <Text>
+                    {form.getFieldValue('compensatedRoom') ||
+                      '- ไม่ใช้ห้องเรียน -'}
+                  </Text>
                 </Form.Item>
               </Col>
             </Row>

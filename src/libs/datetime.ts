@@ -17,7 +17,9 @@ export function getCurrentAcademicYear() {
  * Convert plain time to dayjs time
  * @param time ex. 10:30, 12:45
  */
-export function toDayjsTime(time: string) {
+export function toDayjsTime(time?: string) {
+  if (!time) return dayjs()
+
   const [hr, min] = time.split(':').map((t) => Number(t))
   return dayjs().set('hours', hr).set('minutes', min)
 }

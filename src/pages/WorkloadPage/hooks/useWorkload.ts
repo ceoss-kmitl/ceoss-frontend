@@ -46,6 +46,7 @@ export const useWorkload = (teacherId: string) => {
       const workloadList = await getManyWorkloadOfTeacher(teacherId, {
         academicYear,
         semester,
+        compensation: false,
       })
       const workloadListWithDayjs = workloadList.map((day) => ({
         workloadList: day.workloadList.map((workload) => ({

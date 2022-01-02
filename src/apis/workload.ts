@@ -51,6 +51,7 @@ export type IWorkloadOfTeacherWithDayjs = Modify<
 
 export interface IWorkload {
   workloadId: string
+  roomId?: string
   subjectCode: string
   subjectName: string
   section: number
@@ -60,12 +61,27 @@ export interface IWorkload {
   teacherList: string[]
 }
 
+// ============
+// Compensation
+// ============
+
+export const createOneCompensationWorkload = async (
+  workloadId: string,
+  payload: any
+) => {
+  await http.post(`/workload/${workloadId}/compensation`, payload)
+}
+
 // =============
 // CRUD Endpoint
 // =============
 
 export const getManyWorkload = async (
-  query: { room?: string } & IAcademicTime
+  query: {
+    room?: string
+    subject?: string
+    compensation?: boolean
+  } & IAcademicTime
 ) => {
   const { data } = await http.get<IWorkload[]>('/workload', {
     params: query,
@@ -79,7 +95,7 @@ export const createOneWorkload = async (payload: any) => {
 
 export const getManyWorkloadOfTeacher = async (
   teacherId: string,
-  query?: IAcademicTime
+  query?: IAcademicTime & { compensation?: boolean }
 ) => {
   const { data } = await http.get<IWorkloadOfTeacher[]>(
     `/teacher/${teacherId}/workload`,

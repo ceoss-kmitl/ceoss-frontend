@@ -1,53 +1,48 @@
-import { FormInstance, message } from 'antd'
-import dayjs, { Dayjs } from 'dayjs'
-import { useState } from 'react'
+import { message } from 'antd'
+import { useEffect, useState } from 'react'
+import { Dayjs } from 'dayjs'
+import { compact } from 'lodash'
+import thLocale from 'dayjs/locale/th'
 
 import { useAcademicYear } from 'contexts/AcademicYearContext'
-import { getManyAvailableRoom } from 'apis/room'
+import { getManyAvailableRoom, getManyRoom } from 'apis/room'
 import { IOption } from 'constants/option'
 import { ErrorCode } from 'constants/error'
+import { getManyWorkload, IWorkload } from 'apis/workload'
 
-const convertDateAndTimeToString = (date: Dayjs, time: Dayjs[]) => {
-  const dateISO = dayjs(date).toISOString()
-  const [startTime, endTime] = time.map((each: any) =>
-    dayjs(each).format('HH:mm')
-  )
-  return { dateISO, startTime, endTime }
-}
+const NO_ROOM = { value: 'NULL', label: 'ไม่ใช้ห้อง' }
+let isThDayjsConfiged = false
+thLocale.weekStart = 1
 
-const NO_ROOM = { value: '', label: 'ไม่มี' }
-
-export const useAvailableRoom = () => {
+export const useCompensation = (selectedWorkload: IWorkload) => {
   const { academicYear, semester } = useAcademicYear()
 
   const [isLoading, setIsLoading] = useState(false)
-  const [roomList, setRoomList] = useState<IOption[]>([NO_ROOM])
+  const [availableRoomList, setAvailableRoomList] = useState<IOption[]>([])
+  const [roomList, setRoomList] = useState<IOption[]>([])
 
-  const fetchAvailableRoom = async (form: FormInstance) => {
-    const date = form.getFieldValue('compensatedDate')
-    const time = form.getFieldValue('compensatedTime')
-    if (!date || !time) {
+  const fetchAvailableRoom = async (formValue: any) => {
+    const date: Dayjs = formValue.compensatedDate
+    const time: Dayjs[] = formValue.compensatedTime
+
+    if (!date || compact(time).length !== 2) {
       return
     }
     setIsLoading(true)
     try {
-      const { dateISO, startTime, endTime } = convertDateAndTimeToString(
-        date,
-        time
-      )
-      const query = {
-        academic_year: academicYear,
+      const [startTime, endTime] = time.map((each) => each.format('HH:mm'))
+      const roomList = await getManyAvailableRoom({
+        academicYear,
         semester,
-        compensatedDate: dateISO,
+        compensatedDate: date.toDate(),
         startTime,
         endTime,
-      }
-      const roomList = await getManyAvailableRoom(query)
+      })
       const roomOptionList = roomList.map((r) => ({
         label: r.roomName,
         value: r.roomId,
       }))
-      setRoomList([NO_ROOM, ...roomOptionList])
+      setAvailableRoomList([NO_ROOM, ...roomOptionList])
     } catch (error) {
       message.error(ErrorCode.C04)
       console.error(error)
@@ -55,9 +50,88 @@ export const useAvailableRoom = () => {
     setIsLoading(false)
   }
 
+  const fetchAllRoom = async () => {
+    setIsLoading(true)
+    try {
+      const roomList = await getManyRoom()
+      const roomOptionList = roomList.map((r) => ({
+        label: r.name,
+        value: r.id,
+      }))
+      setRoomList(roomOptionList)
+    } catch (error) {
+      message.error(ErrorCode.C04) // FIXME
+      console.error(error)
+    }
+    setIsLoading(false)
+  }
+
+  const configThDayjs = (date: Dayjs) => {
+    if (isThDayjsConfiged) return false
+
+    // Config locale here again because of `dayjsGenerateConfig`
+    // that provide to custom `DatePicker` in folder components is
+    // generated before the config in `index.ts` has run
+    date.locale(thLocale)
+    isThDayjsConfiged = true
+    return false
+  }
+
+  const handleDisabledDate = (date: Dayjs) => {
+    return date.locale(thLocale).weekday() !== selectedWorkload.dayOfWeek
+  }
+
+  useEffect(() => {
+    fetchAllRoom()
+  }, [])
+
   return {
     isLoading,
     roomList,
+    availableRoomList,
+    setAvailableRoomList,
     fetchAvailableRoom,
+    handleDisabledDate,
+    configThDayjs,
+  }
+}
+
+export const useWorkload = (subjectId: string) => {
+  const { academicYear, semester } = useAcademicYear()
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [workloadList, setWorkloadList] = useState(<IWorkload[]>[])
+  const [selectedWorkload, setSelectedWorkload] = useState(<IWorkload>{})
+
+  const fetchWorkloadList = async () => {
+    setIsLoading(true)
+    try {
+      const workloadList = await getManyWorkload({
+        academicYear,
+        semester,
+        compensation: false,
+        subject: subjectId,
+      })
+      setWorkloadList(workloadList)
+    } catch (error) {
+      message.error(ErrorCode.C04) // FIXME: eiei
+      console.error(error)
+    }
+    setIsLoading(false)
+  }
+
+  const changeSelectedWorkload = (workload?: IWorkload) => {
+    setSelectedWorkload(workload || ({} as IWorkload))
+  }
+
+  useEffect(() => {
+    fetchWorkloadList()
+  }, [subjectId])
+
+  return {
+    isLoading,
+    workloadList,
+    selectedWorkload,
+    changeSelectedWorkload,
   }
 }
