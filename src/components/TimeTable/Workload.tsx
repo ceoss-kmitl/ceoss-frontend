@@ -37,7 +37,6 @@ export const Workload: React.FC<IProps> = ({ data, onClick }) => {
                         //IF #1.1: Has workload BUT overlap
                         <Tooltip
                           title={`${slot.workload.code} ${slot.workload.name} กลุ่ม ${slot.workload.section}`}
-                          color="#1F2937"
                         >
                           <div
                             className={css(
@@ -65,7 +64,6 @@ export const Workload: React.FC<IProps> = ({ data, onClick }) => {
                         //IF #1.2: Has OK workload
                         <Tooltip
                           title={`${slot.workload.code} ${slot.workload.name} กลุ่ม ${slot.workload.section}`}
-                          color="#1F2937"
                         >
                           <div
                             className={css(

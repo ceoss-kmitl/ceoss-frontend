@@ -78,6 +78,7 @@ export const useDocumentDetail = (
                   ? {
                       ...obj,
                       isCompensated: !obj.isCompensated,
+                      remark: '',
                     }
                   : obj
               ),
