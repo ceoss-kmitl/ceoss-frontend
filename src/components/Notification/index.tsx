@@ -61,6 +61,7 @@ export const Notification = {
       className: css(style.wrapper, style.error),
       icon: <HiXCircle />,
       description: props.seeMore && <SeeMore payload={props.seeMore} />,
+      duration: props.duration ?? 10,
     }),
 
   loading: (props: IProps) =>
