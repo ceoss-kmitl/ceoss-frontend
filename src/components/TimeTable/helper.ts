@@ -1,7 +1,7 @@
 import {
   IRawWorkloadOfTeacherWithDayjs,
   IWorkloadOfTeacherWithDayjs,
-} from 'apis/workload'
+} from 'apis/teacher'
 
 export interface ISlot {
   slotSpan: number

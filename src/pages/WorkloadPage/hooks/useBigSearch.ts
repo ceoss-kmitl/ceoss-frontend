@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { message } from 'antd'
 
 import { Modify } from 'libs/utils'
 import { getManyTeacher, ITeacher } from 'apis/teacher'
 import { ErrorCode } from 'constants/error'
 import { IOption } from 'constants/option'
+import { Notification } from 'components/Notification'
 
 type ITeacherOption = Modify<ITeacher, IOption>
 
@@ -16,8 +16,9 @@ export const useBigSearch = () => {
   const fetchTeacherList = async () => {
     setIsLoading(true)
     try {
-      const query = { is_active: true }
-      const teacherList = await getManyTeacher(query)
+      const teacherList = await getManyTeacher({
+        isActive: true,
+      })
       const teacherOptionList = teacherList.map((t) => ({
         ...t,
         label: `${t.title}${t.name}`,
@@ -26,8 +27,10 @@ export const useBigSearch = () => {
       setTeacherList(teacherOptionList)
     } catch (error) {
       setTeacherList([])
-      message.error(ErrorCode.W00)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.W00,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

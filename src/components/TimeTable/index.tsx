@@ -1,7 +1,7 @@
 import {
   IRawWorkloadOfTeacherWithDayjs,
   IWorkloadOfTeacherWithDayjs,
-} from 'apis/workload'
+} from 'apis/teacher'
 
 import style from './style.module.scss'
 import { OutlineTable } from './OutlineTable'

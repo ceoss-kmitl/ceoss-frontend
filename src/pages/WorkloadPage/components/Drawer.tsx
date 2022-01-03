@@ -1,5 +1,4 @@
 import css from 'classnames'
-import localeTH from 'antd/es/date-picker/locale/th_TH'
 import {
   Button as AntdButton,
   Col,
@@ -21,7 +20,7 @@ import { Select } from 'components/Select'
 import { Input } from 'components/Input'
 import { FormMode } from 'constants/common'
 import { OptionList } from 'constants/option'
-import { IRawWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { IRawWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 
 import style from './Drawer.module.scss'
 import { useOption } from './DrawerHelper'
@@ -241,6 +240,8 @@ export const Drawer: React.FC<IProps> = ({
                   }
                   notFoundContent="ไม่พบห้องเรียน"
                   options={roomList}
+                  placeholder="ไม่มี"
+                  allowClear
                 />
               </Form.Item>
             </Col>
@@ -263,7 +264,6 @@ export const Drawer: React.FC<IProps> = ({
                           <DatePicker.RangePicker
                             disabled={isFormDisabled}
                             picker="time"
-                            locale={localeTH}
                             className={style.timePicker}
                             format="HH:mm"
                             placeholder={['เวลาเริ่ม', 'เวลาจบ']}
@@ -273,6 +273,7 @@ export const Drawer: React.FC<IProps> = ({
                             hideDisabledOptions
                             minuteStep={15}
                             showNow={false}
+                            allowClear={false}
                           />
                         </Form.Item>
                       </Col>

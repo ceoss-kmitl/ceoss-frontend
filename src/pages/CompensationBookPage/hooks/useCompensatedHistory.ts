@@ -1,15 +1,11 @@
 import dayjs from 'dayjs'
-import { message } from 'antd'
 import { useState, useEffect } from 'react'
 
 import { useAcademicYear } from 'contexts/AcademicYearContext'
-import {
-  createOneCompensatedOfSubject,
-  deleteOneCompensated,
-  getManyCompensatedOfSubject,
-  ICompensated,
-} from 'apis/subject'
+import { getManyCompensatedOfSubject, ICompensated } from 'apis/subject'
+import { createOneCompensationWorkload, deleteOneWorkload } from 'apis/workload'
 import { ErrorCode } from 'constants/error'
+import { Notification } from 'components/Notification'
 
 export function useCompensatedHistory(subjectId: string) {
   const { academicYear, semester } = useAcademicYear()
@@ -24,66 +20,62 @@ export function useCompensatedHistory(subjectId: string) {
 
     setIsLoading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const compensatedList = await getManyCompensatedOfSubject(subjectId, {
+        academicYear,
         semester,
-      }
-      const compensatedList = await getManyCompensatedOfSubject(
-        subjectId,
-        query
-      )
+      })
       setCompensatedList(compensatedList)
     } catch (error) {
-      message.error(ErrorCode.C00)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C00,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
 
   const createCompensated = async (formValue: any, onSuccess = () => {}) => {
-    if (!subjectId) {
-      return
-    }
-
     setIsLoading(true)
     try {
       const payload = {
-        section: formValue.section,
-        academicYear,
-        semester,
-        originalDate: dayjs(formValue.oldDate).toISOString(),
-        compensatedDate: dayjs(formValue.compensatedDate).toISOString(),
-        originalTimeList: [
-          formValue.oldTime.map((t: any) => dayjs(t).format('HH:mm')),
-        ],
+        originalDate: dayjs(formValue.oldDate).toDate(),
+        compensatedDate: dayjs(formValue.compensatedDate).toDate(),
         compensatedTimeList: [
           formValue.compensatedTime.map((t: any) => dayjs(t).format('HH:mm')),
         ],
       } as any
-      if (formValue.roomId) {
+      if (formValue.roomId !== 'NULL') {
         payload.roomId = formValue.roomId
       }
 
-      await createOneCompensatedOfSubject(subjectId, payload)
-      message.success('เพิ่มสำเร็จ')
+      await createOneCompensationWorkload(formValue.workloadId, payload)
+      Notification.success({
+        message: 'เพิ่มสำเร็จ',
+      })
       onSuccess()
       fetchCompensatedListOfSubject()
     } catch (error) {
-      message.error(ErrorCode.C02)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C02,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
 
-  const deleteCompensated = async (formValue: any) => {
+  const deleteCompensated = async (compensatedId: string) => {
     setIsLoading(true)
     try {
-      await deleteOneCompensated(formValue.id)
-      message.success('ลบสำเร็จ')
+      await deleteOneWorkload(compensatedId)
+      Notification.success({
+        message: 'ลบสำเร็จ',
+      })
       fetchCompensatedListOfSubject()
     } catch (error) {
-      message.error(ErrorCode.C03)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C03,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

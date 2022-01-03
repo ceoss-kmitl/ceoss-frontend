@@ -1,41 +1,46 @@
 import { useState, useEffect } from 'react'
-import { message } from 'antd'
 
-import { http } from 'libs/http'
+import {
+  createOneTeacher,
+  deleteOneTeacher,
+  editOneTeacher,
+  getManyTeacher,
+  ITeacher,
+} from 'apis/teacher'
 import { IColumn, IFormLayout } from 'components/Table'
+import { Notification } from 'components/Notification'
 
 export function useMenuTeacher() {
-  const [data, setData] = useState<any[]>([])
+  const [data, setData] = useState<ITeacher[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   async function getAllTeacher() {
     setIsLoading(true)
     try {
-      const { data } = await http.get('/teacher')
-      setData(data)
-    } catch (err) {
+      const teacherList = await getManyTeacher()
+      setData(teacherList)
+    } catch (error) {
       setData([])
-      message.error(err.message)
-      console.error(err)
+      Notification.error({
+        message: error.message,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
 
-  async function addTeacher(record: any) {
-    const payload = { ...record, executiveRole: record.executiveRole ?? '' }
-    await http.post(`/teacher`, payload)
+  async function addTeacher(record: ITeacher) {
+    await createOneTeacher(record)
     await getAllTeacher()
   }
 
-  async function editTeacher(record: any) {
-    const { id, ...teacher } = record
-    const payload = { ...teacher, executiveRole: record.executiveRole ?? '' }
-    await http.put(`/teacher/${id}`, payload)
+  async function editTeacher(record: ITeacher) {
+    await editOneTeacher(record)
     await getAllTeacher()
   }
 
-  async function deleteTeacher(record: any) {
-    await http.delete(`/teacher/${record.id}`)
+  async function deleteTeacher(record: ITeacher) {
+    await deleteOneTeacher(record.id)
     await getAllTeacher()
   }
 

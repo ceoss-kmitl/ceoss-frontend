@@ -18,7 +18,7 @@ import { DatePicker } from 'components/DatePicker'
 import { Select } from 'components/Select'
 import { Input } from 'components/Input'
 import { OptionList } from 'constants/option'
-import { IRawWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { IRawWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 
 import style from './Drawer.module.scss'
 import { useOption } from './DrawerHelper'

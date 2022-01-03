@@ -39,17 +39,12 @@ const Template = ({
   okText,
   cancelText,
   loadingText,
-  finishTitle,
-  finishText,
-  finishFailTitle,
-  finishFailText,
   icon,
   onOk = () => {},
   onCancel = Modal.destroyAll,
   onAsyncOk,
 }: IModalConfig) => {
   const [isLoading, setIsLoading] = useState(loader ?? false)
-  const [isError, setIsError] = useState<boolean | null>(null)
 
   useEffect(() => {
     if (loader) {
@@ -60,13 +55,8 @@ const Template = ({
   async function handleAsyncOk() {
     if (onAsyncOk) {
       setIsLoading(true)
-      try {
-        await onAsyncOk()
-        setIsError(false)
-      } catch (err) {
-        setIsError(true)
-      }
-      setIsLoading(false)
+      await onAsyncOk()
+      Modal.destroyAll()
     } else {
       onOk()
     }
@@ -80,41 +70,6 @@ const Template = ({
           <div className={style.overlayContentText}>{loadingText}</div>
         </div>
       )}
-      {isError === false ? (
-        <div className={style.overlayContentWrapper}>
-          <FiCheckCircle
-            className={css(style.icon, style.success, style.overlayIcon)}
-          />
-          <div className={style.title}>{finishTitle}</div>
-          <div className={style.buttonWrapper}>
-            <Button
-              className={style.okButton}
-              type="primary"
-              size="large"
-              onClick={onCancel}
-            >
-              {finishText}
-            </Button>
-          </div>
-        </div>
-      ) : isError === true ? (
-        <div className={style.overlayContentWrapper}>
-          <VscError
-            className={css(style.icon, style.error, style.overlayIcon)}
-          />
-          <div className={style.title}>{finishFailTitle}</div>
-          <div className={style.buttonWrapper}>
-            <Button
-              className={style.okButton}
-              type="primary"
-              size="large"
-              onClick={onCancel}
-            >
-              {finishFailText}
-            </Button>
-          </div>
-        </div>
-      ) : null}
       {icon}
       <div className={style.title}>{title}</div>
       {description && <div className={style.description}>{description}</div>}

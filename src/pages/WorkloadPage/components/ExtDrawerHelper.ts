@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import dayjs, { Dayjs } from 'dayjs'
 
-import { IWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { IWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 
 interface IDetail {
   month: string
@@ -78,6 +78,7 @@ export const useDocumentDetail = (
                   ? {
                       ...obj,
                       isCompensated: !obj.isCompensated,
+                      remark: '',
                     }
                   : obj
               ),

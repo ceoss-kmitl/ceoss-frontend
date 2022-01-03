@@ -1,21 +1,30 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
-import dayjs from 'dayjs'
-import weekday from 'dayjs/plugin/weekday'
-import localeData from 'dayjs/plugin/localeData'
-import buddhistEra from 'dayjs/plugin/buddhistEra'
-import 'dayjs/locale/th'
 import 'styles/global.css'
 
-dayjs.locale('th')
-dayjs.extend(weekday)
+import { ConfigProvider } from 'antd'
+import th_TH from 'antd/lib/locale/th_TH'
+
+import dayjs from 'dayjs'
+import localeData from 'dayjs/plugin/localeData'
+import weekday from 'dayjs/plugin/weekday'
+import buddhistEra from 'dayjs/plugin/buddhistEra'
+import thLocale from 'dayjs/locale/th'
+
+// NOTE: If this config has changed we also need to
+// apply changes to the file `/components/DatePicker`
+thLocale.weekStart = 1
+dayjs.locale(thLocale)
 dayjs.extend(localeData)
+dayjs.extend(weekday)
 dayjs.extend(buddhistEra)
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider locale={th_TH}>
+      <App />
+    </ConfigProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

@@ -1,17 +1,13 @@
-import { message } from 'antd'
 import { useEffect, useState } from 'react'
 
 import { useAcademicYear } from 'contexts/AcademicYearContext'
-import { getManyUnAssignedWorkload, IUnAssignedWorkload } from 'apis/workload'
+import { getManyWorkload, IWorkload } from 'apis/workload'
 import { ErrorCode } from 'constants/error'
-import { Modify } from 'libs/utils'
+import { Notification } from 'components/Notification'
 
-type IUnAssignedWorkloadWithCheck = Modify<
-  IUnAssignedWorkload,
-  { checked: boolean }
->
+type IUnAssignedWorkloadWithCheck = IWorkload & { checked: boolean }
 
-export const useUnAssignedWorkload = () => {
+export const useUnAssignedWorkload = (refetchWhenValueChange = <any>[]) => {
   const { academicYear, semester } = useAcademicYear()
 
   const [isLoading, setIsLoading] = useState(false)
@@ -22,11 +18,11 @@ export const useUnAssignedWorkload = () => {
   const fetchUnAssignedWorkloadList = async () => {
     setIsLoading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const workloadList = await getManyWorkload({
+        academicYear,
         semester,
-      }
-      const workloadList = await getManyUnAssignedWorkload(query)
+        room: 'NULL',
+      })
       const workloadCheckList = workloadList.map((w) => ({
         ...w,
         checked: false,
@@ -34,8 +30,10 @@ export const useUnAssignedWorkload = () => {
       setWorkloadList(workloadCheckList)
     } catch (error) {
       setWorkloadList([])
-      message.error(ErrorCode.R10)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.R10,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -66,13 +64,12 @@ export const useUnAssignedWorkload = () => {
       .filter((w) => w.checked)
       .map((w) => w.workloadId)
 
-    await callback(workloadIdList)
-    fetchUnAssignedWorkloadList()
+    callback(workloadIdList)
   }
 
   useEffect(() => {
     fetchUnAssignedWorkloadList()
-  }, [academicYear, semester])
+  }, [academicYear, semester, ...refetchWhenValueChange])
 
   return {
     isLoading,

@@ -30,12 +30,7 @@ export const MyHeader = () => {
         />
       </div>
 
-      <Tooltip
-        title="ออกจากระบบ"
-        placement="bottomRight"
-        arrowPointAtCenter
-        color="#1F2937"
-      >
+      <Tooltip title="ออกจากระบบ" placement="bottomRight" arrowPointAtCenter>
         <Button
           shape="circle"
           type="text"

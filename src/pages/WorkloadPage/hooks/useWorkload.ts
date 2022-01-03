@@ -1,18 +1,20 @@
 import { Dayjs } from 'dayjs'
-import { message } from 'antd'
 import { useState, useEffect } from 'react'
 
 import { toDayjsTime } from 'libs/datetime'
 import { ErrorCode } from 'constants/error'
+import { Notification } from 'components/Notification'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import {
   createOneWorkload,
   deleteOneWorkload,
   editOneWorkload,
+} from 'apis/workload'
+import {
   getManyWorkloadOfTeacher,
   IRawWorkloadOfTeacherWithDayjs,
   IWorkloadOfTeacherWithDayjs,
-} from 'apis/workload'
+} from 'apis/teacher'
 
 const convertToWorkloadTime = (timeRangePicker: Dayjs[][]) => {
   return timeRangePicker.map(([start, end]) => {
@@ -43,11 +45,11 @@ export const useWorkload = (teacherId: string) => {
     }
     setIsLoading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const workloadList = await getManyWorkloadOfTeacher(teacherId, {
+        academicYear,
         semester,
-      }
-      const workloadList = await getManyWorkloadOfTeacher(teacherId, query)
+        compensation: false,
+      })
       const workloadListWithDayjs = workloadList.map((day) => ({
         workloadList: day.workloadList.map((workload) => ({
           ...workload,
@@ -60,8 +62,10 @@ export const useWorkload = (teacherId: string) => {
       setWorkloadList(workloadListWithDayjs)
     } catch (error) {
       setWorkloadList([])
-      message.error(ErrorCode.W01)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.W01,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -82,12 +86,16 @@ export const useWorkload = (teacherId: string) => {
     setIsLoading(true)
     try {
       await createOneWorkload(payloadWithoutId)
-      message.success('เพิ่มข้อมูลสำเร็จ')
+      Notification.success({
+        message: 'เพิ่มข้อมูลสำเร็จ',
+      })
       onSuccess()
       fetchWorkloadOfTeacher()
     } catch (error) {
-      message.error(ErrorCode.W08)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.W08,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -103,12 +111,16 @@ export const useWorkload = (teacherId: string) => {
     setIsLoading(true)
     try {
       await editOneWorkload(formValue.id, payload)
-      message.success('แก้ไขข้อมูลสำเร็จ')
+      Notification.success({
+        message: 'แก้ไขข้อมูลสำเร็จ',
+      })
       onSuccess()
       fetchWorkloadOfTeacher()
     } catch (error) {
-      message.error(ErrorCode.W09)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.W09,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -120,12 +132,16 @@ export const useWorkload = (teacherId: string) => {
     setIsLoading(true)
     try {
       await deleteOneWorkload(formValue.id)
-      message.success('ลบข้อมูลสำเร็จ')
+      Notification.success({
+        message: 'ลบข้อมูลสำเร็จ',
+      })
       onSuccess()
       fetchWorkloadOfTeacher()
     } catch (error) {
-      message.error(ErrorCode.W10)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.W10,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

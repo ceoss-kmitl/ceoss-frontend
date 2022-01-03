@@ -1,39 +1,46 @@
 import { useState, useEffect } from 'react'
-import { message } from 'antd'
 
-import { http } from 'libs/http'
 import { IColumn, IFormLayout } from 'components/Table'
+import { Notification } from 'components/Notification'
+import {
+  createOneRoom,
+  deleteOneRoom,
+  editOneRoom,
+  getManyRoom,
+  IRoom,
+} from 'apis/room'
 
 export function useMenuRoom() {
-  const [data, setData] = useState<any[]>([])
+  const [data, setData] = useState<IRoom[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   async function getAllRoom() {
     setIsLoading(true)
     try {
-      const { data } = await http.get('/room')
-      setData(data)
-    } catch (err) {
+      const roomList = await getManyRoom()
+      setData(roomList)
+    } catch (error) {
+      Notification.error({
+        message: error.message,
+        seeMore: error,
+      })
       setData([])
-      message.error(err.message)
-      console.error(err)
     }
     setIsLoading(false)
   }
 
-  async function addRoom(record: any) {
-    await http.post(`/room`, record)
+  async function addRoom(record: IRoom) {
+    await createOneRoom(record)
     await getAllRoom()
   }
 
-  async function editRoom(record: any) {
-    const { id, ...roomData } = record
-    await http.put(`/room/${id}`, roomData)
+  async function editRoom(record: IRoom) {
+    await editOneRoom(record)
     await getAllRoom()
   }
 
-  async function deleteRoom(record: any) {
-    await http.delete(`/room/${record.id}`)
+  async function deleteRoom(record: IRoom) {
+    await deleteOneRoom(record.id)
     await getAllRoom()
   }
 

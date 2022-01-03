@@ -1,7 +1,7 @@
 import { Form } from 'antd'
 import { useState } from 'react'
 
-import { IRawWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { IRawWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 import { FormMode } from 'constants/common'
 
 export const useDrawerForm = () => {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { message } from 'antd'
 
 import { Modify } from 'libs/utils'
 import { getManySubject, ISubject } from 'apis/subject'
 import { ErrorCode } from 'constants/error'
 import { IOption } from 'constants/option'
+import { Notification } from 'components/Notification'
 
 type ISubjectOption = Modify<ISubject, IOption>
 
@@ -25,8 +25,10 @@ export const useBigSearch = () => {
       setSubjectList(subjectOptionList)
     } catch (error) {
       setSubjectList([])
-      message.error(ErrorCode.C01)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C01,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

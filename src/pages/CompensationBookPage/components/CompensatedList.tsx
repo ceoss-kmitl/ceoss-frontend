@@ -7,22 +7,30 @@ import {
   Col,
   Button as AntdButton,
   Popconfirm,
+  Skeleton,
 } from 'antd'
 import { FiX, FiTrash2 } from 'react-icons/fi'
 import { BsArrowRight } from 'react-icons/bs'
+import dayjs from 'dayjs'
 
 import { Text } from 'components/Text'
 import { Loader } from 'components/Loader'
 import { ICompensated } from 'apis/subject'
 
 import style from './CompensatedList.module.scss'
+import { range } from 'lodash'
 
 interface IProps {
+  isLoading?: boolean
   list: ICompensated[]
   onDelete: (id: string) => Promise<void>
 }
 
-export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
+export const CompensatedList: React.FC<IProps> = ({
+  isLoading: isListLoading = false,
+  list,
+  onDelete,
+}) => {
   const [form] = Form.useForm()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -36,7 +44,8 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
       compensatedDate: compensated.compensatedDate,
       compensatedTimeStart: compensated.compensatedTimeList[0].start,
       compensatedTimeEnd: compensated.compensatedTimeList[0].end,
-      room: compensated.room,
+      originalRoom: compensated.originalRoom,
+      compensatedRoom: compensated.compensatedRoom,
     })
     setIsDrawerOpen(true)
   }
@@ -51,7 +60,34 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
   return (
     <>
       <div className={css(style.wrapper, 'shadow')}>
-        {!list.length ? (
+        {isListLoading ? (
+          range(2).map((i) => (
+            <>
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Row>
+                    <Skeleton
+                      active
+                      title={false}
+                      paragraph={{ rows: 1, width: 180 }}
+                    />
+                  </Row>
+                  <Row>
+                    <Col span={1} />
+                    <Col span={18}>
+                      <Skeleton
+                        active
+                        title={false}
+                        paragraph={{ rows: 3 - i, width: 400 }}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              <br />
+            </>
+          ))
+        ) : !list.length ? (
           <Text>ไม่มีข้อมูลการสอนชดเชย</Text>
         ) : (
           list.map((li) => (
@@ -70,7 +106,18 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
                     onClick={() => openDrawerAndSetData(cp)}
                   >
                     <Text>
-                      {cp.compensatedDate} : ห้องเรียน {cp.room}
+                      {`${dayjs(cp.originalDate).format('D MMMM BBBB')} @ ${
+                        cp.originalRoom || 'ไม่ใช้ห้อง'
+                      }`}
+                    </Text>
+                    <BsArrowRight
+                      size={18}
+                      className={style.arrowDividerInline}
+                    />
+                    <Text>
+                      {`${dayjs(cp.compensatedDate).format('D MMMM BBBB')} @ ${
+                        cp.compensatedRoom || 'ไม่ใช้ห้อง'
+                      }`}
                     </Text>
                   </div>
                 ))
@@ -102,8 +149,8 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
         footer={
           <Popconfirm
             disabled={isLoading}
-            title="ต้องการนำวิชาสอนนี้ออกใช่ไหม"
-            okText="นำออก"
+            title="ต้องการลบการสอนชดเชยนี้ใช่ไหม"
+            okText="ลบ"
             cancelText="ยกเลิก"
             okButtonProps={{
               type: 'primary',
@@ -121,7 +168,7 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
               icon={<FiTrash2 className={style.deleteIcon} />}
               disabled={isLoading}
             >
-              นำวิชาสอนออก
+              ลบการสอนชดเชย
             </AntdButton>
           </Popconfirm>
         }
@@ -133,7 +180,11 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
                 <Row>
                   <Col span={24}>
                     <Form.Item label="วันสอนเดิม">
-                      <Text>{form.getFieldValue('oldDate')}</Text>
+                      <Text>
+                        {dayjs(form.getFieldValue('oldDate')).format(
+                          'dddd D MMMM BBBB'
+                        )}
+                      </Text>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -161,7 +212,11 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
                 <Row>
                   <Col span={24}>
                     <Form.Item label="วันสอนชดเชย">
-                      <Text>{form.getFieldValue('compensatedDate')}</Text>
+                      <Text>
+                        {dayjs(form.getFieldValue('compensatedDate')).format(
+                          'dddd D MMMM BBBB'
+                        )}
+                      </Text>
                     </Form.Item>
                   </Col>
                 </Row>
@@ -175,15 +230,29 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
               </Col>
             </Row>
 
-            <Row gutter={16}>
-              <Col span={24}>
+            <Row gutter={16} justify="space-between">
+              <Col span={11}>
                 <Form.Item
-                  name="roomId"
-                  label="ห้องสำหรับสอนชดเชย"
+                  label="ห้องเดิม"
                   rules={[{ required: true, message: '' }]}
                   hasFeedback
                 >
-                  <Text>{form.getFieldValue('room')}</Text>
+                  <Text>
+                    {form.getFieldValue('originalRoom') ||
+                      '- ไม่ใช้ห้องเรียน -'}
+                  </Text>
+                </Form.Item>
+              </Col>
+              <Col span={11}>
+                <Form.Item
+                  label="ห้องสำหรับชดเชย"
+                  rules={[{ required: true, message: '' }]}
+                  hasFeedback
+                >
+                  <Text>
+                    {form.getFieldValue('compensatedRoom') ||
+                      '- ไม่ใช้ห้องเรียน -'}
+                  </Text>
                 </Form.Item>
               </Col>
             </Row>

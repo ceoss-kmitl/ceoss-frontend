@@ -9,7 +9,7 @@ import { Checkbox } from 'components/Checkbox'
 import { Input } from 'components/Input'
 import { Select } from 'components/Select'
 import { Loader } from 'components/Loader'
-import { IWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { IWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 import { OptionList } from 'constants/option'
 
 import style from './ExtDrawer.module.scss'

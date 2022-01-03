@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { message } from 'antd'
 
 import { toDayjsTime } from 'libs/datetime'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { Modal } from 'components/Modal'
-import { IWorkloadOfTeacherWithDayjs } from 'apis/workload'
+import { Notification } from 'components/Notification'
+import { IWorkloadOfTeacherWithDayjs } from 'apis/teacher'
 import {
   createManyWorkloadOfRoom,
   deleteOneWorkloadOfRoom,
@@ -28,11 +28,11 @@ export const useAutoRoom = (roomId: string) => {
     }
     setIsLoading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const workloadList = await getManyWorkloadOfRoom(roomId, {
+        academicYear,
         semester,
-      }
-      const workloadList = await getManyWorkloadOfRoom(roomId, query)
+        compensation: false,
+      })
       const workloadListWithDayjs = workloadList.map((day) => ({
         workloadList: day.workloadList.map((workload) => ({
           ...workload,
@@ -45,8 +45,10 @@ export const useAutoRoom = (roomId: string) => {
       setWorkloadList(workloadListWithDayjs)
     } catch (error) {
       setWorkloadList([])
-      message.error(ErrorCode.R01)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.R01,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -62,12 +64,16 @@ export const useAutoRoom = (roomId: string) => {
     setIsLoading(true)
     try {
       await createManyWorkloadOfRoom(roomId, payload)
-      message.success('เพิ่มสำเร็จ')
+      Notification.success({
+        message: 'เพิ่มสำเร็จ',
+      })
       onSuccess()
       fetchWorkloadOfRoom()
     } catch (error) {
-      message.error(ErrorCode.R02)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.R02,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -79,36 +85,41 @@ export const useAutoRoom = (roomId: string) => {
     setIsLoading(true)
     try {
       await deleteOneWorkloadOfRoom(roomId, formValue.id)
-      message.success('นำออกสำเร็จ')
+      Notification.success({
+        message: 'นำออกสำเร็จ',
+      })
       onSuccess()
       fetchWorkloadOfRoom()
     } catch (error) {
-      message.error(ErrorCode.R03)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.R03,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
 
   const triggerAutoRoom = async () => {
-    Modal.loading({
+    Modal.warning({
+      title: 'จัดห้องอัตโนมัติ',
+      okText: 'ตกลง',
+      description: `ระบบจะจัดเรียงรายวิชาของปี ${academicYear}/${semester} ลงในห้องโดยอัตโนมัติ`,
       loadingText: 'กำลังจัดห้องอัตโนมัติ',
-      finishTitle: 'จัดห้องอัตโนมัติสำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'เกิดข้อผิดพลาดบางอย่าง',
-      finishFailText: 'ตกลง',
-      width: 400,
       onAsyncOk: async () => {
-        const query = {
-          academic_year: academicYear,
-          semester,
-        }
         try {
-          await triggerManyRoomAutoAssign(query)
+          await triggerManyRoomAutoAssign({
+            academicYear,
+            semester,
+          })
+          Notification.success({
+            message: 'จัดห้องอัตโนมัติสำเร็จ',
+          })
           fetchWorkloadOfRoom()
         } catch (error) {
-          message.error(ErrorCode.R04)
-          console.error(error)
-          throw error
+          Notification.error({
+            message: ErrorCode.R04,
+            seeMore: error,
+          })
         }
       },
     })
@@ -118,22 +129,24 @@ export const useAutoRoom = (roomId: string) => {
     Modal.warning({
       title: 'รีเซตการจัดห้อง',
       okText: 'รีเซต',
-      description: 'คุณต้องการรีเซตการจัดห้องทั้งหมดหรือไม่',
+      description: `ต้องการรีเซตการจัดห้องทั้งหมดของปี ${academicYear}/${semester} หรือไม่`,
       finishTitle: 'รีเซตการจัดห้องสำเร็จ',
       finishFailTitle: 'เกิดข้อผิดพลาดบางอย่าง',
-      width: 400,
       onAsyncOk: async () => {
-        const query = {
-          academic_year: academicYear,
-          semester,
-        }
         try {
-          await triggerManyRoomResetAssign(query)
+          await triggerManyRoomResetAssign({
+            academicYear,
+            semester,
+          })
+          Notification.success({
+            message: 'รีเซตการจัดห้องสำเร็จ',
+          })
           fetchWorkloadOfRoom()
         } catch (error) {
-          message.error(ErrorCode.R05)
-          console.error(error)
-          throw error
+          Notification.error({
+            message: ErrorCode.R05,
+            seeMore: error,
+          })
         }
       },
     })

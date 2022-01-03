@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { message } from 'antd'
 
 import { saveFile } from 'libs/utils'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { ErrorCode } from 'constants/error'
 import { downloadOneExcelFile } from 'apis/room'
+import { Notification } from 'components/Notification'
 
 const MESSAGE_KEY = 'AUTOROOM_SYSTEM'
 
@@ -14,19 +14,27 @@ export const useDownloadFile = () => {
   const [isDownloading, setIsDownloading] = useState(false)
 
   const downloadExcel = async () => {
-    message.loading({ key: MESSAGE_KEY, content: 'กำลังดาวน์โหลด...' })
+    Notification.loading({
+      key: MESSAGE_KEY,
+      message: 'กำลังดาวน์โหลด...',
+    })
     setIsDownloading(true)
     try {
-      const query = {
-        academic_year: academicYear,
+      const file = await downloadOneExcelFile({
+        academicYear,
         semester,
-      }
-      const file = await downloadOneExcelFile(query)
+      })
       saveFile(file)
-      message.success({ key: MESSAGE_KEY, content: 'ดาวน์โหลดสำเร็จ' })
+      Notification.success({
+        key: MESSAGE_KEY,
+        message: 'ดาวน์โหลดสำเร็จ',
+      })
     } catch (error) {
-      message.error({ key: MESSAGE_KEY, content: ErrorCode.R06 })
-      console.error(error)
+      Notification.error({
+        key: MESSAGE_KEY,
+        message: ErrorCode.R06,
+        seeMore: error,
+      })
     }
     setIsDownloading(false)
   }
