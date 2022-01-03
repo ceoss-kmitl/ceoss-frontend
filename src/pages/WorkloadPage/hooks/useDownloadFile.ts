@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import { message } from 'antd'
+import { omit } from 'lodash'
 
 import { saveFile } from 'libs/utils'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
 import {
   downloadOneExcelFile,
   downloadOneExcelExternalFile,
   downloadOneExcel5File,
 } from 'apis/teacher'
-import { omit } from 'lodash'
 
 const MESSAGE_KEY = 'WORKLOAD_SYSTEM'
 
@@ -21,7 +21,10 @@ export const useDownloadFile = (teacherId?: string) => {
   const downloadExcel = async () => {
     if (!teacherId) return
 
-    message.loading({ key: MESSAGE_KEY, content: 'กำลังดาวน์โหลด...' })
+    Notification.loading({
+      key: MESSAGE_KEY,
+      message: 'กำลังดาวน์โหลด...',
+    })
     setIsDownloading(true)
     try {
       const file = await downloadOneExcelFile(teacherId, {
@@ -29,10 +32,16 @@ export const useDownloadFile = (teacherId?: string) => {
         semester,
       })
       saveFile(file)
-      message.success({ key: MESSAGE_KEY, content: 'ดาวน์โหลดสำเร็จ' })
+      Notification.success({
+        key: MESSAGE_KEY,
+        message: 'ดาวน์โหลดสำเร็จ',
+      })
     } catch (error) {
-      message.error({ key: MESSAGE_KEY, content: ErrorCode.W02 })
-      console.error(error)
+      Notification.error({
+        key: MESSAGE_KEY,
+        message: ErrorCode.W02,
+        seeMore: error,
+      })
     }
     setIsDownloading(false)
   }
@@ -40,7 +49,10 @@ export const useDownloadFile = (teacherId?: string) => {
   const downloadExcelExt = async (payload: any) => {
     if (!teacherId) return
 
-    message.loading({ key: MESSAGE_KEY, content: 'กำลังดาวน์โหลด...' })
+    Notification.loading({
+      key: MESSAGE_KEY,
+      message: 'กำลังดาวน์โหลด...',
+    })
     setIsDownloading(true)
     try {
       const file = await downloadOneExcelExternalFile(teacherId, {
@@ -53,16 +65,25 @@ export const useDownloadFile = (teacherId?: string) => {
         semester,
       })
       saveFile(file)
-      message.success({ key: MESSAGE_KEY, content: 'ดาวน์โหลดสำเร็จ' })
+      Notification.success({
+        key: MESSAGE_KEY,
+        message: 'ดาวน์โหลดสำเร็จ',
+      })
     } catch (error) {
-      message.error({ key: MESSAGE_KEY, content: ErrorCode.W03 })
-      console.error(error)
+      Notification.error({
+        key: MESSAGE_KEY,
+        message: ErrorCode.W03,
+        seeMore: error,
+      })
     }
     setIsDownloading(false)
   }
 
   const downloadExcel5 = async () => {
-    message.loading({ key: MESSAGE_KEY, content: 'กำลังดาวน์โหลด...' })
+    Notification.loading({
+      key: MESSAGE_KEY,
+      message: 'กำลังดาวน์โหลด...',
+    })
     setIsDownloading(true)
     try {
       const file = await downloadOneExcel5File({
@@ -70,10 +91,16 @@ export const useDownloadFile = (teacherId?: string) => {
         semester,
       })
       saveFile(file)
-      message.success({ key: MESSAGE_KEY, content: 'ดาวน์โหลดสำเร็จ' })
+      Notification.success({
+        key: MESSAGE_KEY,
+        message: 'ดาวน์โหลดสำเร็จ',
+      })
     } catch (error) {
-      message.error({ key: MESSAGE_KEY, content: ErrorCode.W04 })
-      console.error(error)
+      Notification.error({
+        key: MESSAGE_KEY,
+        message: ErrorCode.W04,
+        seeMore: error,
+      })
     }
     setIsDownloading(false)
   }

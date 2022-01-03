@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { message } from 'antd'
 
 import {
   createOneSubject,
@@ -9,6 +8,7 @@ import {
   ISubject,
 } from 'apis/subject'
 import { IColumn, IFormLayout } from 'components/Table'
+import { Notification } from 'components/Notification'
 
 type IParsedSubject = {
   credit: string
@@ -51,9 +51,11 @@ export function useMenuSubject() {
     try {
       const subjectList = await getManySubject()
       setData(parseCredit(subjectList))
-    } catch (err) {
-      message.error(err.message)
-      console.error(err)
+    } catch (error) {
+      Notification.error({
+        message: error.message,
+        seeMore: error,
+      })
       setData([])
     }
     setIsLoading(false)

@@ -5,7 +5,7 @@ import { FiCalendar, FiMonitor, FiBook, FiFileText } from 'react-icons/fi'
 import { getCurrentAcademicYear } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
-import { message } from 'antd'
+import { Notification } from 'components/Notification'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 
 interface IPath {
@@ -70,19 +70,25 @@ export function useWebScrap() {
       title: 'อัปเดตข้อมูล',
       okText: 'อัปเดต',
       description: `ระบบจะนำข้อมูลจากเว็บสำนักทะเบียน ปี ${academicYear}/${semester} มาเพิ่มลงในระบบ`,
-      finishTitle: 'อัปเดตข้อมูลสำเร็จ',
-      finishFailTitle: 'อัปเดตข้อมูลล้มเหลว',
       onAsyncOk: async () => {
         try {
-          const { data } = await http.get(`/web-scrap`, {
+          const { data } = await http.post(`/web-scrap`, null, {
             params: {
               academicYear,
               semester,
+              save: true,
             },
           })
-          setDate(data)
-        } catch (err) {
-          throw err
+          Notification.success({
+            message: 'อัปเดตข้อมูลสำเร็จ',
+            seeMore: data,
+          })
+          getLastestUpdatedDate()
+        } catch (error) {
+          Notification.error({
+            message: 'อัปเดตข้อมูลล้มเหลว',
+            seeMore: error,
+          })
         }
       },
     })
@@ -93,9 +99,12 @@ export function useWebScrap() {
     try {
       const { data } = await http.get('/web-scrap/updated-date')
       setDate(data)
-    } catch (err) {
+    } catch (error) {
       setDate('')
-      message.error(err.message)
+      Notification.error({
+        message: 'เกิดข้อผิดพลาดขณะตรวจสอบวันที่ของข้อมูล',
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

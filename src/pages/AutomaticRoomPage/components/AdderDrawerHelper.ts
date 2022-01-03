@@ -1,9 +1,9 @@
-import { message } from 'antd'
 import { useEffect, useState } from 'react'
 
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { getManyWorkload, IWorkload } from 'apis/workload'
 import { ErrorCode } from 'constants/error'
+import { Notification } from 'components/Notification'
 
 type IUnAssignedWorkloadWithCheck = IWorkload & { checked: boolean }
 
@@ -30,8 +30,10 @@ export const useUnAssignedWorkload = (refetchWhenValueChange = <any>[]) => {
       setWorkloadList(workloadCheckList)
     } catch (error) {
       setWorkloadList([])
-      message.error(ErrorCode.R10)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.R10,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

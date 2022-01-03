@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { message } from 'antd'
 
 import {
   createOneTeacher,
@@ -9,6 +8,7 @@ import {
   ITeacher,
 } from 'apis/teacher'
 import { IColumn, IFormLayout } from 'components/Table'
+import { Notification } from 'components/Notification'
 
 export function useMenuTeacher() {
   const [data, setData] = useState<ITeacher[]>([])
@@ -19,10 +19,12 @@ export function useMenuTeacher() {
     try {
       const teacherList = await getManyTeacher()
       setData(teacherList)
-    } catch (err) {
+    } catch (error) {
       setData([])
-      message.error(err.message)
-      console.error(err)
+      Notification.error({
+        message: error.message,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

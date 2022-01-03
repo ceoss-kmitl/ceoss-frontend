@@ -1,11 +1,11 @@
 import dayjs from 'dayjs'
-import { message } from 'antd'
 import { useState, useEffect } from 'react'
 
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { getManyCompensatedOfSubject, ICompensated } from 'apis/subject'
 import { createOneCompensationWorkload, deleteOneWorkload } from 'apis/workload'
 import { ErrorCode } from 'constants/error'
+import { Notification } from 'components/Notification'
 
 export function useCompensatedHistory(subjectId: string) {
   const { academicYear, semester } = useAcademicYear()
@@ -26,8 +26,10 @@ export function useCompensatedHistory(subjectId: string) {
       })
       setCompensatedList(compensatedList)
     } catch (error) {
-      message.error(ErrorCode.C00)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C00,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -47,12 +49,16 @@ export function useCompensatedHistory(subjectId: string) {
       }
 
       await createOneCompensationWorkload(formValue.workloadId, payload)
-      message.success('เพิ่มสำเร็จ')
+      Notification.success({
+        message: 'เพิ่มสำเร็จ',
+      })
       onSuccess()
       fetchCompensatedListOfSubject()
     } catch (error) {
-      message.error(ErrorCode.C02)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C02,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -61,11 +67,15 @@ export function useCompensatedHistory(subjectId: string) {
     setIsLoading(true)
     try {
       await deleteOneWorkload(compensatedId)
-      message.success('ลบสำเร็จ')
+      Notification.success({
+        message: 'ลบสำเร็จ',
+      })
       fetchCompensatedListOfSubject()
     } catch (error) {
-      message.error(ErrorCode.C03)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C03,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { message } from 'antd'
 
 import { IColumn, IFormLayout } from 'components/Table'
+import { Notification } from 'components/Notification'
 import {
   createOneRoom,
   deleteOneRoom,
@@ -19,9 +19,11 @@ export function useMenuRoom() {
     try {
       const roomList = await getManyRoom()
       setData(roomList)
-    } catch (err) {
-      message.error(err.message)
-      console.error(err)
+    } catch (error) {
+      Notification.error({
+        message: error.message,
+        seeMore: error,
+      })
       setData([])
     }
     setIsLoading(false)

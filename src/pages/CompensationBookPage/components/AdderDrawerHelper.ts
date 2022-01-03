@@ -1,4 +1,3 @@
-import { message } from 'antd'
 import { useEffect, useState } from 'react'
 import { Dayjs } from 'dayjs'
 import { compact } from 'lodash'
@@ -8,6 +7,7 @@ import { getManyAvailableRoom, getManyRoom } from 'apis/room'
 import { IOption } from 'constants/option'
 import { ErrorCode } from 'constants/error'
 import { getManyWorkload, IWorkload } from 'apis/workload'
+import { Notification } from 'components/Notification'
 
 const NO_ROOM = { value: 'NULL', label: 'ไม่ใช้ห้อง' }
 
@@ -41,8 +41,10 @@ export const useCompensation = (selectedWorkload: IWorkload) => {
       }))
       setAvailableRoomList([NO_ROOM, ...roomOptionList])
     } catch (error) {
-      message.error(ErrorCode.C04)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C04,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -57,8 +59,10 @@ export const useCompensation = (selectedWorkload: IWorkload) => {
       }))
       setRoomList(roomOptionList)
     } catch (error) {
-      message.error(ErrorCode.C05)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C05,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
@@ -103,8 +107,10 @@ export const useWorkload = (subjectId: string) => {
       })
       setWorkloadList(workloadList)
     } catch (error) {
-      message.error(ErrorCode.C06)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.C06,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }

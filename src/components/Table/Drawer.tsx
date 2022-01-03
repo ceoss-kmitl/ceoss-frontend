@@ -8,7 +8,6 @@ import {
   Button as AntdButton,
   Switch,
   Popconfirm,
-  message,
 } from 'antd'
 import { Rule } from 'antd/lib/form'
 import { FiX, FiTrash2 } from 'react-icons/fi'
@@ -20,6 +19,7 @@ import { Input } from 'components/Input'
 import { Select } from 'components/Select'
 import { Text } from 'components/Text'
 import { Loader } from 'components/Loader'
+import { Notification } from 'components/Notification'
 
 import style from './Drawer.module.scss'
 import { IColumn, IPrivateUseTable, IRecord, useTable } from './helper'
@@ -43,9 +43,14 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
         await _.onEdit?.(record)
       }
       _.closeDrawer()
-      message.success('บันทึกข้อมูลแล้ว')
-    } catch (err) {
-      message.error(err.message, 10)
+      Notification.success({
+        message: 'บันทึกข้อมูลแล้ว',
+      })
+    } catch (error) {
+      Notification.error({
+        message: error.message,
+        seeMore: error,
+      })
     } finally {
       setIsSubmitting(false)
     }
@@ -58,9 +63,14 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
     try {
       await _.onDelete?.(record)
       _.closeDrawer()
-      message.success('ลบข้อมูลแล้ว')
-    } catch (err) {
-      message.error(err.message, 10)
+      Notification.success({
+        message: 'ลบข้อมูลแล้ว',
+      })
+    } catch (error) {
+      Notification.error({
+        message: error.message,
+        seeMore: error,
+      })
     } finally {
       setIsSubmitting(false)
     }

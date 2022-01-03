@@ -1,4 +1,3 @@
-import { message } from 'antd'
 import { useEffect, useState } from 'react'
 
 import { getManyTeacher } from 'apis/teacher'
@@ -6,6 +5,7 @@ import { getManySubject } from 'apis/subject'
 import { IOption } from 'constants/option'
 import { ErrorCode } from 'constants/error'
 import { getManyRoom } from 'apis/room'
+import { Notification } from 'components/Notification'
 
 export const useOption = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -25,8 +25,10 @@ export const useOption = () => {
       setTeacherList(teacherOptionList)
     } catch (error) {
       setTeacherList([])
-      message.error(ErrorCode.R07)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.R07,
+        seeMore: error,
+      })
     }
   }
 
@@ -40,8 +42,10 @@ export const useOption = () => {
       setSubjectList(subjectOptionList)
     } catch (error) {
       setSubjectList([])
-      message.error(ErrorCode.R08)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.R08,
+        seeMore: error,
+      })
     }
   }
 
@@ -55,8 +59,10 @@ export const useOption = () => {
       setRoomList(roomOptionList)
     } catch (error) {
       setRoomList([])
-      message.error(ErrorCode.R09)
-      console.error(error)
+      Notification.error({
+        message: ErrorCode.R09,
+        seeMore: error,
+      })
     }
   }
 

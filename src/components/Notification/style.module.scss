@@ -1,0 +1,46 @@
+:global(.ant-notification) {
+    .wrapper {
+        border-left: 5px solid var(--gray500);
+        border-radius: 4px;
+
+        &.success {
+            border-left-color: var(--green500);
+
+            svg {
+                fill: var(--green500);
+                font-size: 28px;
+            }
+        }
+
+        &.error {
+            border-left-color: var(--red500);
+
+            svg {
+                fill: var(--red500);
+                font-size: 28px;
+            }
+        }
+
+        &.loading {
+            border-left-color: var(--blue400);
+
+            svg {
+                fill: var(--blue400);
+                font-size: 28px;
+            }
+
+            .loadingIcon {
+                animation: spin 1s infinite linear;
+            }
+        }
+    }
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
