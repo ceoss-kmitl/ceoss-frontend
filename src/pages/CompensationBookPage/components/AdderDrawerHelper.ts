@@ -57,7 +57,7 @@ export const useCompensation = (selectedWorkload: IWorkload) => {
       }))
       setRoomList(roomOptionList)
     } catch (error) {
-      message.error(ErrorCode.C04) // FIXME
+      message.error(ErrorCode.C05)
       console.error(error)
     }
     setIsLoading(false)
@@ -103,7 +103,7 @@ export const useWorkload = (subjectId: string) => {
       })
       setWorkloadList(workloadList)
     } catch (error) {
-      message.error(ErrorCode.C04) // FIXME: eiei
+      message.error(ErrorCode.C06)
       console.error(error)
     }
     setIsLoading(false)

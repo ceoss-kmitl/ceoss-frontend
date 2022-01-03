@@ -19,21 +19,23 @@
 }
 
 .item {
+    border-color: red;
     width: 100%;
     height: 60px;
     display: flex;
     padding: 0 1rem;
     align-items: center;
-    border-top: 1px solid var(--gray200);
+    border-left: 3px solid transparent;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: 0.2s;
 
     &:hover {
-        background: var(--gray100);
+        background: var(--gray50);
+        border-color: var(--blue400);
     }
 
-    &:last-child {
-        border-bottom: 1px solid var(--gray200);
+    & + .item {
+        border-top: 1px solid var(--gray100);
     }
 }
 

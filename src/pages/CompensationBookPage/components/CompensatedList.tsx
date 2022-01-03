@@ -7,6 +7,7 @@ import {
   Col,
   Button as AntdButton,
   Popconfirm,
+  Skeleton,
 } from 'antd'
 import { FiX, FiTrash2 } from 'react-icons/fi'
 import { BsArrowRight } from 'react-icons/bs'
@@ -17,13 +18,19 @@ import { Loader } from 'components/Loader'
 import { ICompensated } from 'apis/subject'
 
 import style from './CompensatedList.module.scss'
+import { range } from 'lodash'
 
 interface IProps {
+  isLoading?: boolean
   list: ICompensated[]
   onDelete: (id: string) => Promise<void>
 }
 
-export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
+export const CompensatedList: React.FC<IProps> = ({
+  isLoading: isListLoading = false,
+  list,
+  onDelete,
+}) => {
   const [form] = Form.useForm()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -53,7 +60,34 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
   return (
     <>
       <div className={css(style.wrapper, 'shadow')}>
-        {!list.length ? (
+        {isListLoading ? (
+          range(2).map((i) => (
+            <>
+              <Row gutter={16}>
+                <Col span={24}>
+                  <Row>
+                    <Skeleton
+                      active
+                      title={false}
+                      paragraph={{ rows: 1, width: 180 }}
+                    />
+                  </Row>
+                  <Row>
+                    <Col span={1} />
+                    <Col span={18}>
+                      <Skeleton
+                        active
+                        title={false}
+                        paragraph={{ rows: 3 - i, width: 400 }}
+                      />
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+              <br />
+            </>
+          ))
+        ) : !list.length ? (
           <Text>ไม่มีข้อมูลการสอนชดเชย</Text>
         ) : (
           list.map((li) => (
@@ -71,13 +105,19 @@ export const CompensatedList: React.FC<IProps> = ({ list, onDelete }) => {
                     className={style.item}
                     onClick={() => openDrawerAndSetData(cp)}
                   >
-                    <Text>{dayjs(cp.originalDate).format('D MMMM BBBB')}</Text>
+                    <Text>
+                      {`${dayjs(cp.originalDate).format('D MMMM BBBB')} @ ${
+                        cp.originalRoom || 'ไม่ใช้ห้อง'
+                      }`}
+                    </Text>
                     <BsArrowRight
                       size={18}
                       className={style.arrowDividerInline}
                     />
                     <Text>
-                      {dayjs(cp.compensatedDate).format('D MMMM BBBB')}
+                      {`${dayjs(cp.compensatedDate).format('D MMMM BBBB')} @ ${
+                        cp.compensatedRoom || 'ไม่ใช้ห้อง'
+                      }`}
                     </Text>
                   </div>
                 ))

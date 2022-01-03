@@ -5,6 +5,8 @@ import { FiCalendar, FiMonitor, FiBook, FiFileText } from 'react-icons/fi'
 import { getCurrentAcademicYear } from 'libs/datetime'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
+import { message } from 'antd'
+import { useAcademicYear } from 'contexts/AcademicYearContext'
 
 interface IPath {
   path: string
@@ -59,21 +61,22 @@ export const subPathList: IPath[] = [
 ]
 
 export function useWebScrap() {
-  const [date, setDate] = useState<string | null>(null)
+  const [date, setDate] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const { academicYear, semester } = useAcademicYear()
 
   async function triggerWebScrap() {
     Modal.warning({
       title: 'อัปเดตข้อมูล',
       okText: 'อัปเดต',
-      description: 'คุณต้องการอัปเดตข้อมูลหรือไม่',
+      description: `ระบบจะนำข้อมูลจากเว็บสำนักทะเบียน ปี ${academicYear}/${semester} มาเพิ่มลงในระบบ`,
       finishTitle: 'อัปเดตข้อมูลสำเร็จ',
       finishFailTitle: 'อัปเดตข้อมูลล้มเหลว',
       onAsyncOk: async () => {
         try {
-          const { academicYear, semester } = getCurrentAcademicYear()
           const { data } = await http.get(`/web-scrap`, {
             params: {
-              academic_year: academicYear,
+              academicYear,
               semester,
             },
           })
@@ -86,20 +89,26 @@ export function useWebScrap() {
   }
 
   async function getLastestUpdatedDate() {
+    setIsLoading(true)
     try {
       const { data } = await http.get('/web-scrap/updated-date')
       setDate(data)
     } catch (err) {
       setDate('')
-      throw err
+      message.error(err.message)
     }
+    setIsLoading(false)
   }
 
   useEffect(() => {
     getLastestUpdatedDate()
   }, [])
 
-  return { date, triggerWebScrap }
+  return {
+    isLoading,
+    date,
+    triggerWebScrap,
+  }
 }
 
 export function useSelectAcademicYear() {

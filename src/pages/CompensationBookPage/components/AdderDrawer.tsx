@@ -1,10 +1,18 @@
 import css from 'classnames'
 import { useState } from 'react'
-import { Drawer as AntdDrawer, Form, Row, Col, FormInstance, Radio } from 'antd'
+import {
+  Drawer as AntdDrawer,
+  Form,
+  Row,
+  Col,
+  FormInstance,
+  Radio,
+  Skeleton,
+} from 'antd'
 import { FiX } from 'react-icons/fi'
 import { BsArrowRight } from 'react-icons/bs'
 import { AiFillEdit } from 'react-icons/ai'
-import { isEmpty } from 'lodash'
+import { range } from 'lodash'
 
 import { toDayjsTime } from 'libs/datetime'
 import { DayOfWeekName } from 'constants/common'
@@ -92,7 +100,21 @@ export const AdderDrawer: React.FC<IProps> = ({
           </div>
         }
       >
-        <Loader loading={isLoading}>
+        {isWorkloadListLoading ? (
+          range(3).map(() => (
+            <>
+              <Row>
+                <Col span={2}>
+                  <Skeleton.Avatar size="small" />
+                </Col>
+                <Col span={20}>
+                  <Skeleton active title={false} paragraph={{ rows: 2 }} />
+                </Col>
+              </Row>
+              <br />
+            </>
+          ))
+        ) : (
           <Form layout="vertical">
             {!workloadList.length ? (
               <Text>- ไม่มีคาบเรียนในเทอมนี้ -</Text>
@@ -131,7 +153,7 @@ export const AdderDrawer: React.FC<IProps> = ({
               </Radio.Group>
             )}
           </Form>
-        </Loader>
+        )}
 
         {/* ===== Inner-Drawer ===== */}
         <AntdDrawer
@@ -164,7 +186,7 @@ export const AdderDrawer: React.FC<IProps> = ({
             </div>
           }
         >
-          <Loader loading={isLoading}>
+          <Loader loading={isApiLoading}>
             <Form
               form={form}
               layout="vertical"
@@ -234,12 +256,14 @@ export const AdderDrawer: React.FC<IProps> = ({
                           className={style.datePicker}
                           showToday={false}
                           format="DD MMM YY"
-                          onSelect={(date) =>
+                          onSelect={(date) => {
                             fetchAvailableRoom({
                               ...form.getFieldsValue(),
                               compensatedDate: date,
+                              roomId: undefined,
                             })
-                          }
+                            form.setFieldsValue({ roomId: undefined })
+                          }}
                           allowClear={false}
                         />
                       </Form.Item>
@@ -261,31 +285,44 @@ export const AdderDrawer: React.FC<IProps> = ({
                         ]}
                         hideDisabledOptions
                         minuteStep={15}
-                        onOk={(value) =>
+                        onOk={(value) => {
                           fetchAvailableRoom({
                             ...form.getFieldsValue(),
                             compensatedTime: value,
                           })
-                        }
+                          form.setFieldsValue({ roomId: undefined })
+                        }}
                       />
                     </Form.Item>
                   </Row>
                 </Col>
               </Row>
 
-              {!isEmpty(availableRoomList) && (
-                <Row gutter={16} justify="space-between">
-                  <Col span={11}>
-                    <Form.Item label="ห้องเดิม">
-                      <Select
-                        disabled
-                        options={roomList}
-                        value={selectedWorkload.roomId}
-                        placeholder="ไม่ใช้ห้อง"
+              <Row gutter={16} justify="space-between">
+                <Col span={11}>
+                  <Form.Item label="ห้องเดิม">
+                    <Select
+                      disabled
+                      options={roomList}
+                      value={selectedWorkload.roomId}
+                      placeholder="ไม่ใช้ห้อง"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={11}>
+                  {isRoomListLoading ? (
+                    <>
+                      <Skeleton
+                        active
+                        title={false}
+                        paragraph={{ rows: 1, width: 100 }}
                       />
-                    </Form.Item>
-                  </Col>
-                  <Col span={11}>
+                      <Skeleton.Input
+                        active
+                        style={{ width: 200, borderRadius: 6 }}
+                      />
+                    </>
+                  ) : (
                     <Form.Item
                       name="roomId"
                       label="ห้องสำหรับชดเชย"
@@ -296,9 +333,9 @@ export const AdderDrawer: React.FC<IProps> = ({
                         placeholder="เลือกห้องที่จะใช้"
                       />
                     </Form.Item>
-                  </Col>
-                </Row>
-              )}
+                  )}
+                </Col>
+              </Row>
             </Form>
           </Loader>
         </AntdDrawer>

@@ -1,8 +1,7 @@
 import css from 'classnames'
-import { Select } from 'antd'
+import { Select, Skeleton } from 'antd'
 import { FiSearch } from 'react-icons/fi'
-
-import { Loader } from 'components/Loader'
+import { range } from 'lodash'
 
 import style from './style.module.scss'
 
@@ -38,9 +37,19 @@ export const BigSearch: React.FC<IProps> = ({
         optionFilterProp="label"
         notFoundContent={
           isLoading ? (
-            <div className={style.loaderWrapper}>
-              <Loader />
-            </div>
+            <>
+              {range(3).map((i) => (
+                <Skeleton
+                  active
+                  title={false}
+                  paragraph={{
+                    rows: 1,
+                    width: `${100 - i * 10}%`,
+                    className: style.loadingOption,
+                  }}
+                />
+              ))}
+            </>
           ) : (
             <div style={LABEL_STYLE}>{notFoundText}</div>
           )

@@ -1,8 +1,8 @@
 import { FiPlus } from 'react-icons/fi'
+import { Skeleton } from 'antd'
 
 import monster from 'img/monster.png'
 import { Text } from 'components/Text'
-import { Loader } from 'components/Loader'
 import { BigSearch } from 'components/BigSearch'
 import { Button } from 'components/Button'
 
@@ -47,24 +47,32 @@ export const CompensationBookPage = () => {
           <span>เริ่มค้นหารายวิชาเพื่อดูประวัติการสอนชดเชย</span>
         </div>
       ) : (
-        <Loader loading={isLoading}>
+        <>
           <div className={style.timeTableHeader}>
             <Text size="sub-head" bold>
               ประวัติการสอนชดเชย
             </Text>
             <div className={style.headerRight}>
-              <Button
-                small
-                blue
-                icon={<FiPlus style={{ marginRight: '0.5rem' }} />}
-                onClick={() => openAdderDrawer()}
-              >
-                เพิ่มการสอนชดเชย
-              </Button>
+              {isLoading ? (
+                <Skeleton.Button
+                  style={{ width: 160, borderRadius: 8, marginRight: -16 }}
+                />
+              ) : (
+                <Button
+                  small
+                  blue
+                  icon={<FiPlus style={{ marginRight: '0.5rem' }} />}
+                  onClick={() => openAdderDrawer()}
+                  disabled={isLoading}
+                >
+                  เพิ่มการสอนชดเชย
+                </Button>
+              )}
             </div>
           </div>
 
           <CompensatedList
+            isLoading={isLoading}
             list={compensatedList}
             onDelete={deleteCompensated}
           />
@@ -79,7 +87,7 @@ export const CompensationBookPage = () => {
               createCompensated(formValue, closeAdderDrawer)
             }
           />
-        </Loader>
+        </>
       )}
     </div>
   )
