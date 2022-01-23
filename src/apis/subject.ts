@@ -1,3 +1,4 @@
+import { IAcademicTime } from 'constants/common'
 import { http } from 'libs/http'
 
 // =============
@@ -62,5 +63,33 @@ export const getManyCompensatedOfSubject = async (
       params: query,
     }
   )
+  return data
+}
+
+// =================
+// Subject x Section
+// =================
+
+export interface ISection {
+  section: number
+  workloadIdList: string[]
+  assistantList: {
+    id: string
+    name: string
+    dayList: string[]
+  }[]
+  teacherList: {
+    id: string
+    name: string
+  }[]
+}
+
+export const getManySectionOfSubject = async (
+  id: string,
+  query: IAcademicTime
+) => {
+  const { data } = await http.get<ISection[]>(`/subject/${id}/section`, {
+    params: query,
+  })
   return data
 }

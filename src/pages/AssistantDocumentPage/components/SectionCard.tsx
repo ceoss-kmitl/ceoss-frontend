@@ -1,18 +1,39 @@
 import css from 'classnames'
-import { Row, Divider, Button as AntdButton } from 'antd'
+import { Row, Divider, Button as AntdButton, Skeleton } from 'antd'
 import { FiDownload, FiEdit } from 'react-icons/fi'
 
 import { Button } from 'components/Button'
 import { Text } from 'components/Text'
+import { ISection } from 'apis/subject'
 
 import style from './SectionCard.module.scss'
 
-export const SectionCard: React.FC = () => {
+interface IProps {
+  data: ISection | null
+  onEditClick?: (info: ISection) => void
+}
+
+export const SectionCard: React.FC<IProps> = ({
+  data,
+  onEditClick = () => {},
+}) => {
+  if (!data)
+    return (
+      <div className={css(style.card, 'shadow')}>
+        <Row justify="space-between">
+          <Skeleton.Input active style={{ width: 140 }} size="small" />
+          <Skeleton.Button style={{ width: 90 }} size="small" />
+        </Row>
+        <Divider style={{ margin: '1rem 0' }} />
+        <Skeleton active title={false} paragraph={{ rows: 4 }} />
+      </div>
+    )
+
   return (
     <div className={css(style.card, 'shadow')}>
       <Row justify="space-between">
         <Text bold size="sub-head">
-          กลุ่มเรียน 1
+          กลุ่มเรียน {data.section}
         </Text>
         <Button small blue>
           <FiDownload className={style.downloadIcon} />
@@ -20,20 +41,16 @@ export const SectionCard: React.FC = () => {
         </Button>
       </Row>
 
-      <Divider className={style.divider} />
+      <Divider style={{ margin: '1rem 0' }} />
       <div className={style.assistantList}>
-        <Text className={style.assistantName}>
-          61010497 นายธัญธร พรสวัสดิ์ชัย
-        </Text>
-        <Text className={style.assistantName}>
-          61010479 นางสาวธมน เนตรวิเชียรนางสาวธมน เนตรวิเชียร
-        </Text>
-        <Text className={style.assistantName}>
-          61010497 นายธัญธร พรสวัสดิ์ชัย
-        </Text>
+        {data.assistantList.map((assistant) => (
+          <Text className={style.assistantName}>
+            {assistant.id} {assistant.name}
+          </Text>
+        ))}
       </div>
 
-      <AntdButton block type="dashed">
+      <AntdButton block type="dashed" onClick={() => onEditClick(data)}>
         <FiEdit className={style.editIcon} size={16} />
         แก้ไขรายชื่อ/เวลาปฏิบัติงาน
       </AntdButton>

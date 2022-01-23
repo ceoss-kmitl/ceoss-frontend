@@ -52,3 +52,22 @@ export const createOneCompensationWorkload = async (
 ) => {
   await http.post(`/workload/${workloadId}/compensation`, payload)
 }
+
+// ====================
+// Workload x Assistant
+// ====================
+
+export interface IEditAssistantListPayload {
+  assistantList: {
+    assistantId: string
+    assistantName: string
+    dayList: string[]
+  }[]
+  workloadIdList: string[]
+}
+
+export const editManyAssistantWorkload = async (
+  payload: IEditAssistantListPayload
+) => {
+  await http.put('/workload/assistant', payload)
+}

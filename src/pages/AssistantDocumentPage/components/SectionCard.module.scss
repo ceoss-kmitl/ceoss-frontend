@@ -8,14 +8,12 @@
     margin-right: 0.25rem;
 }
 
-.divider {
-    margin: 0.5rem 0;
-}
-
 .assistantList {
-    line-height: 2rem;
+    line-height: 2.25rem;
     margin-left: 1rem;
     margin-bottom: 0.5rem;
+    overflow-y: auto;
+    max-height: 120px;
 }
 
 .assistantName {

@@ -44,4 +44,6 @@ export const ErrorCode = <const>{
    * Assistant document system
    */
   A00: 'ERR-A00: ไม่สามารถเรียกดูรายวิชาได้',
+  A01: 'ERR-A01: ไม่สามารถเรียกดูกลุ่มเรียนได้',
+  A02: 'ERR-A02: ไม่สามารถแก้ไขข้อมูลTAได้',
 }
