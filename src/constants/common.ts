@@ -40,3 +40,8 @@ export interface IAcademicTime {
   academicYear: number
   semester: number
 }
+
+export enum DocumentPattern {
+  ONSITE = 'ONSITE',
+  ONLINE = 'ONLINE',
+}

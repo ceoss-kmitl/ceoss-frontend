@@ -1,4 +1,4 @@
-import { IAcademicTime } from 'constants/common'
+import { DocumentPattern, IAcademicTime } from 'constants/common'
 import { http } from 'libs/http'
 
 // =============
@@ -91,5 +91,29 @@ export const getManySectionOfSubject = async (
   const { data } = await http.get<ISection[]>(`/subject/${id}/section`, {
     params: query,
   })
+  return data
+}
+
+// =======================
+// Subject assistant excel
+// =======================
+
+export const downloadOneAssistantExcelFile = async (
+  subjectId: string,
+  section: number,
+  query: IAcademicTime & {
+    documentDate: string
+    documentPattern: DocumentPattern
+    approvalNumber: string
+    approvalDate: string
+    teacherId: string
+  }
+) => {
+  const { data } = await http.get(
+    `/subject/${subjectId}/section/${section}/assistant/excel`,
+    {
+      params: query,
+    }
+  )
   return data
 }

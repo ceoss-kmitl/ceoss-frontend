@@ -10,6 +10,8 @@ import { useSectionList } from './hooks/useSectionList'
 import { useDrawerForm } from './hooks/useDrawerForm'
 import { SectionCard } from './components/SectionCard'
 import { Drawer } from './components/Drawer'
+import { DownloaderDrawer } from './components/DownloaderDrawer'
+import { useDownloadFile } from './hooks/useDownloadFile'
 
 export const AssistantDocumentPage = () => {
   const {
@@ -26,6 +28,16 @@ export const AssistantDocumentPage = () => {
   } = useSectionList(currentSubject.id)
 
   const { form, isOpen, openDrawer, closeDrawer } = useDrawerForm()
+
+  const {
+    isDownloading,
+    downloadExcel,
+    isDownloaderOpen,
+    downloaderForm,
+    openDownloaderDrawer,
+    closeDownloaderDrawer,
+    teacherList,
+  } = useDownloadFile()
 
   return (
     <div className={style.page}>
@@ -55,15 +67,20 @@ export const AssistantDocumentPage = () => {
           </div>
 
           <div className={style.sectionContainer}>
-            {isSectionListLoading
-              ? range(3).map((i) => <SectionCard key={i} data={null} />)
-              : sectionList.map((section) => (
-                  <SectionCard
-                    key={section.section}
-                    data={section}
-                    onEditClick={(value) => openDrawer(value)}
-                  />
-                ))}
+            {isSectionListLoading ? (
+              range(3).map((i) => <SectionCard key={i} data={null} />)
+            ) : sectionList.length ? (
+              sectionList.map((section) => (
+                <SectionCard
+                  key={section.section}
+                  data={section}
+                  onEditClick={(value) => openDrawer(value)}
+                  onDownloadClick={(value) => openDownloaderDrawer(value)}
+                />
+              ))
+            ) : (
+              <Text>- ไม่มีข้อมูล -</Text>
+            )}
           </div>
 
           <Drawer
@@ -72,6 +89,16 @@ export const AssistantDocumentPage = () => {
             isOpen={isOpen}
             onClose={closeDrawer}
             onSubmit={(value) => editAssistantListOfSubject(value, closeDrawer)}
+          />
+          <DownloaderDrawer
+            form={downloaderForm}
+            isLoading={isDownloading}
+            isOpen={isDownloaderOpen}
+            onClose={closeDownloaderDrawer}
+            onSubmit={() =>
+              downloadExcel(currentSubject.id, closeDownloaderDrawer)
+            }
+            teacherList={teacherList}
           />
         </>
       )}
