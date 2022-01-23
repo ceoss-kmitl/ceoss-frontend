@@ -1,0 +1,35 @@
+.titleWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.closeIcon {
+    font-size: 20px;
+    margin-right: 1rem;
+    color: var(--gray400);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--gray800);
+    }
+}
+
+.title {
+    margin-right: auto;
+}
+
+.submitIcon {
+    font-size: 18px;
+    margin-right: 0.5rem;
+}
+
+.datePicker {
+    &:global(.ant-picker) {
+        border-radius: 6px;
+        width: 100%;
+    }
+}

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 
-import { DayOfWeek, Degree, WorkloadType } from './common'
+import { DayOfWeek, Degree, DocumentPattern, WorkloadType } from './common'
 
 export interface IOption {
   label: string
@@ -102,4 +102,15 @@ export const OptionList = {
         value: thatDay.month(),
       }
     }),
+  /** Document pattern */
+  documentPattern: [
+    {
+      label: 'Online',
+      value: DocumentPattern.ONLINE,
+    },
+    {
+      label: 'On-site',
+      value: DocumentPattern.ONSITE,
+    },
+  ],
 }

@@ -5,7 +5,6 @@ import { editManyAssistantWorkload } from 'apis/workload'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
-import { delay } from 'libs/delay'
 
 export const useSectionList = (subjectId: string) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -37,7 +36,6 @@ export const useSectionList = (subjectId: string) => {
     onSuccess: () => void = () => {}
   ) => {
     setIsLoading(true)
-    await delay(2)
     try {
       await editManyAssistantWorkload(payload)
       fetchSectionListOfSubject()

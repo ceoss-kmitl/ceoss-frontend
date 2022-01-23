@@ -10,12 +10,14 @@ import style from './SectionCard.module.scss'
 
 interface IProps {
   data: ISection | null
-  onEditClick?: (info: ISection) => void
+  onEditClick?: (value: ISection) => void
+  onDownloadClick?: (value: ISection) => void
 }
 
 export const SectionCard: React.FC<IProps> = ({
   data,
   onEditClick = () => {},
+  onDownloadClick = () => {},
 }) => {
   if (!data)
     return (
@@ -35,7 +37,7 @@ export const SectionCard: React.FC<IProps> = ({
         <Text bold size="sub-head">
           กลุ่มเรียน {data.section}
         </Text>
-        <Button small blue>
+        <Button small blue onClick={() => onDownloadClick(data)}>
           <FiDownload className={style.downloadIcon} />
           ดาวน์โหลด
         </Button>
