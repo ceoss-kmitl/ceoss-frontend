@@ -43,7 +43,7 @@ export const Drawer: React.FC<IProps> = ({
         dayList: a.dayList.map((d: any) => d.toISOString()),
       })),
       workloadIdList: formValue.workloadIdList,
-    } as IParsedFormValue
+    } as IEditAssistantListPayload
   }
 
   return (
