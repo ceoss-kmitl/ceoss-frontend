@@ -14,8 +14,8 @@ export const useDrawerForm = () => {
       assistantList: value.assistantList.map((a) => ({
         assistantId: a.id,
         assistantName: a.name,
-        dayList: a.dayList.map((d) => dayjs(d)),
       })),
+      dayList: value.dayList.map((d) => dayjs(d).startOf('day')),
       workloadIdList: value.workloadIdList,
     })
   }
