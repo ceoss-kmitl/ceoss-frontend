@@ -61,8 +61,8 @@ export interface IEditAssistantListPayload {
   assistantList: {
     assistantId: string
     assistantName: string
-    dayList: string[]
   }[]
+  dayList: string[]
   workloadIdList: string[]
 }
 

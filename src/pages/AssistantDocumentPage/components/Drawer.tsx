@@ -1,4 +1,5 @@
 import css from 'classnames'
+import dayjs from 'dayjs'
 import {
   Drawer as AntdDrawer,
   Button as AntdButton,
@@ -6,19 +7,22 @@ import {
   FormInstance,
   Row,
   Col,
-  Tooltip,
+  Divider,
 } from 'antd'
-import { FiX, FiPlus } from 'react-icons/fi'
+import { FiX, FiPlus, FiTrash2 } from 'react-icons/fi'
 import { AiFillEdit } from 'react-icons/ai'
 
 import { Text } from 'components/Text'
 import { Button } from 'components/Button'
 import { Input } from 'components/Input'
+import { Select } from 'components/Select'
 import { Loader } from 'components/Loader'
-import { DatePicker } from 'components/DatePicker'
+import { Calendar } from 'components/DatePicker'
 import { IEditAssistantListPayload } from 'apis/workload'
+import { OptionList } from 'constants/option'
 
 import style from './Drawer.module.scss'
+import { useCalendarForm } from './DrawerHelper'
 
 interface IProps {
   form: FormInstance
@@ -35,15 +39,22 @@ export const Drawer: React.FC<IProps> = ({
   isLoading = false,
   onSubmit = () => {},
 }) => {
+  const {
+    dayList,
+    isDaySelected,
+    handleOnSelected,
+    month,
+    setMonth,
+    resetCalendar,
+  } = useCalendarForm(isOpen, form)
+
   const parseFormValue = () => {
     const formValue = form.getFieldsValue()
-    return {
-      assistantList: formValue.assistantList.map((a: any) => ({
-        ...a,
-        dayList: a.dayList.map((d: any) => d.toISOString()),
-      })),
-      workloadIdList: formValue.workloadIdList,
-    } as IEditAssistantListPayload
+    const parsedFormValue: IEditAssistantListPayload = {
+      ...formValue,
+      dayList: dayList.map((d) => d.toISOString()),
+    }
+    return parsedFormValue
   }
 
   return (
@@ -52,16 +63,25 @@ export const Drawer: React.FC<IProps> = ({
       visible={isOpen}
       maskClosable={!isLoading}
       closable={false}
-      onClose={() => onClose()}
+      onClose={() => {
+        onClose()
+        resetCalendar()
+      }}
       title={
         <div
           className={css(style.titleWrapper, {
             [style.disabled]: isLoading,
           })}
         >
-          <FiX className={style.closeIcon} onClick={() => onClose()} />
+          <FiX
+            className={style.closeIcon}
+            onClick={() => {
+              onClose()
+              resetCalendar()
+            }}
+          />
           <Text size="sub-head" bold className={style.title}>
-            แก้ไขรายชื่อ/เวลาปฏิบัติงาน
+            แก้ไขรายชื่อ/วันปฏิบัติงาน
           </Text>
           <Button small onClick={() => form.submit()}>
             <AiFillEdit className={style.submitIcon} />
@@ -76,25 +96,54 @@ export const Drawer: React.FC<IProps> = ({
           layout="vertical"
           requiredMark={false}
           onFinish={() => onSubmit(parseFormValue())}
+          scrollToFirstError
         >
+          <Text bold className={style.header}>
+            วันปฏิบัติงาน
+          </Text>
+          <Select
+            value={month}
+            onChange={(value) => setMonth(value)}
+            options={OptionList.month}
+            style={{ marginBottom: '0.5rem' }}
+          />
+          <Calendar
+            className={style.calendar}
+            fullscreen={false}
+            dateCellRender={(day) =>
+              isDaySelected(day) && <div className={style.daySelected} />
+            }
+            onSelect={handleOnSelected}
+            value={dayjs().set('month', month).startOf('month')}
+            validRange={[
+              dayjs().set('month', month).startOf('month'),
+              dayjs().set('month', month).endOf('month'),
+            ]}
+          />
+
+          <Divider plain>{`( ปฏิบัติงาน ${dayList.length} วัน )`}</Divider>
+
+          <Text bold className={style.header}>
+            รายชื่อ TA
+          </Text>
           <Form.List name="assistantList">
             {(fields, assistantListAction) => (
               <Col span={24}>
+                {fields.length > 0 && (
+                  <Row gutter={16} align="middle">
+                    <Col span={8}>
+                      <Text size="small">รหัสนักศึกษา</Text>
+                    </Col>
+                    <Col span={16}>
+                      <Text size="small">ชื่อ-สกุล</Text>
+                    </Col>
+                  </Row>
+                )}
                 {fields.map(({ name, ...rest }) => (
                   <div className={style.assistantItem}>
-                    <Row align="middle">
-                      <Text bold>รายชื่อที่ {name + 1}</Text>
-                      <Tooltip title="ลบรายชื่อนี้">
-                        <FiX
-                          className={style.trashIconTitle}
-                          onClick={() => assistantListAction.remove(name)}
-                        />
-                      </Tooltip>
-                    </Row>
                     <Row gutter={16}>
                       <Col span={8}>
                         <Form.Item
-                          label="รหัสนักศึกษา"
                           name={[name, 'assistantId']}
                           rules={[
                             { required: true, message: '' },
@@ -102,74 +151,32 @@ export const Drawer: React.FC<IProps> = ({
                           ]}
                           {...rest}
                         >
-                          <Input maxLength={8} />
+                          <Input maxLength={8} placeholder="รหัสนักศึกษา" />
                         </Form.Item>
                       </Col>
-                      <Col span={16}>
+                      <Col span={15}>
                         <Form.Item
-                          label="ชื่อ-สกุล"
                           name={[name, 'assistantName']}
                           rules={[{ required: true, message: '' }]}
                           {...rest}
                         >
-                          <Input />
+                          <Input placeholder="ชื่อ-สกุล" />
                         </Form.Item>
                       </Col>
-                    </Row>
-                    <Row>
-                      <Col span={24}>
-                        <Text size="small" className={style.header}>
-                          วันที่ปฏิบัติงาน
-                        </Text>
-                        <Form.List name={[name, 'dayList']} initialValue={['']}>
-                          {(fields2, dayListAction) => (
-                            <>
-                              {fields2.map(({ name, ...rest }) => (
-                                <Row>
-                                  <Col flex={1}>
-                                    <Form.Item
-                                      name={[name]}
-                                      rules={[{ required: true }]}
-                                      className={style.formHideMessage}
-                                      {...rest}
-                                    >
-                                      <DatePicker
-                                        className={style.datePicker}
-                                        showToday={false}
-                                        format="DD MMM YY"
-                                        allowClear={false}
-                                      />
-                                    </Form.Item>
-                                  </Col>
-
-                                  {fields2.length > 1 && (
-                                    <FiX
-                                      className={style.trashIcon}
-                                      onClick={() => dayListAction.remove(name)}
-                                    />
-                                  )}
-                                </Row>
-                              ))}
-                              <AntdButton
-                                type="dashed"
-                                block
-                                onClick={() => dayListAction.add()}
-                              >
-                                + คลิกเพื่อเพิ่มวัน
-                              </AntdButton>
-                            </>
-                          )}
-                        </Form.List>
+                      <Col span={1}>
+                        <FiTrash2
+                          className={style.trashIcon}
+                          onClick={() => assistantListAction.remove(name)}
+                        />
                       </Col>
                     </Row>
-                    <br />
                   </div>
                 ))}
                 <AntdButton
                   type="dashed"
                   block
                   icon={<FiPlus className={style.plusIcon} />}
-                  style={{ height: 60, fontSize: 16, marginTop: '1rem' }}
+                  style={{ height: 40, fontSize: 16 }}
                   onClick={() => assistantListAction.add()}
                 >
                   คลิกเพื่อเพิ่ม TA
@@ -179,6 +186,7 @@ export const Drawer: React.FC<IProps> = ({
           </Form.List>
 
           <Form.List name="workloadIdList">{() => null}</Form.List>
+          <Form.List name="dayList">{() => null}</Form.List>
         </Form>
       </Loader>
     </AntdDrawer>

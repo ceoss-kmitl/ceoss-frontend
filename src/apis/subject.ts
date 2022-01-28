@@ -73,10 +73,10 @@ export const getManyCompensatedOfSubject = async (
 export interface ISection {
   section: number
   workloadIdList: string[]
+  dayList: string[]
   assistantList: {
     id: string
     name: string
-    dayList: string[]
   }[]
   teacherList: {
     id: string

@@ -33,34 +33,15 @@
 }
 
 .assistantItem {
-    min-height: 100px;
-    padding: 1rem;
-
-    & + & {
-        border-top: 1px solid var(--gray200);
-    }
-}
-
-.datePicker {
-    &:global(.ant-picker) {
-        border-radius: 6px;
-        width: 100%;
-    }
+    margin: 0.5rem 0;
 }
 
 .trashIcon {
     color: var(--red600);
-    transform: translateY(5px);
-    margin-left: 0.5rem;
+    margin-left: -4px;
+    margin-bottom: -8px;
     font-size: 18px;
     cursor: pointer;
-}
-
-.trashIconTitle {
-    color: var(--red600);
-    font-size: 16px;
-    cursor: pointer;
-    margin-left: 0.5rem;
 }
 
 .header {
@@ -74,4 +55,60 @@
     :global(.ant-form-item-explain) {
         display: none;
     }
+}
+
+.calendar {
+    user-select: none;
+
+    :global(.ant-picker-calendar-header) {
+        display: none;
+
+        :global(.ant-picker-calendar-month-select) {
+            order: 1;
+            margin-right: 0.5rem;
+        }
+
+        :global(.ant-picker-calendar-year-select) {
+            order: 2;
+        }
+
+        :global(.ant-picker-calendar-mode-switch) {
+            display: none;
+        }
+    }
+
+    :global(.ant-picker-cell-selected)
+        :global(.ant-picker-cell-inner.ant-picker-calendar-date) {
+        background: inherit;
+        color: inherit;
+
+        &:hover {
+            background: rgb(245, 245, 245);
+        }
+    }
+
+    :global(.ant-picker-cell-today
+            .ant-picker-cell-inner.ant-picker-calendar-date-today) {
+        &::before {
+            border: none;
+        }
+    }
+
+    :global(div.ant-picker-panel) {
+        border-top: none;
+    }
+
+    .daySelected {
+        width: 24px;
+        height: 24px;
+        background: var(--blue100);
+        border-bottom: 2px solid var(--blue500);
+        margin-top: -24px;
+    }
+}
+
+.dayListCount {
+    font-weight: 400;
+    margin-left: 0.5rem;
+    font-size: 14px;
 }
