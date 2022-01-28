@@ -8,7 +8,6 @@ import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
 import { IOption } from 'constants/option'
 import { downloadOneAssistantExcelFile, ISection } from 'apis/subject'
-import { delay } from 'libs/delay'
 
 const MESSAGE_KEY = 'ASSISTANT_SYSTEM'
 
@@ -31,7 +30,6 @@ export const useDownloadFile = () => {
       message: 'กำลังดาวน์โหลด...',
     })
     setIsDownloading(true)
-    // await delay(2)
     try {
       const formValue = form.getFieldsValue()
       const file = await downloadOneAssistantExcelFile(subjectId, section, {
