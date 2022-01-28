@@ -31,7 +31,7 @@ export const pathList: IPath[] = [
     Icon: FiBook,
   },
   {
-    path: '/assistant-document',
+    path: '/ta-document',
     text: 'เอกสาร TA',
     Icon: FiFileText,
   },
@@ -45,10 +45,6 @@ export const subPathList: IPath[] = [
   {
     path: '/menu/subject',
     text: 'ข้อมูลวิชา',
-  },
-  {
-    path: '/menu/assistant',
-    text: 'ข้อมูล TA',
   },
   {
     path: '/menu/room',
