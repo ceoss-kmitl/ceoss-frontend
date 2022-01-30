@@ -5,6 +5,7 @@ import { getManyRoom, IRoom } from 'apis/room'
 import { ErrorCode } from 'constants/error'
 import { IOption } from 'constants/option'
 import { Notification } from 'components/Notification'
+import { useAuth } from 'contexts/AuthContext'
 
 type IRoomOption = Modify<IRoom, IOption>
 
@@ -12,6 +13,7 @@ export const useBigSearch = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [roomList, setRoomList] = useState<IRoomOption[]>([])
   const [currentRoom, setCurrentRoom] = useState(<IRoomOption>{})
+  const { profile } = useAuth()
 
   const fetchRoomList = async () => {
     setIsLoading(true)
@@ -34,8 +36,10 @@ export const useBigSearch = () => {
   }
 
   useEffect(() => {
-    fetchRoomList()
-  }, [])
+    if (profile) {
+      fetchRoomList()
+    }
+  }, [profile])
 
   return {
     isLoading,

@@ -7,6 +7,7 @@ import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 import { Notification } from 'components/Notification'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { useAuth } from 'contexts/AuthContext'
 
 interface IPath {
   path: string
@@ -58,8 +59,9 @@ export const subPathList: IPath[] = [
 
 export function useWebScrap() {
   const [date, setDate] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
 
   async function triggerWebScrap() {
     Modal.warning({
@@ -106,8 +108,10 @@ export function useWebScrap() {
   }
 
   useEffect(() => {
-    getLastestUpdatedDate()
-  }, [])
+    if (profile) {
+      getLastestUpdatedDate()
+    }
+  }, [profile])
 
   return {
     isLoading,

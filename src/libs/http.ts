@@ -1,5 +1,7 @@
 import Axios from 'axios'
 
+import { IProfile } from 'contexts/AuthContext'
+
 const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5050/api'
 
 export const http = Axios.create({
@@ -8,6 +10,9 @@ export const http = Axios.create({
 
 http.interceptors.request.use(
   (config) => {
+    const auth = localStorage.getItem('auth') || ''
+    const parsedAuth: IProfile = JSON.parse(auth)
+    config.headers['Authorization'] = `Bearer ${parsedAuth.accessToken}`
     return config
   },
   (err) => {
@@ -25,6 +30,10 @@ http.interceptors.response.use(
         name: 'NetworkError',
         message: 'Request did not reach the destination',
       })
+    }
+    if (err.response.status === 401) {
+      localStorage.setItem('auth', JSON.stringify(null))
+      window.location.reload()
     }
     return Promise.reject(err.response.data)
   }

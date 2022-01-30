@@ -5,6 +5,7 @@ import { getManyTeacher, ITeacher } from 'apis/teacher'
 import { ErrorCode } from 'constants/error'
 import { IOption } from 'constants/option'
 import { Notification } from 'components/Notification'
+import { useAuth } from 'contexts/AuthContext'
 
 type ITeacherOption = Modify<ITeacher, IOption>
 
@@ -12,6 +13,7 @@ export const useBigSearch = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [teacherList, setTeacherList] = useState<ITeacherOption[]>([])
   const [currentTeacher, setCurrentTeacher] = useState(<ITeacherOption>{})
+  const { profile } = useAuth()
 
   const fetchTeacherList = async () => {
     setIsLoading(true)
@@ -36,8 +38,10 @@ export const useBigSearch = () => {
   }
 
   useEffect(() => {
-    fetchTeacherList()
-  }, [])
+    if (profile) {
+      fetchTeacherList()
+    }
+  }, [profile])
 
   return {
     isLoading,

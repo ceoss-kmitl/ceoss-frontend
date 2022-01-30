@@ -51,11 +51,12 @@
         &.white {
             color: var(--gray500);
             background: white;
+            border: 1px solid var(--gray200);
 
             &:hover,
             &:focus:hover,
             &:active {
-                color: var(--gray500);
+                color: var(--blue500);
                 background: white;
             }
 
