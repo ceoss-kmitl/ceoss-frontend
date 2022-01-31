@@ -22,6 +22,7 @@ export const useUnAssignedWorkload = (refetchWhenValueChange = <any>[]) => {
         academicYear,
         semester,
         room: 'NULL',
+        requiredRoom: true,
       })
       const workloadCheckList = workloadList.map((w) => ({
         ...w,
