@@ -137,14 +137,20 @@ export const columnList: IColumn[] = [
   },
   {
     type: 'checkbox',
+    header: 'นานาชาติ',
+    dataIndex: 'isInter',
+  },
+  {
+    type: 'checkbox',
     header: 'วิชาบังคับ',
     dataIndex: 'isRequired',
     defaultChecked: true,
   },
   {
     type: 'checkbox',
-    header: 'นานาชาติ',
-    dataIndex: 'isInter',
+    header: 'ใช้ห้องเรียน',
+    dataIndex: 'requiredRoom',
+    defaultChecked: true,
   },
 ]
 
@@ -154,6 +160,7 @@ export const formLayout: IFormLayout = {
   layout: [
     ['code', 'credit'],
     ['name'],
-    ['curriculumCode', 'isRequired', 'isInter'],
+    ['curriculumCode', 'isInter'],
+    ['isRequired', 'requiredRoom'],
   ],
 }

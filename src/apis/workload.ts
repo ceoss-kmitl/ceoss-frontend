@@ -22,6 +22,7 @@ export const getManyWorkload = async (
     room?: string
     subject?: string
     compensation?: boolean
+    requiredRoom?: boolean
   } & IAcademicTime
 ) => {
   const { data } = await http.get<IWorkload[]>('/workload', {
