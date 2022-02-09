@@ -22,7 +22,8 @@ notification.config({
 const SeeMore = (props: { payload: any }) => {
   return (
     <Typography.Link
-      onClick={() =>
+      onClick={() => {
+        Modal.destroyAll()
         Modal.info({
           centered: true,
           closable: true,
@@ -39,7 +40,7 @@ const SeeMore = (props: { payload: any }) => {
             </div>
           ),
         })
-      }
+      }}
     >
       ดูรายละเอียด
     </Typography.Link>
