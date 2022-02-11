@@ -132,9 +132,3 @@ export const formLayout: IFormLayout = {
   editFormTitle: 'แก้ไขข้อมูลอาจารย์',
   layout: [['title', 'name'], ['executiveRole'], ['isActive', 'isExternal']],
 }
-
-export const TeacherExcelFileHeaders = [
-  'ชื่อ-สกุล',
-  'ตำแหน่งบริหาร',
-  'อาจารย์ภายนอก',
-]

@@ -60,7 +60,7 @@ export const useUploadFile = ({ headers, onUpload = () => {} }: IConfig) => {
       }
       const jsonData = xlsx.utils.sheet_to_json<Record<string, string>>(
         worksheet,
-        { defval: '' }
+        { defval: '', blankrows: false }
       )
 
       handleOnUpload(jsonData)
