@@ -7,8 +7,12 @@ import {
   getManyTeacher,
   ITeacher,
 } from 'apis/teacher'
+import { syncTeacher } from 'apis/sync'
 import { IColumn, IFormLayout } from 'components/Table'
 import { Notification } from 'components/Notification'
+import { ErrorCode } from 'constants/error'
+
+const SYNC_EXCEL_TEACHER_KEY = 'SYNC_EXCEL_TEACHER_KEY'
 
 export function useMenuTeacher() {
   const [data, setData] = useState<ITeacher[]>([])
@@ -44,6 +48,30 @@ export function useMenuTeacher() {
     await getAllTeacher()
   }
 
+  async function importDataFromExcel(data: Record<string, string>[]) {
+    setIsLoading(true)
+    Notification.loading({
+      key: SYNC_EXCEL_TEACHER_KEY,
+      message: 'กำลังนำเข้าข้อมูล...',
+    })
+    try {
+      const result = await syncTeacher(data)
+      Notification.success({
+        key: SYNC_EXCEL_TEACHER_KEY,
+        message: 'นำเข้าข้อมูลสำเร็จ',
+        seeMore: result,
+      })
+      await getAllTeacher()
+    } catch (error) {
+      Notification.error({
+        key: SYNC_EXCEL_TEACHER_KEY,
+        message: ErrorCode.X03,
+        seeMore: error,
+      })
+    }
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     getAllTeacher()
   }, [])
@@ -55,6 +83,7 @@ export function useMenuTeacher() {
     addTeacher,
     editTeacher,
     deleteTeacher,
+    importDataFromExcel,
   }
 }
 
@@ -103,3 +132,9 @@ export const formLayout: IFormLayout = {
   editFormTitle: 'แก้ไขข้อมูลอาจารย์',
   layout: [['title', 'name'], ['executiveRole'], ['isActive', 'isExternal']],
 }
+
+export const TeacherExcelFileHeaders = [
+  'ชื่อ-สกุล',
+  'ตำแหน่งบริหาร',
+  'อาจารย์ภายนอก',
+]
