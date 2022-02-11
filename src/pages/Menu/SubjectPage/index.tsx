@@ -6,8 +6,8 @@ import { Table, useTable } from 'components/Table'
 import { UploadExcelFileButton } from 'components/UploadExcelFileButton'
 import { SubjectExcelFileHeaders } from 'constants/excel'
 
-import style from './style.module.scss'
 import { useMenuSubject, columnList, formLayout } from './helper'
+import style from './style.module.scss'
 
 export const MenuSubjectPage = () => {
   const {
