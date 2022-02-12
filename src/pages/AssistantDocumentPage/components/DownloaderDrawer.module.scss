@@ -33,3 +33,10 @@
         width: 100%;
     }
 }
+
+.datePickerWrapper {
+    :global(.ant-picker-header-super-prev-btn),
+    :global(.ant-picker-header-super-next-btn) {
+        display: block;
+    }
+}

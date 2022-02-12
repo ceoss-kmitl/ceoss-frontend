@@ -112,3 +112,19 @@
     margin-left: 0.5rem;
     font-size: 14px;
 }
+
+.datePicker {
+    margin-bottom: 0.5rem;
+
+    &:global(.ant-picker) {
+        border-radius: 6px;
+        width: 100%;
+    }
+}
+
+.datePickerWrapper {
+    :global(.ant-picker-header-super-prev-btn),
+    :global(.ant-picker-header-super-next-btn) {
+        display: block;
+    }
+}

@@ -15,11 +15,10 @@ import { AiFillEdit } from 'react-icons/ai'
 import { Text } from 'components/Text'
 import { Button } from 'components/Button'
 import { Input } from 'components/Input'
-import { Select } from 'components/Select'
+import { DatePicker } from 'components/DatePicker'
 import { Loader } from 'components/Loader'
 import { Calendar } from 'components/DatePicker'
 import { IEditAssistantListPayload } from 'apis/workload'
-import { OptionList } from 'constants/option'
 
 import style from './Drawer.module.scss'
 import { useCalendarForm } from './DrawerHelper'
@@ -41,6 +40,8 @@ export const Drawer: React.FC<IProps> = ({
 }) => {
   const {
     dayList,
+    currentDayList,
+    filterCurrentDayListByMonth,
     isDaySelected,
     handleOnSelected,
     month,
@@ -101,11 +102,14 @@ export const Drawer: React.FC<IProps> = ({
           <Text bold className={style.header}>
             วันปฏิบัติงาน
           </Text>
-          <Select
+          <DatePicker
+            picker="month"
+            format="MMMM BBBB"
             value={month}
-            onChange={(value) => setMonth(value)}
-            options={OptionList.month}
-            style={{ marginBottom: '0.5rem' }}
+            onSelect={(value) => setMonth(value)}
+            className={style.datePicker}
+            dropdownClassName={style.datePickerWrapper}
+            allowClear={false}
           />
           <Calendar
             className={style.calendar}
@@ -114,14 +118,16 @@ export const Drawer: React.FC<IProps> = ({
               isDaySelected(day) && <div className={style.daySelected} />
             }
             onSelect={handleOnSelected}
-            value={dayjs().set('month', month).startOf('month')}
+            value={dayjs(month).startOf('month')}
             validRange={[
-              dayjs().set('month', month).startOf('month'),
-              dayjs().set('month', month).endOf('month'),
+              dayjs(month).startOf('month'),
+              dayjs(month).endOf('month'),
             ]}
           />
 
-          <Divider plain>{`( ปฏิบัติงาน ${dayList.length} วัน )`}</Divider>
+          <Divider
+            plain
+          >{`( ปฏิบัติงาน ${currentDayList.length} วัน )`}</Divider>
 
           <Text bold className={style.header}>
             รายชื่อ TA
