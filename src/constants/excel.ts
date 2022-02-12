@@ -13,3 +13,5 @@ export const SubjectExcelFileHeaders = [
   'นานาชาติ',
   'ใช้ห้องเรียน',
 ]
+
+export const RoomExcelFileHeaders = ['ชื่อห้อง', 'จำนวนที่นั่ง']

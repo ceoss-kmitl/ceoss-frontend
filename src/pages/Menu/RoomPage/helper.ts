@@ -9,6 +9,10 @@ import {
   getManyRoom,
   IRoom,
 } from 'apis/room'
+import { syncRoom } from 'apis/sync'
+import { ErrorCode } from 'constants/error'
+
+const SYNC_EXCEL_ROOM_KEY = 'SYNC_EXCEL_ROOM_KEY'
 
 export function useMenuRoom() {
   const [data, setData] = useState<IRoom[]>([])
@@ -44,6 +48,30 @@ export function useMenuRoom() {
     await getAllRoom()
   }
 
+  async function importDataFromExcel(data: Record<string, string>[]) {
+    setIsLoading(true)
+    Notification.loading({
+      key: SYNC_EXCEL_ROOM_KEY,
+      message: 'กำลังนำเข้าข้อมูล...',
+    })
+    try {
+      const result = await syncRoom(data)
+      Notification.success({
+        key: SYNC_EXCEL_ROOM_KEY,
+        message: 'นำเข้าข้อมูลสำเร็จ',
+        seeMore: result,
+      })
+      await getAllRoom()
+    } catch (error) {
+      Notification.error({
+        key: SYNC_EXCEL_ROOM_KEY,
+        message: ErrorCode.X05,
+        seeMore: error,
+      })
+    }
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     getAllRoom()
   }, [])
@@ -55,6 +83,7 @@ export function useMenuRoom() {
     addRoom,
     editRoom,
     deleteRoom,
+    importDataFromExcel,
   }
 }
 
