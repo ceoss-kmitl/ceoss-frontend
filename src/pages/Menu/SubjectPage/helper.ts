@@ -7,8 +7,10 @@ import {
   getManySubject,
   ISubject,
 } from 'apis/subject'
+import { syncSubject } from 'apis/sync'
 import { IColumn, IFormLayout } from 'components/Table'
 import { Notification } from 'components/Notification'
+import { ErrorCode } from 'constants/error'
 
 type IParsedSubject = {
   credit: string
@@ -19,6 +21,8 @@ type IParsedSubject = {
   curriculumCode: string
   isInter: boolean
 }
+
+const SYNC_EXCEL_SUBJECT_KEY = 'SYNC_EXCEL_SUBJECT_KEY'
 
 export function useMenuSubject() {
   const [data, setData] = useState<IParsedSubject[]>([])
@@ -86,6 +90,30 @@ export function useMenuSubject() {
     await getAllSubject()
   }
 
+  async function importDataFromExcel(data: Record<string, string>[]) {
+    setIsLoading(true)
+    Notification.loading({
+      key: SYNC_EXCEL_SUBJECT_KEY,
+      message: 'กำลังนำเข้าข้อมูล...',
+    })
+    try {
+      const result = await syncSubject(data)
+      Notification.success({
+        key: SYNC_EXCEL_SUBJECT_KEY,
+        message: 'นำเข้าข้อมูลสำเร็จ',
+        seeMore: result,
+      })
+      await getAllSubject()
+    } catch (error) {
+      Notification.error({
+        key: SYNC_EXCEL_SUBJECT_KEY,
+        message: ErrorCode.X04,
+        seeMore: error,
+      })
+    }
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     getAllSubject()
   }, [])
@@ -97,6 +125,7 @@ export function useMenuSubject() {
     addSubject,
     editSubject,
     deleteSubject,
+    importDataFromExcel,
   }
 }
 

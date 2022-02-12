@@ -11,3 +11,10 @@ export const syncTeacher = async (payload: Record<string, string>[]) => {
   })
   return data
 }
+
+export const syncSubject = async (payload: Record<string, string>[]) => {
+  const { data } = await http.post<ISyncResult>('/sync/subject', {
+    data: payload,
+  })
+  return data
+}

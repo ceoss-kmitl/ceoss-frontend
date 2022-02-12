@@ -4,13 +4,9 @@ import { Table, useTable } from 'components/Table'
 import { Button } from 'components/Button'
 import { Text } from 'components/Text'
 import { UploadExcelFileButton } from 'components/UploadExcelFileButton'
+import { TeacherExcelFileHeaders } from 'constants/excel'
 
-import {
-  useMenuTeacher,
-  columnList,
-  formLayout,
-  TeacherExcelFileHeaders,
-} from './helper'
+import { useMenuTeacher, columnList, formLayout } from './helper'
 import style from './style.module.scss'
 
 export const MenuTeacherPage = () => {
