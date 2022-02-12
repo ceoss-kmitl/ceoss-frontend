@@ -76,6 +76,7 @@ export const DownloaderDrawer: React.FC<IProps> = ({
                   format="MMMM BBBB"
                   className={style.datePicker}
                   allowClear={false}
+                  dropdownClassName={style.datePickerWrapper}
                 />
               </Form.Item>
             </Col>

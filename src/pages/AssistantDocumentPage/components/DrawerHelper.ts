@@ -4,8 +4,16 @@ import { get } from 'lodash'
 import dayjs, { Dayjs } from 'dayjs'
 
 export const useCalendarForm = (isOpen: boolean, form: FormInstance) => {
-  const [month, setMonth] = useState(dayjs().month())
+  const [month, setMonth] = useState(dayjs())
   const [dayList, setDayList] = useState<Dayjs[]>([])
+  const [currentDayList, setCurrentDayList] = useState<Dayjs[]>([])
+
+  const filterCurrentDayListByMonth = (list: Dayjs[]) => {
+    const filteredList = list.filter(
+      (each) => each.isSame(month, 'month') && each.isSame(month, 'year')
+    )
+    setCurrentDayList(filteredList)
+  }
 
   const isDaySelected = (day: Dayjs) => {
     const isFound = dayList.find((d) =>
@@ -31,18 +39,26 @@ export const useCalendarForm = (isOpen: boolean, form: FormInstance) => {
 
   const resetCalendar = () => {
     setDayList([])
-    setMonth(dayjs().month())
+    setCurrentDayList([])
+    setMonth(dayjs())
   }
 
   useEffect(() => {
     if (isOpen === true) {
       const formValue = form.getFieldsValue()
-      setDayList(get(formValue, 'dayList', []))
+      const dayList: Dayjs[] = get(formValue, 'dayList', [])
+      setDayList(dayList)
     }
   }, [isOpen])
 
+  useEffect(() => {
+    filterCurrentDayListByMonth(dayList)
+  }, [month, dayList])
+
   return {
     dayList,
+    currentDayList,
+    filterCurrentDayListByMonth,
     isDaySelected,
     handleOnSelected,
     month,
