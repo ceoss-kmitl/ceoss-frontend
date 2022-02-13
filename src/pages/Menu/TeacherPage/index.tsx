@@ -1,16 +1,29 @@
+import { VscAdd } from 'react-icons/vsc'
+
 import { Table, useTable } from 'components/Table'
-import { useMenuTeacher, columnList } from './helper'
 import { Button } from 'components/Button'
 import { Text } from 'components/Text'
-import { VscAdd } from 'react-icons/vsc'
+import { UploadExcelFileButton } from 'components/UploadExcelFileButton'
+import { TeacherExcelFileHeaders } from 'constants/excel'
+
+import { useMenuTeacher, columnList, formLayout } from './helper'
 import style from './style.module.scss'
 
 export const MenuTeacherPage = () => {
-  const { data, addTeacher, editTeacher, deleteTeacher } = useMenuTeacher()
+  const {
+    isLoading,
+    data,
+    addTeacher,
+    editTeacher,
+    deleteTeacher,
+    importDataFromExcel,
+  } = useMenuTeacher()
 
   const teacherTable = useTable({
+    loading: isLoading,
     data,
     columnList,
+    formLayout,
     onAdd: addTeacher,
     onEdit: editTeacher,
     onDelete: deleteTeacher,
@@ -22,7 +35,13 @@ export const MenuTeacherPage = () => {
         <Text size="head" bold>
           ข้อมูลอาจารย์
         </Text>
-        <Button onClick={() => teacherTable.addRow()}>
+
+        <UploadExcelFileButton
+          className={style.importButton}
+          headers={TeacherExcelFileHeaders}
+          onUpload={(data) => importDataFromExcel(data)}
+        />
+        <Button onClick={() => teacherTable.addRecord()}>
           <VscAdd className={style.iconAdd} />
           เพิ่มอาจารย์
         </Button>

@@ -1,0 +1,108 @@
+.wrapper {
+    width: 100%;
+    background: white;
+    border-radius: 6px;
+    padding: 1.5rem;
+}
+
+.sectionWrapper {
+    user-select: none;
+
+    &:not(:last-child) {
+        margin-bottom: 1.5rem;
+    }
+}
+
+.sectionHeader {
+    display: block;
+    margin: 0.5rem 0;
+}
+
+.item {
+    border-color: red;
+    width: 100%;
+    height: 60px;
+    display: flex;
+    padding: 0 1rem;
+    align-items: center;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+        background: var(--gray50);
+        border-color: var(--blue400);
+    }
+
+    & + .item {
+        border-top: 1px solid var(--gray100);
+    }
+}
+
+.itemNoData {
+    cursor: unset;
+    transition: none;
+    border: none;
+
+    &:last-child {
+        border: none;
+    }
+
+    & span {
+        color: var(--gray400);
+    }
+
+    &:hover {
+        background: inherit;
+    }
+}
+
+.titleWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.closeIcon {
+    font-size: 20px;
+    margin-right: 1rem;
+    color: var(--gray400);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--gray800);
+    }
+}
+
+.title {
+    margin-right: auto;
+}
+
+.submitIcon {
+    font-size: 18px;
+    margin-right: 0.5rem;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.datePicker {
+    &:global(.ant-picker) {
+        border-radius: 6px;
+        width: 100%;
+    }
+}
+
+.arrowDivider {
+    color: var(--gray400);
+}
+
+.arrowDividerInline {
+    color: var(--gray400);
+    margin: 0 1rem;
+}
+
+.deleteIcon {
+    margin-bottom: -2px;
+    margin-right: 0.5rem;
+}

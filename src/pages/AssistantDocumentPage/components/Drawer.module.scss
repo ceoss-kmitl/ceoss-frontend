@@ -1,0 +1,130 @@
+.titleWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.closeIcon {
+    font-size: 20px;
+    margin-right: 1rem;
+    color: var(--gray400);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--gray800);
+    }
+}
+
+.title {
+    margin-right: auto;
+}
+
+.submitIcon {
+    font-size: 18px;
+    margin-right: 0.5rem;
+}
+
+.plusIcon {
+    margin-right: 1rem;
+    margin-bottom: -2px;
+}
+
+.assistantItem {
+    margin: 0.5rem 0;
+}
+
+.trashIcon {
+    color: var(--red600);
+    margin-left: -4px;
+    margin-bottom: -8px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.header {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+:global(.ant-form-item).formHideMessage {
+    margin-bottom: 0.5rem;
+
+    :global(.ant-form-item-explain) {
+        display: none;
+    }
+}
+
+.calendar {
+    user-select: none;
+
+    :global(.ant-picker-calendar-header) {
+        display: none;
+
+        :global(.ant-picker-calendar-month-select) {
+            order: 1;
+            margin-right: 0.5rem;
+        }
+
+        :global(.ant-picker-calendar-year-select) {
+            order: 2;
+        }
+
+        :global(.ant-picker-calendar-mode-switch) {
+            display: none;
+        }
+    }
+
+    :global(.ant-picker-cell-selected)
+        :global(.ant-picker-cell-inner.ant-picker-calendar-date) {
+        background: inherit;
+        color: inherit;
+
+        &:hover {
+            background: rgb(245, 245, 245);
+        }
+    }
+
+    :global(.ant-picker-cell-today
+            .ant-picker-cell-inner.ant-picker-calendar-date-today) {
+        &::before {
+            border: none;
+        }
+    }
+
+    :global(div.ant-picker-panel) {
+        border-top: none;
+    }
+
+    .daySelected {
+        width: 24px;
+        height: 24px;
+        background: var(--blue100);
+        border-bottom: 2px solid var(--blue500);
+        margin-top: -24px;
+    }
+}
+
+.dayListCount {
+    font-weight: 400;
+    margin-left: 0.5rem;
+    font-size: 14px;
+}
+
+.datePicker {
+    margin-bottom: 0.5rem;
+
+    &:global(.ant-picker) {
+        border-radius: 6px;
+        width: 100%;
+    }
+}
+
+.datePickerWrapper {
+    :global(.ant-picker-header-super-prev-btn),
+    :global(.ant-picker-header-super-next-btn) {
+        display: block;
+    }
+}

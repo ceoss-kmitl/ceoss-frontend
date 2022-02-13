@@ -1,4 +1,6 @@
 .select {
+    width: 100%;
+
     &:global(.ant-select):not(:global(.ant-select-customize-input))
         :global(.ant-select-selector) {
         border-radius: 6px;

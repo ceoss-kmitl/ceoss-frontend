@@ -1,11 +1,14 @@
 import css from 'classnames'
+import { NavLink, useLocation } from 'react-router-dom'
+import { Layout, Menu } from 'antd'
+import { FiServer } from 'react-icons/fi'
+
+import { LoginModal } from 'components/LoginModal'
+
 import style from './style.module.scss'
 import { MyHeader } from './MyHeader'
 import { Updated } from './Updated'
 import { pathList, subPathList } from './helper'
-import { NavLink, useLocation } from 'react-router-dom'
-import { Layout, Menu } from 'antd'
-import { FiServer } from 'react-icons/fi'
 
 const { Header, Sider, Content } = Layout
 const { SubMenu, Item } = Menu
@@ -62,6 +65,8 @@ const MyLayout: React.FC<IProps> = ({ children }) => {
         </Sider>
         <Content className={style.content}>{children}</Content>
       </Layout>
+
+      <LoginModal />
     </Layout>
   )
 }

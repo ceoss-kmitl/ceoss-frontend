@@ -1,84 +1,75 @@
 import { useState, useEffect } from 'react'
-import { http } from 'libs/http'
-import { Modal } from 'components/Modal'
-import { IColumn } from 'components/Table'
+
+import {
+  createOneTeacher,
+  deleteOneTeacher,
+  editOneTeacher,
+  getManyTeacher,
+  ITeacher,
+} from 'apis/teacher'
+import { syncTeacher } from 'apis/sync'
+import { IColumn, IFormLayout } from 'components/Table'
+import { Notification } from 'components/Notification'
+import { ErrorCode } from 'constants/error'
+
+const SYNC_EXCEL_TEACHER_KEY = 'SYNC_EXCEL_TEACHER_KEY'
 
 export function useMenuTeacher() {
-  const [data, setData] = useState<any[]>([])
-  const [error, setError] = useState(null)
+  const [data, setData] = useState<ITeacher[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   async function getAllTeacher() {
     setIsLoading(true)
     try {
-      const { data } = await http.get('/teacher')
-      setData(data)
-      setError(null)
-    } catch (err) {
-      setError(err)
+      const teacherList = await getManyTeacher()
+      setData(teacherList)
+    } catch (error) {
       setData([])
+      Notification.error({
+        message: error.message,
+        seeMore: error,
+      })
     }
     setIsLoading(false)
   }
 
-  async function addTeacher(record: any) {
-    Modal.loading({
-      loadingText: 'กำลังเพิ่มข้อมูลอาจารย์',
-      finishTitle: 'เพิ่มข้อมูลอาจารย์สำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถเพิ่มข้อมูลอาจารย์ได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          await http.post(`/teacher`, record)
-          await getAllTeacher()
-        } catch (err) {
-          await getAllTeacher()
-          throw err
-        }
-      },
-    })
+  async function addTeacher(record: ITeacher) {
+    await createOneTeacher(record)
+    await getAllTeacher()
   }
 
-  async function editTeacher(record: any) {
-    Modal.loading({
-      loadingText: 'กำลังแก้ไขข้อมูลอาจารย์',
-      finishTitle: 'แก้ไขข้อมูลอาจารย์สำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถแก้ไขข้อมูลอาจารย์ได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          const { id, ...teacher } = record
-          await http.put(`/teacher/${id}`, teacher)
-          await getAllTeacher()
-        } catch (err) {
-          throw err
-        }
-      },
-    })
+  async function editTeacher(record: ITeacher) {
+    await editOneTeacher(record)
+    await getAllTeacher()
   }
 
-  async function deleteTeacher(record: any) {
-    Modal.warning({
-      width: 400,
-      title: 'ยืนยันการลบ',
-      description: 'คุณต้องการยืนยันการลบข้อมูลอาจารย์นี้หรือไม่',
-      finishTitle: 'ลบข้อมูลอาจารย์สำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถลบข้อมูลอาจารย์ได้',
-      finishFailText: 'ตกลง',
-      onAsyncOk: async () => {
-        try {
-          await http.delete(`/teacher/${record.id}`)
-          await getAllTeacher()
-        } catch (err) {
-          throw err
-        }
-      },
+  async function deleteTeacher(record: ITeacher) {
+    await deleteOneTeacher(record.id)
+    await getAllTeacher()
+  }
+
+  async function importDataFromExcel(data: Record<string, string>[]) {
+    setIsLoading(true)
+    Notification.loading({
+      key: SYNC_EXCEL_TEACHER_KEY,
+      message: 'กำลังนำเข้าข้อมูล...',
     })
+    try {
+      const result = await syncTeacher(data)
+      Notification.success({
+        key: SYNC_EXCEL_TEACHER_KEY,
+        message: 'นำเข้าข้อมูลสำเร็จ',
+        seeMore: result,
+      })
+      await getAllTeacher()
+    } catch (error) {
+      Notification.error({
+        key: SYNC_EXCEL_TEACHER_KEY,
+        message: ErrorCode.X03,
+        seeMore: error,
+      })
+    }
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -88,42 +79,56 @@ export function useMenuTeacher() {
   return {
     isLoading,
     data,
-    error,
     getAllTeacher,
     addTeacher,
     editTeacher,
     deleteTeacher,
+    importDataFromExcel,
   }
 }
 
 export const columnList: IColumn[] = [
   {
     type: 'select',
-    text: 'ตำแหน่ง',
+    header: 'ตำแหน่ง',
     dataIndex: 'title',
-    selectList: ['อ.', 'ดร.', 'รศ.', 'รศ.ดร.', 'ศ.', 'ผศ.', 'ผศ.ดร.'],
-    editable: true,
+    optionList: ['อ.', 'ดร.', 'รศ.', 'รศ.ดร.', 'ศ.', 'ผศ.', 'ผศ.ดร.'],
+    showInTable: true,
     width: '20%',
   },
   {
-    text: 'ชื่อ-สกุล',
+    type: 'text',
+    header: 'ชื่อ-สกุล',
     dataIndex: 'name',
-    editable: true,
+    showInTable: true,
     width: '40%',
     placeholder: 'ชื่อ-สกุล',
   },
   {
-    type: 'checkbox',
-    text: 'ผู้บริหาร',
-    dataIndex: 'isExecutive',
-    editable: true,
-    width: '20%',
+    type: 'text',
+    header: 'ตำแหน่งบริหาร',
+    dataIndex: 'executiveRole',
+    placeholder: 'ไม่มีตำแหน่ง',
+    required: false,
   },
   {
     type: 'status',
-    text: 'สถานะ',
+    header: 'สถานะ',
     dataIndex: 'isActive',
-    editable: true,
+    showInTable: true,
+    width: '20%',
+  },
+  {
+    type: 'checkbox',
+    header: 'อาจารย์ภายนอก',
+    dataIndex: 'isExternal',
+    showInTable: false,
     width: '20%',
   },
 ]
+
+export const formLayout: IFormLayout = {
+  addFormTitle: 'เพิ่มข้อมูลอาจารย์ใหม่',
+  editFormTitle: 'แก้ไขข้อมูลอาจารย์',
+  layout: [['title', 'name'], ['executiveRole'], ['isActive', 'isExternal']],
+}

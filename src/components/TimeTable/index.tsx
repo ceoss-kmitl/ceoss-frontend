@@ -1,35 +1,33 @@
+import {
+  IRawWorkloadOfTeacherWithDayjs,
+  IWorkloadOfTeacherWithDayjs,
+} from 'apis/teacher'
+
 import style from './style.module.scss'
 import { OutlineTable } from './OutlineTable'
-import { Subject } from './Subject'
-import { IDay, ISubject, timeSlot, useTimeTable } from './helper'
+import { Workload } from './Workload'
+import { timeSlot, useTimeSlot } from './helper'
 
 interface IProps {
-  /**
-   * 7 days. Start with Monday. End with Sunday
-   */
-  data: IDay[]
-  /**
-   * Received `Subject` that has been clicked as parameter
-   */
-  onSubjectClick?: (subject: ISubject) => void
-  /**
-   * Received `Subject`(Overlap) that has been clicked as parameter
-   */
-  onOverlapSubjectClick?: (subject: ISubject) => void
+  data: IWorkloadOfTeacherWithDayjs[]
+  onWorkloadClick?: (workload: IRawWorkloadOfTeacherWithDayjs) => void
 }
 
 export const TimeTable: React.FC<IProps> = ({
   data,
-  onSubjectClick = () => {},
-  onOverlapSubjectClick = () => {},
+  onWorkloadClick = () => {},
 }) => {
-  const tableSlotList = useTimeTable(data)
+  const tableSlotList = useTimeSlot(data)
 
+  // This component is render by 2 <table /> overlap together
+  // Layer 1 is for rendering border outline and header text
+  // Layer 2 is for rendering each workload
   return (
     <div className={style.tableWrapper}>
+      {/* Layer 1 */}
       <OutlineTable />
 
-      {/* Absolute table for showing subject over the OutlineTable */}
+      {/* Layer 2 */}
       <table className={style.tableSubject}>
         <thead className={style.timeHeader}>
           <tr>
@@ -39,19 +37,13 @@ export const TimeTable: React.FC<IProps> = ({
             ))}
           </tr>
         </thead>
-        {/* Render Subject here */}
         <tbody>
           {tableSlotList.map((day, i) => (
             <tr key={i} className={style.dayRow}>
               <th className={style.dayHeader} colSpan={4}></th>
               {day.map((slot, j) => {
                 return slot ? (
-                  <Subject
-                    key={j}
-                    data={slot}
-                    onSubjectClick={onSubjectClick}
-                    onOverlapSubjectClick={onOverlapSubjectClick}
-                  />
+                  <Workload key={j} data={slot} onClick={onWorkloadClick} />
                 ) : (
                   <td key={j} colSpan={1} />
                 )
@@ -63,6 +55,3 @@ export const TimeTable: React.FC<IProps> = ({
     </div>
   )
 }
-
-export { DAY_IN_WEEK, SUBJECT_TYPE } from './helper'
-export type { IDay }

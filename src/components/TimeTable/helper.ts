@@ -1,97 +1,71 @@
-export const timeSlot = generateTimeSlot(8, 20)
-export const dayInWeek = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา']
-
-export enum DAY_IN_WEEK {
-  MONDAY = 1,
-  TUESDAY,
-  WEDNESDAY,
-  THURSDAY,
-  FRIDAY,
-  SATURDAY,
-  SUNDAY,
-}
-
-export interface IDay {
-  dayInWeek: DAY_IN_WEEK
-  subjectList: ISubject[]
-}
-
-export enum SUBJECT_TYPE {
-  LECTURE = 'LECTURE',
-  LAB = 'LAB',
-}
-
-export interface ISubject {
-  id: string
-  code: string
-  name: string
-  section: number
-  startSlot: number
-  endSlot: number
-  type: SUBJECT_TYPE
-  isEditing?: boolean
-  workloadId: string
-}
+import {
+  IRawWorkloadOfTeacherWithDayjs,
+  IWorkloadOfTeacherWithDayjs,
+} from 'apis/teacher'
 
 export interface ISlot {
   slotSpan: number
   startSlot: number
   endSlot: number
-  subjectList: ISubject[]
+  workloadList: IRawWorkloadOfTeacherWithDayjs[]
 }
+
+export const timeSlot = generateTimeSlot(8, 20)
+
+export const shortDayOfWeek = ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา']
 
 /**
  * Input 7 days data from backend and this hooks
  * will return 7 days data that ready to render
  */
-export function useTimeTable(dayList: IDay[]) {
+export function useTimeSlot(dayList: IWorkloadOfTeacherWithDayjs[]) {
   const tableSlot = []
   const MAX_SLOT = 52 // 13 hours x 4 slot each hours (08:00 - 20:00)
-  const sortedDayList = sortBySubjectStartTime(dayList)
+  const sortedDayList = sortWorkloadStartTime(dayList)
 
-  for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-    const { subjectList } = sortedDayList[dayIndex]
+  for (const day of sortedDayList) {
+    const { workloadList } = day
     const daySlot: (ISlot | null)[] = []
-    let subjectIndex = 0
-    let curSlot = 1
+    let workloadIndex = 0
+    let currentSlot = 1
 
-    while (curSlot <= MAX_SLOT) {
-      const currentSubject = subjectList[subjectIndex] || { startSlot: 99 }
+    while (currentSlot <= MAX_SLOT) {
+      const currentWorkload = workloadList[workloadIndex] || { startSlot: 99 }
 
-      // Case #1: Has subject
-      if (currentSubject.startSlot === curSlot) {
-        const slotSpan = currentSubject.endSlot - currentSubject.startSlot + 1
-        const newEndSlot = curSlot + slotSpan
+      // Case #1: Has workload
+      if (currentWorkload.startSlot === currentSlot) {
+        const slotSpan = currentWorkload.endSlot - currentWorkload.startSlot + 1
+        const newEndSlot = currentSlot + slotSpan
         daySlot.push({
           slotSpan,
-          startSlot: curSlot,
+          startSlot: currentSlot,
           endSlot: newEndSlot - 1,
-          subjectList: [currentSubject],
+          workloadList: [currentWorkload],
         })
-        curSlot = newEndSlot
-        subjectIndex += 1
+        currentSlot = newEndSlot
+        workloadIndex += 1
       }
-      // Case #2: Has subject BUT overlap time
-      else if (currentSubject.startSlot < curSlot) {
+      // Case #2: Has workload BUT overlap time
+      else if (currentWorkload.startSlot < currentSlot) {
         const prevDaySlot = daySlot.pop()!
-        const prevFirstSubject = prevDaySlot.subjectList[0]
+        const prevFirstSubject = prevDaySlot.workloadList[0]
         const slotSpan = Math.max(
-          currentSubject.endSlot - prevFirstSubject.startSlot + 1,
+          currentWorkload.endSlot - prevFirstSubject.startSlot + 1,
           prevDaySlot.slotSpan
         )
-        const newEndSlot = Math.max(currentSubject.endSlot + 1, curSlot)
+        const newEndSlot = Math.max(currentWorkload.endSlot + 1, currentSlot)
         daySlot.push({
           slotSpan,
           startSlot: prevDaySlot.startSlot,
           endSlot: newEndSlot - 1,
-          subjectList: [...prevDaySlot.subjectList, currentSubject],
+          workloadList: [...prevDaySlot.workloadList, currentWorkload],
         })
-        curSlot = newEndSlot
-        subjectIndex += 1
+        currentSlot = newEndSlot
+        workloadIndex += 1
       }
-      // Case #3: No subject
+      // Case #3: No workload
       else {
-        curSlot += 1
+        currentSlot += 1
         daySlot.push(null)
       }
     }
@@ -101,45 +75,52 @@ export function useTimeTable(dayList: IDay[]) {
 }
 
 /**
- * Input subject slot data and this hooks
- * will data that ready to render
+ * Convert data to view-model (Ready for render)
  */
-export function useSubjectSlot(data: ISlot) {
-  const subjectSlot = []
+export function useWorkloadSlot(data: ISlot) {
+  interface IWorkloadSpan {
+    slotSpan: number
+    workload: IRawWorkloadOfTeacherWithDayjs
+  }
+  const workloadSlot: (IWorkloadSpan | null)[][] = []
   const MAX_SLOT = data.slotSpan
 
-  for (let i = 0, length = data.subjectList.length; i < length; i++) {
-    const slot = []
-    let curSlot = 1
+  for (let i = 0; i < data.workloadList.length; i++) {
+    const slot: (IWorkloadSpan | null)[] = []
+    let currentSlot = 1
 
-    while (curSlot <= MAX_SLOT) {
-      const currentSubject = data.subjectList[i]
-      const relativeStartSlot = currentSubject.startSlot - data.startSlot + 1
-      const relativeEndSlot = currentSubject.endSlot - data.startSlot + 1
+    while (currentSlot <= MAX_SLOT) {
+      const currentWorkload = data.workloadList[i]
+      const relativeStartSlot = currentWorkload.startSlot - data.startSlot + 1
+      const relativeEndSlot = currentWorkload.endSlot - data.startSlot + 1
 
       // Case #1: Has subject
-      if (relativeStartSlot === curSlot) {
+      if (relativeStartSlot === currentSlot) {
         const slotSpan = relativeEndSlot - relativeStartSlot + 1
-        const newEndSlot = curSlot + slotSpan
+        const newEndSlot = currentSlot + slotSpan
         slot.push({
           slotSpan,
-          subject: currentSubject,
+          workload: currentWorkload,
         })
-        curSlot = newEndSlot
+        currentSlot = newEndSlot
       }
       // Case #2: No subject
       else {
         slot.push(null)
-        curSlot += 1
+        currentSlot += 1
       }
     }
-    subjectSlot.push(slot)
+    workloadSlot.push(slot)
   }
   return {
-    subjectSlotList: subjectSlot,
-    slotHeight: `${((100 / data.subjectList.length) * 60) / 100}px`,
+    workloadSlotList: workloadSlot,
+    slotHeight: `${((100 / data.workloadList.length) * 60) / 100}px`,
   }
 }
+
+/**
+ * Custom hooks to use with <TimeTable />
+ */
 
 // ------------------
 // Utilities function
@@ -154,9 +135,13 @@ function generateTimeSlot(start: number, end: number) {
   return slots
 }
 
-function sortBySubjectStartTime(dayList: IDay[]) {
+function sortWorkloadStartTime(
+  dayList: IWorkloadOfTeacherWithDayjs[]
+): IWorkloadOfTeacherWithDayjs[] {
   return dayList.map((day) => ({
     ...day,
-    subjectList: [...day.subjectList].sort((a, b) => a.startSlot - b.startSlot),
+    workloadList: [...day.workloadList].sort(
+      (a, b) => a.startSlot - b.startSlot
+    ),
   }))
 }

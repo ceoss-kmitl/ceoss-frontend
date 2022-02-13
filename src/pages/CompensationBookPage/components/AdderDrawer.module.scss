@@ -1,0 +1,73 @@
+.titleWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.closeIcon {
+    font-size: 20px;
+    margin-right: 1rem;
+    color: var(--gray400);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--gray800);
+    }
+}
+
+.title {
+    margin-right: auto;
+}
+
+.submitIcon {
+    font-size: 18px;
+    margin-right: 0.5rem;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.datePicker {
+    &:global(.ant-picker) {
+        border-radius: 6px;
+        width: 100%;
+    }
+}
+
+.arrowDivider {
+    color: var(--gray400);
+}
+
+.radioGroup {
+    width: 100%;
+}
+
+.checkWrapper {
+    width: 100%;
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+.right {
+    display: flex;
+    flex-direction: column;
+    height: 60px;
+    justify-content: space-evenly;
+    margin-left: 00.5rem;
+}
+
+.checkbox {
+    width: 100%;
+    border-radius: 6px;
+    user-select: none;
+
+    &:hover {
+        color: var(--blue500);
+        background: var(--gray100);
+    }
+}
+
+.topic {
+    display: block;
+    margin-bottom: 1rem;
+}

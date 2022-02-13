@@ -1,0 +1,104 @@
+.page {
+    display: flex;
+    flex-direction: column;
+}
+
+.monsterWrapper {
+    user-select: none;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem 0;
+
+    img {
+        max-width: 440px;
+        width: 100%;
+    }
+
+    span {
+        margin: 1rem 0;
+        font-size: 28px;
+        color: var(--gray400);
+    }
+}
+
+.timeTableHeader {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.headerRight {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+
+    &Label {
+        margin-right: 0.5rem;
+        white-space: nowrap;
+    }
+
+    // antd-select
+    & > div {
+        margin-right: 1rem;
+    }
+}
+
+.timeTableFooter {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.label {
+    margin-right: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.labelIcon {
+    $size: 12px;
+    width: $size;
+    height: $size;
+    margin-right: 0.5rem;
+    display: inline-block;
+    border-radius: 50%;
+
+    &.green {
+        background: var(--green500);
+    }
+
+    &.blue {
+        background: var(--blue500);
+    }
+
+    &.red {
+        background: var(--red500);
+    }
+}
+
+.labelIcon2 {
+    $size: 12px;
+    width: $size * 2;
+    height: $size;
+    margin-right: 0.5rem;
+    display: inline-block;
+
+    &.notClaim {
+        background: repeating-linear-gradient(
+            45deg,
+            var(--gray400),
+            var(--gray400) 5px,
+            var(--gray800) 5px,
+            var(--gray800) 10px
+        );
+    }
+}
+
+.roomAdder {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}

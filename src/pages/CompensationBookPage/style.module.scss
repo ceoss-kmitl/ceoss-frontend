@@ -1,0 +1,46 @@
+.page {
+    display: flex;
+    flex-direction: column;
+}
+
+.monsterWrapper {
+    user-select: none;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2rem 0;
+
+    img {
+        max-width: 440px;
+        width: 100%;
+    }
+
+    span {
+        margin: 1rem 0;
+        font-size: 28px;
+        color: var(--gray400);
+    }
+}
+
+.timeTableHeader {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+}
+
+.headerRight {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+
+    &Label {
+        margin-right: 0.5rem;
+        white-space: nowrap;
+    }
+
+    // antd-select
+    & > div {
+        margin-right: 1rem;
+    }
+}

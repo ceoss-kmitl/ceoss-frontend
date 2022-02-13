@@ -23,7 +23,6 @@ export function useMenuSetting() {
   }
 
   async function editSetting(record: any) {
-    console.log(record)
     Modal.loading({
       loadingText: 'กำลังแก้ไขการตั้งค่า',
       finishTitle: 'แก้ไขการตั้งค่าสำเร็จ!',
