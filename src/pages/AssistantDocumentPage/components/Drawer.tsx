@@ -41,7 +41,6 @@ export const Drawer: React.FC<IProps> = ({
   const {
     dayList,
     currentDayList,
-    filterCurrentDayListByMonth,
     isDaySelected,
     handleOnSelected,
     month,
