@@ -58,7 +58,6 @@ export const useCalendarForm = (isOpen: boolean, form: FormInstance) => {
   return {
     dayList,
     currentDayList,
-    filterCurrentDayListByMonth,
     isDaySelected,
     handleOnSelected,
     month,
