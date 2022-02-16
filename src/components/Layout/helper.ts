@@ -70,7 +70,7 @@ export function useWebScrap() {
       description: `ระบบจะนำข้อมูลจากเว็บสำนักทะเบียน ปี ${academicYear}/${semester} มาเพิ่มลงในระบบ`,
       onAsyncOk: async () => {
         try {
-          const { data } = await http.post(`/web-scrap`, null, {
+          const { data } = await http.post(`/v2/web-scrap`, null, {
             params: {
               academicYear,
               semester,
