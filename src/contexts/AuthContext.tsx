@@ -53,7 +53,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         message: ErrorCode.U02,
         seeMore: error,
       }),
-    isSignedIn: true,
+    isSignedIn: false,
     autoLoad: false,
   })
 
