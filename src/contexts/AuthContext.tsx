@@ -48,9 +48,8 @@ export const AuthProvider: React.FC = ({ children }) => {
           imageUrl: profileObj.imageUrl,
           accessToken,
         }
-        console.log('Login OK: Saved login data')
-        setData(profile)
         localStorage.setItem(AUTH_KEY, JSON.stringify(profile))
+        setData(profile)
       }
     },
     onFailure: (error) => {
@@ -58,7 +57,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         message: ErrorCode.U02,
         seeMore: error,
       })
-      console.log('Login ERR: Remove login data')
       setData(null)
       localStorage.removeItem(AUTH_KEY)
     },
@@ -88,13 +86,10 @@ export const AuthProvider: React.FC = ({ children }) => {
   })
 
   const checkAccessToken = async (profile: IProfile) => {
-    console.log('Try to check token')
-
     if (!profile) return
 
     try {
       await oAuth2.getTokenInfo(profile?.accessToken || '')
-      console.log('Token work!')
       setData(profile)
     } catch (error) {
       Notification.error({
@@ -112,7 +107,6 @@ export const AuthProvider: React.FC = ({ children }) => {
       const auth = localStorage.getItem(AUTH_KEY) || '{}'
       const profile: IProfile = JSON.parse(auth)
       if (profile.accessToken) {
-        console.log('Loaded storage', profile)
         checkAccessToken(profile)
       }
     }
