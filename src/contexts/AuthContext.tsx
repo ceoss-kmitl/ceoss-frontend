@@ -101,6 +101,8 @@ export const AuthProvider: React.FC = ({ children }) => {
         message: ErrorCode.U03,
         seeMore: error,
       })
+      localStorage.removeItem(AUTH_KEY)
+      setData(null)
     }
   }
 
