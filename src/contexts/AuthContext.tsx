@@ -53,7 +53,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         message: ErrorCode.U02,
         seeMore: error,
       }),
-    isSignedIn: true,
+    isSignedIn: false,
     autoLoad: false,
   })
 
@@ -91,8 +91,10 @@ export const AuthProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const auth = localStorage.getItem('auth') || ''
     const parsedAuth = JSON.parse(auth) || null
-    checkAccessToken(parsedAuth?.accessToken || '')
-    setData(parsedAuth)
+    if (parsedAuth) {
+      checkAccessToken(parsedAuth?.accessToken || '')
+      setData(parsedAuth)
+    }
   }, [])
 
   // Save data to local storage
