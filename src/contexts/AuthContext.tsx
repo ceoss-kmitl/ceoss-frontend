@@ -31,28 +31,37 @@ const AuthContext = createContext<IAuthContext>({
   signOutGoogle: () => {},
 })
 
+export const AUTH_KEY = 'auth'
+
 export const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<IProfile | null>(null)
 
-  const { signIn } = useGoogleLogin({
+  const { signIn, loaded } = useGoogleLogin({
     clientId: GOOGLE_CLIENT_ID,
     cookiePolicy: 'single_host_origin',
     onSuccess: (res) => {
       if ('profileObj' in res) {
         const { profileObj, accessToken } = res
-        setData({
+        const profile = {
           name: profileObj.name,
           email: profileObj.email,
           imageUrl: profileObj.imageUrl,
           accessToken,
-        })
+        }
+        console.log('Login OK: Saved login data')
+        setData(profile)
+        localStorage.setItem(AUTH_KEY, JSON.stringify(profile))
       }
     },
-    onFailure: (error) =>
+    onFailure: (error) => {
       Notification.error({
         message: ErrorCode.U02,
         seeMore: error,
-      }),
+      })
+      console.log('Login ERR: Remove login data')
+      setData(null)
+      localStorage.removeItem(AUTH_KEY)
+    },
     isSignedIn: false,
     autoLoad: false,
   })
@@ -62,6 +71,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     onLogoutSuccess: async () => {
       try {
         await http.post('/account/signout')
+        localStorage.removeItem(AUTH_KEY)
         setData(null)
       } catch (error) {
         Notification.error({
@@ -77,31 +87,34 @@ export const AuthProvider: React.FC = ({ children }) => {
     },
   })
 
-  const checkAccessToken = async (accessToken: string) => {
-    if (!accessToken) return
+  const checkAccessToken = async (profile: IProfile) => {
+    console.log('Try to check token')
+
+    if (!profile) return
 
     try {
-      await oAuth2.getTokenInfo(accessToken)
+      await oAuth2.getTokenInfo(profile?.accessToken || '')
+      console.log('Token work!')
+      setData(profile)
     } catch (error) {
-      setData(null)
+      Notification.error({
+        message: ErrorCode.U03,
+        seeMore: error,
+      })
     }
   }
 
   // Load data from local storage
   useEffect(() => {
-    const auth = localStorage.getItem('auth') || ''
-    const parsedAuth = JSON.parse(auth) || null
-    if (parsedAuth) {
-      checkAccessToken(parsedAuth?.accessToken || '')
-      setData(parsedAuth)
+    if (loaded) {
+      const auth = localStorage.getItem(AUTH_KEY) || '{}'
+      const profile: IProfile = JSON.parse(auth)
+      if (profile.accessToken) {
+        console.log('Loaded storage', profile)
+        checkAccessToken(profile)
+      }
     }
-  }, [])
-
-  // Save data to local storage
-  useEffect(() => {
-    const stringAuth = JSON.stringify(data)
-    localStorage.setItem('auth', stringAuth)
-  }, [data])
+  }, [loaded])
 
   return (
     <AuthContext.Provider
