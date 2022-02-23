@@ -3,7 +3,7 @@ import { Modal } from 'antd'
 import { FiBox } from 'react-icons/fi'
 import { FcGoogle } from 'react-icons/fc'
 
-import { useAuth } from 'contexts/AuthContext'
+import { useAuth, AUTH_KEY } from 'contexts/AuthContext'
 import { Button } from 'components/Button'
 
 import style from './style.module.scss'
@@ -13,7 +13,8 @@ export const LoginModal = () => {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    setVisible(profile ? false : true)
+    const localData = localStorage.getItem(AUTH_KEY)
+    setVisible(localData || profile ? false : true)
   }, [profile])
 
   return (
