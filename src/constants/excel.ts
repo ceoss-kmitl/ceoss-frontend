@@ -15,3 +15,11 @@ export const SubjectExcelFileHeaders = [
 ]
 
 export const RoomExcelFileHeaders = ['ชื่อห้อง', 'จำนวนที่นั่ง']
+
+export const AssistantExcelFileHeaders = [
+  'รหัสวิชา',
+  'กลุ่มเรียน',
+  'รหัสนักศึกษา',
+  'ชื่อ-สกุล',
+  'วันปฏิบัติงาน',
+]
