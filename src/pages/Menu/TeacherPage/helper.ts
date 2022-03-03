@@ -11,6 +11,7 @@ import { syncTeacher } from 'apis/sync'
 import { IColumn, IFormLayout } from 'components/Table'
 import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
+import { OptionList } from 'constants/option'
 
 const SYNC_EXCEL_TEACHER_KEY = 'SYNC_EXCEL_TEACHER_KEY'
 
@@ -92,7 +93,8 @@ export const columnList: IColumn[] = [
     type: 'select',
     header: 'ตำแหน่ง',
     dataIndex: 'title',
-    optionList: ['อ.', 'ดร.', 'รศ.', 'รศ.ดร.', 'ศ.', 'ผศ.', 'ผศ.ดร.'],
+    optionList: OptionList.teacherTitle,
+    defaultFirstOption: true,
     showInTable: true,
     width: '20%',
   },

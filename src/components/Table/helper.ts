@@ -42,6 +42,8 @@ interface IStatusColumn extends IBaseColumn {
 
 interface ICreditColumn extends IBaseColumn {
   type: 'credit'
+  pattern?: RegExp
+  patternMsg?: string
 }
 
 export type IColumn =
