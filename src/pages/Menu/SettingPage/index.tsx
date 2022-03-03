@@ -174,19 +174,6 @@ export const MenuSettingPage = () => {
           </Form.Item>
         </div>
       </div>
-      <div className={style.topic}>
-        <Text size="sub-head" bold>
-          การดึงข้อมูลจากเว็บไซต์
-        </Text>
-        <div className={style.subTopic1}>
-          <Text size="normal" bold>
-            ลิงค์เว็บไซต์
-          </Text>
-          <Text copyable className={style.webScrapUrl}>
-            {data.webScrapUrl}
-          </Text>
-        </div>
-      </div>
     </Form>
   )
 }

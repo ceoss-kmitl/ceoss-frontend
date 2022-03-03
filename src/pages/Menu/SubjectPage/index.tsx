@@ -33,7 +33,7 @@ export const MenuSubjectPage = () => {
     <div className={style.page}>
       <div className={style.topTable}>
         <Text size="head" bold>
-          ข้อมูลวิชา
+          {`ข้อมูลวิชา (${data.length})`}
         </Text>
 
         <UploadExcelFileButton
