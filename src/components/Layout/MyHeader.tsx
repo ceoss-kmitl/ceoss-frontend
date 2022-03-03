@@ -3,6 +3,7 @@ import { Tooltip, Button, Select } from 'antd'
 
 import { useAuth } from 'contexts/AuthContext'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { CEOSS_LOGOUT_BTN } from 'constants/common'
 
 import { useSelectAcademicYear } from './helper'
 import style from './MyHeader.module.scss'
@@ -44,6 +45,7 @@ export const MyHeader = () => {
             arrowPointAtCenter
           >
             <Button
+              id={CEOSS_LOGOUT_BTN}
               shape="circle"
               type="text"
               danger
