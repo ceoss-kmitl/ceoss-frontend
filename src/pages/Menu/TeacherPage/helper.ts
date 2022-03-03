@@ -94,6 +94,12 @@ export const columnList: IColumn[] = [
     header: 'ตำแหน่ง',
     dataIndex: 'title',
     optionList: OptionList.teacherTitle,
+    sorter: {
+      compare: (a, b) =>
+        OptionList.teacherTitle.indexOf(a.title) -
+        OptionList.teacherTitle.indexOf(b.title),
+      multiple: 2,
+    },
     defaultFirstOption: true,
     showInTable: true,
     width: '20%',
@@ -102,6 +108,10 @@ export const columnList: IColumn[] = [
     type: 'text',
     header: 'ชื่อ-สกุล',
     dataIndex: 'name',
+    sorter: {
+      compare: (a, b) => a.name.localeCompare(b.name),
+      multiple: 1,
+    },
     showInTable: true,
     width: '40%',
     placeholder: 'ชื่อ-สกุล',

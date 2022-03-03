@@ -8,6 +8,12 @@ interface IBaseColumn {
   align?: 'left' | 'right' | 'center'
   showInTable?: boolean
   required?: boolean
+  sorter?:
+    | {
+        compare: (a: any, b: any) => number
+        multiple: number
+      }
+    | ((a: any, b: any) => number)
 }
 
 interface ITextColumn extends IBaseColumn {
