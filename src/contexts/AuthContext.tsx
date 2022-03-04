@@ -16,12 +16,14 @@ interface IAuthContext {
   profile: IProfile | null
   signInGoogle: () => void
   signOutGoogle: () => void
+  isLoaded: boolean
 }
 
 const AuthContext = createContext<IAuthContext>({
   profile: null,
   signInGoogle: () => {},
   signOutGoogle: () => {},
+  isLoaded: false,
 })
 
 export const AUTH_KEY = 'CEOSS_AUTH'
@@ -29,6 +31,7 @@ const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || ''
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<IProfile | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   const { signIn } = useGoogleLogin({
     clientId: GOOGLE_CLIENT_ID,
@@ -76,6 +79,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     const auth = localStorage.getItem(AUTH_KEY) || '{}'
     const profile: IProfile = JSON.parse(auth)
     setData(isEmpty(profile) ? null : profile)
+    setIsLoaded(true)
   }, [])
 
   return (
@@ -84,6 +88,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         profile: data,
         signInGoogle: signIn,
         signOutGoogle: customSignOut,
+        isLoaded,
       }}
     >
       {children}
