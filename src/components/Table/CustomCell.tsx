@@ -1,4 +1,5 @@
 import React from 'react'
+import { get } from 'lodash'
 
 import { Checkbox } from 'components/Checkbox'
 
@@ -17,16 +18,6 @@ export const CustomCell: React.FC<IProps> = ({
   children,
   ...props
 }) => {
-  function extractCredit(input: any) {
-    const result = String(input).match(/\d{1}/g) || ['0', '0', '0', '0']
-    return {
-      credit: result[0],
-      lectureHours: result[1],
-      labHours: result[2],
-      independentHours: result[3],
-    }
-  }
-
   const cell = (children: React.ReactNode) => {
     switch (type) {
       case 'checkbox':
@@ -43,17 +34,15 @@ export const CustomCell: React.FC<IProps> = ({
           <div className={style.statusRed}>ไม่ทำงาน</div>
         )
       case 'credit':
-        const result = extractCredit(record[dataIndex])
-
         return (
           <span className={style.creditSymbol}>
-            <span>{result.credit}</span>
+            <span>{get(record, 'credit')}</span>
             <span>(</span>
-            <span>{result.lectureHours}</span>
+            <span>{get(record, 'lectureHours')}</span>
             <span>-</span>
-            <span>{result.labHours}</span>
+            <span>{get(record, 'labHours')}</span>
             <span>-</span>
-            <span>{result.independentHours}</span>
+            <span>{get(record, 'independentHours')}</span>
             <span>)</span>
           </span>
         )
