@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import { Layout } from 'components/Layout'
 import { AuthProvider } from 'contexts/AuthContext'
 import { AcademicYearProvider } from 'contexts/AcademicYearContext'
+import { useDeviceId } from 'libs/device'
 
 import { WorkloadPage } from 'pages/WorkloadPage'
 import { AutomaticRoomPage } from 'pages/AutomaticRoomPage'
@@ -14,6 +15,8 @@ import { MenuRoomPage } from 'pages/Menu/RoomPage'
 import { MenuSettingPage } from 'pages/Menu/SettingPage'
 
 function App() {
+  useDeviceId()
+
   return (
     <AuthProvider>
       <AcademicYearProvider>

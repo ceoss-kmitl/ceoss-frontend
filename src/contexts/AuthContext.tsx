@@ -24,7 +24,7 @@ const AuthContext = createContext<IAuthContext>({
   signOutGoogle: () => {},
 })
 
-export const AUTH_KEY = 'auth'
+export const AUTH_KEY = 'CEOSS_AUTH'
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID || ''
 
 export const AuthProvider: React.FC = ({ children }) => {
