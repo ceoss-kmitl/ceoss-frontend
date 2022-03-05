@@ -54,20 +54,22 @@ export const WorkloadPage = () => {
         <Text size="head" bold>
           จัดการภาระงาน
         </Text>
-        <Button
-          small
-          icon={
-            <FiDownload
-              style={{
-                marginRight: '0.5rem',
-              }}
-            />
-          }
-          onClick={downloadExcel5}
-          loading={isDownloading}
-        >
-          หลักฐานการเบิกจ่าย
-        </Button>
+        {currentTeacher.id && (
+          <Button
+            small
+            icon={
+              <FiDownload
+                style={{
+                  marginRight: '0.5rem',
+                }}
+              />
+            }
+            onClick={downloadExcel5}
+            loading={isDownloading}
+          >
+            หลักฐานการเบิกจ่าย
+          </Button>
+        )}
       </Row>
 
       <BigSearch

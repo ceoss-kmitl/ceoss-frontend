@@ -12,49 +12,17 @@ import { IColumn, IFormLayout } from 'components/Table'
 import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
 
-type IParsedSubject = {
-  credit: string
-  id: string
-  code: string
-  name: string
-  isRequired: boolean
-  curriculumCode: string
-  isInter: boolean
-}
-
 const SYNC_EXCEL_SUBJECT_KEY = 'SYNC_EXCEL_SUBJECT_KEY'
 
 export function useMenuSubject() {
-  const [data, setData] = useState<IParsedSubject[]>([])
+  const [data, setData] = useState<ISubject[]>([])
   const [isLoading, setIsLoading] = useState(false)
-
-  function parseCredit(subjectList: ISubject[]): IParsedSubject[] {
-    return subjectList.map((subject) => {
-      const { credit, lectureHours, labHours, independentHours, ...record } =
-        subject
-
-      return {
-        ...record,
-        credit: `${credit}${lectureHours}${labHours}${independentHours}`,
-      }
-    })
-  }
-
-  function extractCredit(creditStr: string) {
-    const result = String(creditStr).match(/\d{1}/g) || []
-    return {
-      credit: Number(result[0] ?? 0),
-      lectureHours: Number(result[1] ?? 0),
-      labHours: Number(result[2] ?? 0),
-      independentHours: Number(result[3] ?? 0),
-    }
-  }
 
   async function getAllSubject() {
     setIsLoading(true)
     try {
       const subjectList = await getManySubject()
-      setData(parseCredit(subjectList))
+      setData(subjectList)
     } catch (error) {
       Notification.error({
         message: error.message,
@@ -65,27 +33,17 @@ export function useMenuSubject() {
     setIsLoading(false)
   }
 
-  async function addSubject(record: IParsedSubject) {
-    const credit = extractCredit(record.credit)
-    const subject: ISubject = {
-      ...record,
-      ...credit,
-    }
-    await createOneSubject(subject)
+  async function addSubject(record: ISubject) {
+    await createOneSubject(record)
     await getAllSubject()
   }
 
-  async function editSubject(record: IParsedSubject) {
-    const credit = extractCredit(record.credit)
-    const subject: ISubject = {
-      ...record,
-      ...credit,
-    }
-    await editOneSubject(subject)
+  async function editSubject(record: ISubject) {
+    await editOneSubject(record)
     await getAllSubject()
   }
 
-  async function deleteSubject(record: IParsedSubject) {
+  async function deleteSubject(record: ISubject) {
     await deleteOneSubject(record.id)
     await getAllSubject()
   }
@@ -134,6 +92,7 @@ export const columnList: IColumn[] = [
     type: 'text',
     header: 'รหัสวิชา',
     dataIndex: 'code',
+    sorter: (a, b) => a.code.localeCompare(b.code),
     pattern: /^\d{8}$/,
     patternMsg: 'กรุณาใส่ตัวเลข 8 ตัว',
     maxLength: 8,
@@ -145,6 +104,7 @@ export const columnList: IColumn[] = [
     type: 'text',
     header: 'ชื่อวิชา',
     dataIndex: 'name',
+    sorter: (a, b) => a.name.localeCompare(b.name),
     placeholder: 'ชื่อวิชา',
     normalize: (value) => value.toLocaleUpperCase(),
     showInTable: true,
@@ -152,8 +112,10 @@ export const columnList: IColumn[] = [
   },
   {
     type: 'credit',
-    header: 'หน่วยกิต (ทฤษฎี-ปฏิบัติ-เพิ่มเติม)',
+    header: 'หน่วยกิต(ทฤษฎี-ปฏิบัติ-เพิ่มเติม)',
     dataIndex: 'credit',
+    pattern: /^\d{8}$/,
+    patternMsg: 'กรุณาใส่ตัวเลข 8 ตัว',
     showInTable: true,
     width: '20%',
   },
@@ -187,7 +149,8 @@ export const formLayout: IFormLayout = {
   addFormTitle: 'เพิ่มข้อมูลวิชาใหม่',
   editFormTitle: 'แก้ไขข้อมูลวิชา',
   layout: [
-    ['code', 'credit'],
+    ['code'],
+    ['credit'],
     ['name'],
     ['curriculumCode', 'isInter'],
     ['isRequired', 'requiredRoom'],

@@ -45,3 +45,5 @@ export enum DocumentPattern {
   ONSITE = 'ONSITE',
   ONLINE = 'ONLINE',
 }
+
+export const CEOSS_LOGOUT_BTN = 'CEOSS_LOGOUT_BTN'

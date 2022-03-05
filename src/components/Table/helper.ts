@@ -8,6 +8,12 @@ interface IBaseColumn {
   align?: 'left' | 'right' | 'center'
   showInTable?: boolean
   required?: boolean
+  sorter?:
+    | {
+        compare: (a: any, b: any) => number
+        multiple: number
+      }
+    | ((a: any, b: any) => number)
 }
 
 interface ITextColumn extends IBaseColumn {
@@ -42,6 +48,8 @@ interface IStatusColumn extends IBaseColumn {
 
 interface ICreditColumn extends IBaseColumn {
   type: 'credit'
+  pattern?: RegExp
+  patternMsg?: string
 }
 
 export type IColumn =

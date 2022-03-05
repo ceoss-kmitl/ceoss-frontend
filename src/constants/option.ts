@@ -19,6 +19,7 @@ export const OptionList = {
       value: WorkloadType.LAB,
     },
   ],
+
   /** Degree */
   degree: [
     {
@@ -42,6 +43,7 @@ export const OptionList = {
       value: Degree.PUNDIT_INTER,
     },
   ],
+
   /** Class year */
   classYear: [
     {
@@ -61,6 +63,7 @@ export const OptionList = {
       value: 4,
     },
   ],
+
   /** Day of week */
   dayOfWeek: [
     {
@@ -92,6 +95,7 @@ export const OptionList = {
       value: DayOfWeek.SUNDAY,
     },
   ],
+
   /** Full thai month name */
   month: Array(12)
     .fill('')
@@ -102,6 +106,7 @@ export const OptionList = {
         value: thatDay.month(),
       }
     }),
+
   /** Document pattern */
   documentPattern: [
     {
@@ -113,4 +118,7 @@ export const OptionList = {
       value: DocumentPattern.ONSITE,
     },
   ],
+
+  /** Teacher title  */
+  teacherTitle: ['อ.', 'ดร.', 'ผศ.', 'ผศ.ดร.', 'รศ.', 'รศ.ดร.', 'ศ.'],
 }
