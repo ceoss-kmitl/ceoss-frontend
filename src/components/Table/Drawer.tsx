@@ -8,6 +8,7 @@ import {
   Button as AntdButton,
   Switch,
   Popconfirm,
+  Input as AntdInput,
 } from 'antd'
 import { Rule } from 'antd/lib/form'
 import { FiX, FiTrash2 } from 'react-icons/fi'
@@ -111,12 +112,6 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
             message: column.patternMsg || `${column.header} ไม่ถูกต้อง`,
           })
         break
-      case 'credit':
-        formRules.push({
-          pattern: /^\d{4}$/,
-          message: `กรุณาใส่ตัวเลข 4 ตัว`,
-        })
-        break
     }
     return formRules
   }
@@ -142,7 +137,42 @@ const MyDrawer: React.FC<IProps> = ({ use }) => {
       case 'number':
         return <Input type="number" min={col.min} max={col.max} />
       case 'credit':
-        return <Input maxLength={4} placeholder="- - - -" />
+        return (
+          <AntdInput.Group className={style.creditInputWrapper}>
+            <Form.Item
+              name="credit"
+              noStyle
+              rules={[{ required: true, message: '' }]}
+            >
+              <Input placeholder="หน่วยกิต" />
+            </Form.Item>
+            <Input placeholder="(" disabled className={style.creditDelimeter} />
+            <Form.Item
+              name="lectureHours"
+              noStyle
+              rules={[{ required: true, message: '' }]}
+            >
+              <Input placeholder="ทฤษฎี" required />
+            </Form.Item>
+            <Input placeholder="—" disabled className={style.creditDelimeter} />
+            <Form.Item
+              name="labHours"
+              noStyle
+              rules={[{ required: true, message: '' }]}
+            >
+              <Input placeholder="ปฏิบัติ" required />
+            </Form.Item>
+            <Input placeholder="—" disabled className={style.creditDelimeter} />
+            <Form.Item
+              name="independentHours"
+              noStyle
+              rules={[{ required: true, message: '' }]}
+            >
+              <Input placeholder="เพิ่มเติม" required />
+            </Form.Item>
+            <Input placeholder=")" disabled className={style.creditDelimeter} />
+          </AntdInput.Group>
+        )
       case 'text':
         return <Input maxLength={col.maxLength} placeholder={col.placeholder} />
     }
