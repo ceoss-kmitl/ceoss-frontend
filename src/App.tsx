@@ -1,6 +1,8 @@
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 
 import { Layout } from 'components/Layout'
+import { useDeviceId } from 'libs/device'
+
 import { WorkloadPage } from 'pages/WorkloadPage'
 import { AutomaticRoomPage } from 'pages/AutomaticRoomPage'
 import { CompensationBookPage } from 'pages/CompensationBookPage'
@@ -11,6 +13,8 @@ import { MenuRoomPage } from 'pages/Menu/RoomPage'
 import { MenuSettingPage } from 'pages/Menu/SettingPage'
 
 function App() {
+  useDeviceId()
+
   return (
     <BrowserRouter basename="/ceoss">
       <Layout>

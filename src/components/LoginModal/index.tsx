@@ -9,12 +9,14 @@ import { Button } from 'components/Button'
 import style from './style.module.scss'
 
 export const LoginModal = () => {
-  const { profile, signInGoogle } = useAuth()
+  const { profile, signInGoogle, isLoaded } = useAuth()
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    setVisible(profile ? false : true)
-  }, [profile])
+    if (isLoaded) {
+      setVisible(profile ? false : true)
+    }
+  }, [isLoaded, profile])
 
   return (
     <Modal
