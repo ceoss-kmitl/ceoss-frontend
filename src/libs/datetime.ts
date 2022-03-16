@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 
-export function getCurrentAcademicYear() {
-  const [day, month, year] = new Date()
+export function getCurrentAcademicYear(date: Date = new Date()) {
+  const [day, month, year] = date
     .toLocaleDateString('th-TH')
     .split('/')
     .map((each) => Number(each))

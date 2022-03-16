@@ -1,4 +1,4 @@
-import { DocumentPattern, IAcademicTime } from 'constants/common'
+import { DayOfWeek, DocumentPattern, IAcademicTime } from 'constants/common'
 import { http } from 'libs/http'
 
 // =============
@@ -72,6 +72,10 @@ export const getManyCompensatedOfSubject = async (
 
 export interface ISection {
   section: number
+  datetime: {
+    dayOfWeek: DayOfWeek
+    timeList: string[]
+  }
   workloadIdList: string[]
   dayList: string[]
   assistantList: {

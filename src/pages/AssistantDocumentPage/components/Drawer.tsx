@@ -18,7 +18,9 @@ import { Input } from 'components/Input'
 import { DatePicker } from 'components/DatePicker'
 import { Loader } from 'components/Loader'
 import { Calendar } from 'components/DatePicker'
+import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { IEditAssistantListPayload } from 'apis/workload'
+import { getCurrentAcademicYear } from 'libs/datetime'
 
 import style from './Drawer.module.scss'
 import { useCalendarForm } from './DrawerHelper'
@@ -40,13 +42,15 @@ export const Drawer: React.FC<IProps> = ({
 }) => {
   const {
     dayList,
-    currentDayList,
     isDaySelected,
     handleOnSelected,
     month,
     setMonth,
     resetCalendar,
+    allowWithinAcademicYear,
   } = useCalendarForm(isOpen, form)
+
+  const { academicYear, semester } = useAcademicYear()
 
   const parseFormValue = () => {
     const formValue = form.getFieldsValue()
@@ -109,6 +113,7 @@ export const Drawer: React.FC<IProps> = ({
             className={style.datePicker}
             dropdownClassName={style.datePickerWrapper}
             allowClear={false}
+            disabledDate={allowWithinAcademicYear}
           />
           <Calendar
             className={style.calendar}
@@ -124,9 +129,14 @@ export const Drawer: React.FC<IProps> = ({
             ]}
           />
 
-          <Divider
-            plain
-          >{`( ปฏิบัติงาน ${currentDayList.length} วัน )`}</Divider>
+          <Divider plain>{`( ภาคเรียน ${academicYear}/${semester} ปฏิบัติงาน ${
+            dayList.filter((d) => {
+              const { academicYear: a, semester: s } = getCurrentAcademicYear(
+                d.toDate()
+              )
+              return a === academicYear && s === semester
+            }).length
+          } วัน )`}</Divider>
 
           <Text bold className={style.header}>
             รายชื่อ TA
