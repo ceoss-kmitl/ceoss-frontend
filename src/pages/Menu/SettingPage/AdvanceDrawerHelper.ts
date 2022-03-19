@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Form } from 'antd'
 
-import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { getManyWeb, IUpsertWeb, upsertManyWeb } from 'apis/web'
 import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
+import { useAuth } from 'contexts/AuthContext'
+import { useWebContext } from 'contexts/WebContext'
 
 export function useAdvanceSetting() {
   const [isLoading, setIsLoading] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const [form] = Form.useForm()
-  const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
+  const { updateWebList: updateWebListContext } = useWebContext()
 
   const openDrawer = () => {
     setIsOpen(true)
@@ -27,6 +29,7 @@ export function useAdvanceSetting() {
       form.setFieldsValue({
         webList,
       })
+      updateWebListContext(webList)
     } catch (error) {
       Notification.error({
         message: ErrorCode.S00,
@@ -41,6 +44,9 @@ export function useAdvanceSetting() {
     try {
       await upsertManyWeb(payload)
       await fetchWebList()
+      Notification.success({
+        message: 'บันทึกการตั้งค่าขั้นสูงสำเร็จ',
+      })
       onSuccess()
     } catch (error) {
       Notification.error({
@@ -52,8 +58,10 @@ export function useAdvanceSetting() {
   }
 
   useEffect(() => {
-    fetchWebList()
-  }, [academicYear, semester])
+    if (profile) {
+      fetchWebList()
+    }
+  }, [profile])
 
   return {
     isLoading,
