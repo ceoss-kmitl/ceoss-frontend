@@ -6,12 +6,14 @@ import { IOption } from 'constants/option'
 import { ErrorCode } from 'constants/error'
 import { getManyRoom } from 'apis/room'
 import { Notification } from 'components/Notification'
+import { useAuth } from 'contexts/AuthContext'
 
 export const useOption = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [teacherList, setTeacherList] = useState<IOption[]>([])
   const [subjectList, setSubjectList] = useState<IOption[]>([])
   const [roomList, setRoomList] = useState<IOption[]>([])
+  const { profile } = useAuth()
 
   const fetchTeacherList = async () => {
     try {
@@ -73,8 +75,10 @@ export const useOption = () => {
   }
 
   useEffect(() => {
-    fetchAllOption()
-  }, [])
+    if (profile) {
+      fetchAllOption()
+    }
+  }, [profile])
 
   return {
     isLoading,

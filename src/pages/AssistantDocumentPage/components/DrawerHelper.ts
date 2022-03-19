@@ -3,17 +3,13 @@ import { useState, useEffect } from 'react'
 import { get } from 'lodash'
 import dayjs, { Dayjs } from 'dayjs'
 
+import { useAcademicYear } from 'contexts/AcademicYearContext'
+import { getCurrentAcademicYear } from 'libs/datetime'
+
 export const useCalendarForm = (isOpen: boolean, form: FormInstance) => {
   const [month, setMonth] = useState(dayjs())
   const [dayList, setDayList] = useState<Dayjs[]>([])
-  const [currentDayList, setCurrentDayList] = useState<Dayjs[]>([])
-
-  const filterCurrentDayListByMonth = (list: Dayjs[]) => {
-    const filteredList = list.filter(
-      (each) => each.isSame(month, 'month') && each.isSame(month, 'year')
-    )
-    setCurrentDayList(filteredList)
-  }
+  const { academicYear, semester } = useAcademicYear()
 
   const isDaySelected = (day: Dayjs) => {
     const isFound = dayList.find((d) =>
@@ -39,8 +35,14 @@ export const useCalendarForm = (isOpen: boolean, form: FormInstance) => {
 
   const resetCalendar = () => {
     setDayList([])
-    setCurrentDayList([])
     setMonth(dayjs())
+  }
+
+  const allowWithinAcademicYear = (date: Dayjs) => {
+    const { academicYear: a, semester: s } = getCurrentAcademicYear(
+      date.toDate()
+    )
+    return academicYear !== a || semester !== s
   }
 
   useEffect(() => {
@@ -51,17 +53,13 @@ export const useCalendarForm = (isOpen: boolean, form: FormInstance) => {
     }
   }, [isOpen])
 
-  useEffect(() => {
-    filterCurrentDayListByMonth(dayList)
-  }, [month, dayList])
-
   return {
     dayList,
-    currentDayList,
     isDaySelected,
     handleOnSelected,
     month,
     setMonth,
     resetCalendar,
+    allowWithinAcademicYear,
   }
 }

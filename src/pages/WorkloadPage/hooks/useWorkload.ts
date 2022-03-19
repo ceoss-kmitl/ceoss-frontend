@@ -15,6 +15,7 @@ import {
   IRawWorkloadOfTeacherWithDayjs,
   IWorkloadOfTeacherWithDayjs,
 } from 'apis/teacher'
+import { useAuth } from 'contexts/AuthContext'
 
 const convertToWorkloadTime = (timeRangePicker: Dayjs[][]) => {
   return timeRangePicker.map(([start, end]) => {
@@ -33,6 +34,7 @@ const convertToWorkloadTime = (timeRangePicker: Dayjs[][]) => {
 
 export const useWorkload = (teacherId: string) => {
   const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [workloadList, setWorkloadList] = useState<
@@ -147,8 +149,10 @@ export const useWorkload = (teacherId: string) => {
   }
 
   useEffect(() => {
-    fetchWorkloadOfTeacher()
-  }, [academicYear, semester, teacherId])
+    if (profile) {
+      fetchWorkloadOfTeacher()
+    }
+  }, [academicYear, semester, teacherId, profile])
 
   return {
     isLoading,

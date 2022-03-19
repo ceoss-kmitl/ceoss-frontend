@@ -8,6 +8,8 @@ import { Modal } from 'components/Modal'
 import { Notification } from 'components/Notification'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { useAuth } from 'contexts/AuthContext'
+import { useWebContext } from 'contexts/WebContext'
+import { getManyWeb } from 'apis/web'
 
 interface IPath {
   path: string
@@ -62,24 +64,32 @@ export function useWebScrap() {
   const [isLoading, setIsLoading] = useState(true)
   const { academicYear, semester } = useAcademicYear()
   const { profile } = useAuth()
+  const { webList, updateWebList } = useWebContext()
 
   async function triggerWebScrap() {
     Modal.warning({
       title: 'อัปเดตข้อมูล',
       okText: 'อัปเดต',
       description: `ระบบจะนำข้อมูลจากเว็บสำนักทะเบียน ปี ${academicYear}/${semester} มาเพิ่มลงในระบบ`,
-      onAsyncOk: async () => {
+      loadingStep: webList.length,
+      onAsyncOk: async (nextStep) => {
         try {
-          const { data } = await http.post(`/v2/web-scrap`, null, {
-            params: {
-              academicYear,
-              semester,
-              save: true,
-            },
-          })
+          const result = <{ webId: string; data: any }[]>[]
+          for (const _web of webList) {
+            const { data } = await http.post(`/v2/web-scrap`, null, {
+              params: {
+                webId: _web.id,
+                academicYear,
+                semester,
+                save: true,
+              },
+            })
+            result.push({ webId: _web.id, data })
+            nextStep()
+          }
           Notification.success({
             message: 'อัปเดตข้อมูลสำเร็จ',
-            seeMore: data,
+            seeMore: result,
           })
           getLastestUpdatedDate()
         } catch (error) {
@@ -107,9 +117,24 @@ export function useWebScrap() {
     setIsLoading(false)
   }
 
+  async function fetchWebList() {
+    setIsLoading(true)
+    try {
+      const webList = await getManyWeb()
+      updateWebList(webList)
+    } catch (error) {
+      Notification.error({
+        message: 'เกิดข้อผิดพลาดขณะเรียกดูรายการเว็บไซต์',
+        seeMore: error,
+      })
+    }
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     if (profile) {
       getLastestUpdatedDate()
+      fetchWebList()
     }
   }, [profile])
 

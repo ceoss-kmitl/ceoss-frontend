@@ -1,5 +1,7 @@
-.gray {
-    color: var(--gray400);
+:global(.ant-typography) {
+    &.gray {
+        color: var(--gray400);
+    }
 }
 
 .bold {

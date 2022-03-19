@@ -11,6 +11,7 @@ interface IProps {
   strike?: boolean
   className?: string
   size?: 'head' | 'sub-head' | 'normal' | 'small'
+  onClick?: () => void
 }
 
 export const Text: React.FC<IProps> = ({
@@ -23,6 +24,7 @@ export const Text: React.FC<IProps> = ({
   strike,
   className,
   size = 'normal',
+  onClick = () => {},
 }) => {
   return (
     <Typography.Text
@@ -36,6 +38,7 @@ export const Text: React.FC<IProps> = ({
         style[size],
         className
       )}
+      onClick={onClick}
     >
       {children}
     </Typography.Text>
