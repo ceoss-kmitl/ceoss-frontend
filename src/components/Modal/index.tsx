@@ -6,6 +6,7 @@ import loadingGif from './loading.gif'
 import { Modal, ModalFuncProps, Button } from 'antd'
 import { FiCheckCircle, FiAlertCircle } from 'react-icons/fi'
 import { VscError } from 'react-icons/vsc'
+import { useAuth } from 'contexts/AuthContext'
 
 interface IModalConfig {
   title?: string
@@ -49,12 +50,13 @@ const Template = ({
 }: IModalConfig) => {
   const [isLoading, setIsLoading] = useState(loader ?? false)
   const [step, setStep] = useState(1)
+  const { profile } = useAuth()
 
   useEffect(() => {
-    if (loader) {
+    if (loader && profile) {
       handleAsyncOk()
     }
-  }, [loader])
+  }, [loader, profile])
 
   async function handleAsyncOk() {
     if (onAsyncOk) {

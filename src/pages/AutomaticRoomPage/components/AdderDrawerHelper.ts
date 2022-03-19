@@ -4,11 +4,13 @@ import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { getManyWorkload, IWorkload } from 'apis/workload'
 import { ErrorCode } from 'constants/error'
 import { Notification } from 'components/Notification'
+import { useAuth } from 'contexts/AuthContext'
 
 type IUnAssignedWorkloadWithCheck = IWorkload & { checked: boolean }
 
 export const useUnAssignedWorkload = (refetchWhenValueChange = <any>[]) => {
   const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [workloadList, setWorkloadList] = useState<
@@ -69,8 +71,10 @@ export const useUnAssignedWorkload = (refetchWhenValueChange = <any>[]) => {
   }
 
   useEffect(() => {
-    fetchUnAssignedWorkloadList()
-  }, [academicYear, semester, ...refetchWhenValueChange])
+    if (profile) {
+      fetchUnAssignedWorkloadList()
+    }
+  }, [academicYear, semester, profile, ...refetchWhenValueChange])
 
   return {
     isLoading,

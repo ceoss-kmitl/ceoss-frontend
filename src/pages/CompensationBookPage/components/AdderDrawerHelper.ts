@@ -8,11 +8,13 @@ import { IOption } from 'constants/option'
 import { ErrorCode } from 'constants/error'
 import { getManyWorkload, IWorkload } from 'apis/workload'
 import { Notification } from 'components/Notification'
+import { useAuth } from 'contexts/AuthContext'
 
 const NO_ROOM = { value: 'NULL', label: 'ไม่ใช้ห้อง' }
 
 export const useCompensation = (selectedWorkload: IWorkload) => {
   const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [availableRoomList, setAvailableRoomList] = useState<IOption[]>([])
@@ -76,8 +78,10 @@ export const useCompensation = (selectedWorkload: IWorkload) => {
   }
 
   useEffect(() => {
-    fetchAllRoom()
-  }, [])
+    if (profile) {
+      fetchAllRoom()
+    }
+  }, [profile])
 
   return {
     isLoading,
@@ -91,6 +95,7 @@ export const useCompensation = (selectedWorkload: IWorkload) => {
 
 export const useWorkload = (subjectId: string) => {
   const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [workloadList, setWorkloadList] = useState(<IWorkload[]>[])
@@ -120,8 +125,10 @@ export const useWorkload = (subjectId: string) => {
   }
 
   useEffect(() => {
-    fetchWorkloadList()
-  }, [subjectId, academicYear, semester])
+    if (profile) {
+      fetchWorkloadList()
+    }
+  }, [subjectId, academicYear, semester, profile])
 
   return {
     isLoading,
