@@ -6,6 +6,7 @@ import { syncAssistant } from 'apis/sync'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
+import { useAuth } from 'contexts/AuthContext'
 
 const SYNC_EXCEL_ASSISTANT_KEY = 'SYNC_EXCEL_ASSISTANT_KEY'
 
@@ -13,6 +14,7 @@ export const useSectionList = (subjectId: string) => {
   const [isLoading, setIsLoading] = useState(false)
   const [sectionList, setSectionList] = useState<ISection[]>([])
   const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
 
   const fetchSectionListOfSubject = async () => {
     if (!subjectId) return
@@ -77,8 +79,10 @@ export const useSectionList = (subjectId: string) => {
   }
 
   useEffect(() => {
-    fetchSectionListOfSubject()
-  }, [subjectId, academicYear, semester])
+    if (profile) {
+      fetchSectionListOfSubject()
+    }
+  }, [subjectId, academicYear, semester, profile])
 
   return {
     isLoading,

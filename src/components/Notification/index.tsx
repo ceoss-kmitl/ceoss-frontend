@@ -73,4 +73,5 @@ export const Notification = {
     }),
 
   close: (key: string) => notification.close(key),
+  closeAll: notification.destroy,
 }

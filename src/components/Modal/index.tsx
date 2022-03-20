@@ -1,10 +1,12 @@
 import css from 'classnames'
 import style from './style.module.scss'
 import { useState, useEffect } from 'react'
+import { clamp } from 'lodash'
 import loadingGif from './loading.gif'
 import { Modal, ModalFuncProps, Button } from 'antd'
 import { FiCheckCircle, FiAlertCircle } from 'react-icons/fi'
 import { VscError } from 'react-icons/vsc'
+import { useAuth } from 'contexts/AuthContext'
 
 interface IModalConfig {
   title?: string
@@ -19,9 +21,10 @@ interface IModalConfig {
   icon?: React.ReactNode
   width?: number
   onOk?: () => void
-  onAsyncOk?: () => Promise<void>
+  onAsyncOk?: (nextStep: () => void) => Promise<void>
   onCancel?: () => void
   loader?: boolean
+  loadingStep?: number
 }
 
 const defaultConfig: ModalFuncProps = {
@@ -43,19 +46,25 @@ const Template = ({
   onOk = () => {},
   onCancel = Modal.destroyAll,
   onAsyncOk,
+  loadingStep = 0,
 }: IModalConfig) => {
   const [isLoading, setIsLoading] = useState(loader ?? false)
+  const [step, setStep] = useState(1)
+  const { profile } = useAuth()
 
   useEffect(() => {
-    if (loader) {
+    if (loader && profile) {
       handleAsyncOk()
     }
-  }, [loader])
+  }, [loader, profile])
 
   async function handleAsyncOk() {
     if (onAsyncOk) {
       setIsLoading(true)
-      await onAsyncOk()
+      setStep(1)
+      await onAsyncOk(() =>
+        setStep((_step) => clamp(_step + 1, 1, loadingStep))
+      )
       Modal.destroyAll()
     } else {
       onOk()
@@ -67,6 +76,13 @@ const Template = ({
       {isLoading && (
         <div className={css(style.overlayContentWrapper, style.loadingWrapper)}>
           <img src={loadingGif} alt="loading icon" />
+          {loadingStep ? (
+            <div
+              className={style.overlayContentText}
+            >{`ขั้นตอนที่ ${step}/${loadingStep}`}</div>
+          ) : (
+            ''
+          )}
           <div className={style.overlayContentText}>{loadingText}</div>
         </div>
       )}

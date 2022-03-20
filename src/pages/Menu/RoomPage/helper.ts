@@ -11,12 +11,14 @@ import {
 } from 'apis/room'
 import { syncRoom } from 'apis/sync'
 import { ErrorCode } from 'constants/error'
+import { useAuth } from 'contexts/AuthContext'
 
 const SYNC_EXCEL_ROOM_KEY = 'SYNC_EXCEL_ROOM_KEY'
 
 export function useMenuRoom() {
   const [data, setData] = useState<IRoom[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const { profile } = useAuth()
 
   async function getAllRoom() {
     setIsLoading(true)
@@ -73,8 +75,10 @@ export function useMenuRoom() {
   }
 
   useEffect(() => {
-    getAllRoom()
-  }, [])
+    if (profile) {
+      getAllRoom()
+    }
+  }, [profile])
 
   return {
     isLoading,
@@ -92,6 +96,7 @@ export const columnList: IColumn[] = [
     type: 'text',
     header: 'ชื่อห้อง',
     dataIndex: 'name',
+    sorter: (a, b) => a.name.localeCompare(b.name),
     showInTable: true,
     width: '30%',
     placeholder: 'ชื่อห้อง',
@@ -101,6 +106,7 @@ export const columnList: IColumn[] = [
     min: 0,
     header: 'จำนวนที่รองรับ (คน)',
     dataIndex: 'capacity',
+    sorter: (a, b) => a.capacity - b.capacity,
     showInTable: true,
     width: '70%',
   },

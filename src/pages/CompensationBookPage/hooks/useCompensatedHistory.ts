@@ -6,9 +6,11 @@ import { getManyCompensatedOfSubject, ICompensated } from 'apis/subject'
 import { createOneCompensationWorkload, deleteOneWorkload } from 'apis/workload'
 import { ErrorCode } from 'constants/error'
 import { Notification } from 'components/Notification'
+import { useAuth } from 'contexts/AuthContext'
 
 export function useCompensatedHistory(subjectId: string) {
   const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [compensatedList, setCompensatedList] = useState<ICompensated[]>([])
@@ -81,8 +83,10 @@ export function useCompensatedHistory(subjectId: string) {
   }
 
   useEffect(() => {
-    fetchCompensatedListOfSubject()
-  }, [academicYear, semester, subjectId])
+    if (profile) {
+      fetchCompensatedListOfSubject()
+    }
+  }, [academicYear, semester, subjectId, profile])
 
   return {
     isLoading,

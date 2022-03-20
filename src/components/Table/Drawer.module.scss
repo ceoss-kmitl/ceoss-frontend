@@ -31,3 +31,59 @@
 .disabled {
     pointer-events: none;
 }
+
+.creditInputWrapper {
+    &:global(.ant-input-group) {
+        display: flex;
+    }
+
+    $bd: 6px;
+
+    @for $i from 1 through 8 {
+        input:nth-of-type(#{$i}) {
+            transform: translateX((($i - 1) * -1) + px);
+            text-align: center;
+        }
+    }
+    input:nth-of-type(1) {
+        border-right-color: white;
+        &:hover,
+        &:focus {
+            border-right-color: #1890ff;
+        }
+    }
+    input:nth-of-type(3),
+    input:nth-of-type(5),
+    input:nth-of-type(7) {
+        border-left-color: white;
+        border-right-color: white;
+        &:hover,
+        &:focus {
+            border-right-color: #1890ff;
+            border-left-color: #1890ff;
+        }
+    }
+
+    .creditDelimeter {
+        &:global(.ant-input-disabled) {
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            color: var(--gray400);
+            background-color: transparent;
+            width: 100px;
+            text-align: center;
+
+            &:not(:last-of-type) {
+                border-left: none;
+                border-right: none;
+            }
+
+            &:last-of-type {
+                border-left: none;
+            }
+        }
+    }
+}
