@@ -3,6 +3,7 @@ import { notification, Typography, Modal } from 'antd'
 import { FiX } from 'react-icons/fi'
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
 import { AiOutlineLoading } from 'react-icons/ai'
+import ReactJson from 'react-json-view'
 
 import style from './style.module.scss'
 
@@ -36,7 +37,15 @@ const SeeMore = (props: { payload: any }) => {
                 overflowY: 'auto',
               }}
             >
-              {JSON.stringify(props.payload, null, 4)}
+              <ReactJson
+                src={props.payload}
+                name={null}
+                theme="summerfruit:inverted"
+                iconStyle="circle"
+                indentWidth={2}
+                enableClipboard={false}
+                displayDataTypes={false}
+              />
             </div>
           ),
         })
