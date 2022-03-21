@@ -1,8 +1,11 @@
 import { range } from 'lodash'
+import { Row } from 'antd'
 
 import monster from 'img/monster.png'
 import { Text } from 'components/Text'
 import { BigSearch } from 'components/BigSearch'
+import { UploadExcelFileButton } from 'components/UploadExcelFileButton'
+import { AssistantExcelFileHeaders } from 'constants/excel'
 
 import style from './style.module.scss'
 import { useBigSearch } from './hooks/useBigSearch'
@@ -25,6 +28,7 @@ export const AssistantDocumentPage = () => {
     isLoading: isSectionListLoading,
     sectionList,
     editAssistantListOfSubject,
+    importDataFromExcel,
   } = useSectionList(currentSubject.id)
 
   const { form, isOpen, openDrawer, closeDrawer } = useDrawerForm()
@@ -41,9 +45,15 @@ export const AssistantDocumentPage = () => {
 
   return (
     <div className={style.page}>
-      <Text size="head" bold>
-        เอกสาร TA
-      </Text>
+      <Row justify="space-between">
+        <Text size="head" bold>
+          เอกสาร TA
+        </Text>
+        <UploadExcelFileButton
+          headers={AssistantExcelFileHeaders}
+          onUpload={(data) => importDataFromExcel(data)}
+        />
+      </Row>
 
       <BigSearch
         isLoading={isSubjectListLoading}

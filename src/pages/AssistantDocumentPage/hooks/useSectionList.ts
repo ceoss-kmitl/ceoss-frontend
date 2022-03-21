@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { getManySectionOfSubject, ISection } from 'apis/subject'
 import { editManyAssistantWorkload } from 'apis/workload'
+import { syncAssistant } from 'apis/sync'
 import { useAcademicYear } from 'contexts/AcademicYearContext'
 import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
 import { useAuth } from 'contexts/AuthContext'
+
+const SYNC_EXCEL_ASSISTANT_KEY = 'SYNC_EXCEL_ASSISTANT_KEY'
 
 export const useSectionList = (subjectId: string) => {
   const [isLoading, setIsLoading] = useState(false)
@@ -51,6 +54,30 @@ export const useSectionList = (subjectId: string) => {
     setIsLoading(false)
   }
 
+  async function importDataFromExcel(data: Record<string, string>[]) {
+    setIsLoading(true)
+    Notification.loading({
+      key: SYNC_EXCEL_ASSISTANT_KEY,
+      message: 'กำลังนำเข้าข้อมูล...',
+    })
+    try {
+      const result = await syncAssistant(data)
+      Notification.success({
+        key: SYNC_EXCEL_ASSISTANT_KEY,
+        message: 'นำเข้าข้อมูลสำเร็จ',
+        seeMore: result,
+      })
+      await fetchSectionListOfSubject()
+    } catch (error) {
+      Notification.error({
+        key: SYNC_EXCEL_ASSISTANT_KEY,
+        message: ErrorCode.X06,
+        seeMore: error,
+      })
+    }
+    setIsLoading(false)
+  }
+
   useEffect(() => {
     if (profile) {
       fetchSectionListOfSubject()
@@ -61,5 +88,6 @@ export const useSectionList = (subjectId: string) => {
     isLoading,
     sectionList,
     editAssistantListOfSubject,
+    importDataFromExcel,
   }
 }
