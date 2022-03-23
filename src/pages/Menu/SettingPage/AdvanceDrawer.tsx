@@ -78,34 +78,18 @@ export const AdvanceDrawer: React.FC<IProps> = ({
           <Form.List name="webList">
             {(fields, webListAction) => (
               <Col span={24}>
-                {fields.length > 0 && (
-                  <Row gutter={16} align="middle">
-                    <Col span={4}>
-                      <Text size="small">หลักสูตร</Text>
-                    </Col>
-                    <Col span={20}>
-                      <Text size="small">เว็บไซต์</Text>
-                    </Col>
-                  </Row>
-                )}
                 {fields.map(({ name, ...rest }) => (
                   <div className={style.webItem}>
                     <Row gutter={16}>
-                      <Col span={4}>
-                        <Form.Item
-                          name={[name, 'id']}
-                          rules={[{ required: true, message: '' }]}
-                          normalize={(value) => String(value).toUpperCase()}
-                          {...rest}
-                        >
-                          <Input maxLength={8} placeholder="CE" />
-                        </Form.Item>
-                      </Col>
-                      <Col span={19}>
+                      <Form.Item name={[name, 'id']} {...rest} noStyle />
+                      <Col span={23}>
                         <Form.Item
                           name={[name, 'url']}
                           rules={[
-                            { required: true, message: '' },
+                            {
+                              required: true,
+                              message: 'เว็บสำนักทะเบียนเท่านั้น',
+                            },
                             {
                               pattern:
                                 /^(https\:\/\/new\.reg\.kmitl\.ac\.th\/reg\/#\/teach_table\?)/,

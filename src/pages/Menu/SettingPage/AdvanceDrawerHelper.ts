@@ -12,14 +12,16 @@ export function useAdvanceSetting() {
   const [isOpen, setIsOpen] = useState(false)
   const [form] = Form.useForm()
   const { profile } = useAuth()
-  const { updateWebList: updateWebListContext } = useWebContext()
+  const { updateWebList: updateWebListContext, webList } = useWebContext()
 
   const openDrawer = () => {
     setIsOpen(true)
+    form.setFieldsValue({ webList })
   }
 
   const closeDrawer = () => {
     setIsOpen(false)
+    form.resetFields()
   }
 
   const fetchWebList = async () => {

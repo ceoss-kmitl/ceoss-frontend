@@ -26,6 +26,7 @@ const SeeMore = (props: { payload: any }) => {
       onClick={() => {
         Modal.destroyAll()
         Modal.info({
+          width: 600,
           centered: true,
           closable: true,
           title: 'รายละเอียด',
@@ -45,6 +46,7 @@ const SeeMore = (props: { payload: any }) => {
                 indentWidth={2}
                 enableClipboard={false}
                 displayDataTypes={false}
+                displayObjectSize={false}
               />
             </div>
           ),
