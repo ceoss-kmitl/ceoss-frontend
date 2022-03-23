@@ -11,12 +11,14 @@ import { syncSubject } from 'apis/sync'
 import { IColumn, IFormLayout } from 'components/Table'
 import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
+import { useAuth } from 'contexts/AuthContext'
 
 const SYNC_EXCEL_SUBJECT_KEY = 'SYNC_EXCEL_SUBJECT_KEY'
 
 export function useMenuSubject() {
   const [data, setData] = useState<ISubject[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const { profile } = useAuth()
 
   async function getAllSubject() {
     setIsLoading(true)
@@ -73,8 +75,10 @@ export function useMenuSubject() {
   }
 
   useEffect(() => {
-    getAllSubject()
-  }, [])
+    if (profile) {
+      getAllSubject()
+    }
+  }, [profile])
 
   return {
     isLoading,

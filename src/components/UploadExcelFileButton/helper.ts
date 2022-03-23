@@ -48,7 +48,9 @@ export const useUploadFile = ({ headers, onUpload = () => {} }: IConfig) => {
     const reader = new FileReader()
     reader.onload = (e) => {
       const data = new Uint8Array(e.target?.result as any)
-      const workbook = xlsx.read(data, { type: 'array' })
+      const workbook = xlsx.read(data, {
+        type: 'array',
+      })
       const firstSheet = workbook.SheetNames[0]
       const worksheet = workbook.Sheets[firstSheet]
 
@@ -60,7 +62,7 @@ export const useUploadFile = ({ headers, onUpload = () => {} }: IConfig) => {
       }
       const jsonData = xlsx.utils.sheet_to_json<Record<string, string>>(
         worksheet,
-        { defval: '', blankrows: false }
+        { defval: '', blankrows: false, raw: false }
       )
 
       handleOnUpload(jsonData)

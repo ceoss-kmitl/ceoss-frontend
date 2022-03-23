@@ -13,9 +13,11 @@ import {
   triggerManyRoomResetAssign,
 } from 'apis/room'
 import { ErrorCode } from 'constants/error'
+import { useAuth } from 'contexts/AuthContext'
 
 export const useAutoRoom = (roomId: string) => {
   const { academicYear, semester } = useAcademicYear()
+  const { profile } = useAuth()
 
   const [isLoading, setIsLoading] = useState(false)
   const [workloadList, setWorkloadList] = useState<
@@ -153,8 +155,10 @@ export const useAutoRoom = (roomId: string) => {
   }
 
   useEffect(() => {
-    fetchWorkloadOfRoom()
-  }, [academicYear, semester, roomId])
+    if (profile) {
+      fetchWorkloadOfRoom()
+    }
+  }, [academicYear, semester, roomId, profile])
 
   return {
     isLoading,

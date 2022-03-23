@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react'
 import { http } from 'libs/http'
 import { Modal } from 'components/Modal'
 import { Form } from 'antd'
+import { useAuth } from 'contexts/AuthContext'
 
 export function useMenuSetting() {
   const [form] = Form.useForm()
   const [data, setData] = useState<any>({})
   const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const { profile } = useAuth()
 
   async function getCurrentSetting() {
     setIsLoading(true)
@@ -42,8 +44,10 @@ export function useMenuSetting() {
   }
 
   useEffect(() => {
-    getCurrentSetting()
-  }, [])
+    if (profile) {
+      getCurrentSetting()
+    }
+  }, [profile])
 
   return {
     form,

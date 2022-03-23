@@ -25,3 +25,10 @@ export const syncRoom = async (payload: Record<string, string>[]) => {
   })
   return data
 }
+
+export const syncAssistant = async (payload: Record<string, string>[]) => {
+  const { data } = await http.post<ISyncResult>('/sync/assistant', {
+    data: payload,
+  })
+  return data
+}

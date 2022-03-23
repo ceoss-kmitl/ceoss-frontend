@@ -12,12 +12,14 @@ import { IColumn, IFormLayout } from 'components/Table'
 import { Notification } from 'components/Notification'
 import { ErrorCode } from 'constants/error'
 import { OptionList } from 'constants/option'
+import { useAuth } from 'contexts/AuthContext'
 
 const SYNC_EXCEL_TEACHER_KEY = 'SYNC_EXCEL_TEACHER_KEY'
 
 export function useMenuTeacher() {
   const [data, setData] = useState<ITeacher[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const { profile } = useAuth()
 
   async function getAllTeacher() {
     setIsLoading(true)
@@ -74,8 +76,10 @@ export function useMenuTeacher() {
   }
 
   useEffect(() => {
-    getAllTeacher()
-  }, [])
+    if (profile) {
+      getAllTeacher()
+    }
+  }, [profile])
 
   return {
     isLoading,

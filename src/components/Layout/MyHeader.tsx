@@ -18,7 +18,13 @@ export const MyHeader = () => {
   return (
     <>
       <div className={style.logo}>
-        <FiBox style={{ marginRight: '0.5rem', strokeWidth: '2.5px' }} />
+        <Tooltip
+          title={`version ${process.env.REACT_APP_VERSION}`}
+          placement="bottomLeft"
+          arrowPointAtCenter
+        >
+          <FiBox style={{ marginRight: '0.5rem', strokeWidth: '2.5px' }} />
+        </Tooltip>
         <span>CE</span>
         <span>OSS</span>
       </div>
