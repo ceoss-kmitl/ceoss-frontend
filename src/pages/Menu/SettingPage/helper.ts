@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { http } from 'libs/http'
-import { Modal } from 'components/Modal'
+import { Notification } from 'components/Notification'
 import { Form } from 'antd'
 import { useAuth } from 'contexts/AuthContext'
+
+const NOTI_SETTING = 'NOTI_SETTING'
 
 export function useMenuSetting() {
   const [form] = Form.useForm()
@@ -25,22 +27,24 @@ export function useMenuSetting() {
   }
 
   async function editSetting(record: any) {
-    Modal.loading({
-      loadingText: 'กำลังแก้ไขการตั้งค่า',
-      finishTitle: 'แก้ไขการตั้งค่าสำเร็จ!',
-      finishText: 'ตกลง',
-      finishFailTitle: 'ไม่สามารถแก้ไขการตั้งค่าได้',
-      finishFailText: 'ตกลง',
-      width: 400,
-      onAsyncOk: async () => {
-        try {
-          await http.put(`/setting`, record)
-          await getCurrentSetting()
-        } catch (err) {
-          throw err
-        }
-      },
-    })
+    console.log('>>test', record)
+    setIsLoading(true)
+    Notification.loading({ key: NOTI_SETTING, message: 'กำลังแก้ไขการตั้งค่า' })
+    try {
+      await http.put(`/setting`, record)
+      await getCurrentSetting()
+      Notification.success({
+        key: NOTI_SETTING,
+        message: 'แก้ไขการตั้งค่าสำเร็จ',
+      })
+    } catch (err) {
+      Notification.error({
+        key: NOTI_SETTING,
+        message: 'เกิดข้อผิดพลาด',
+        seeMore: err,
+      })
+    }
+    setIsLoading(false)
   }
 
   useEffect(() => {
