@@ -116,6 +116,8 @@ export const MenuSettingPage = () => {
               <InputNumber className={style.inputNumber} />
             </Form.Item>
           </div>
+          <br />
+
           <div className={style.subTopic2}>
             <Text size="normal" bold>
               ภาคทฤษฎี (หลักสูตรนานาชาติ)
@@ -138,6 +140,8 @@ export const MenuSettingPage = () => {
               <InputNumber className={style.inputNumber} />
             </Form.Item>
           </div>
+          <br />
+
           <div className={style.subTopic2}>
             <Text size="normal" bold>
               ภาคทฤษฎี (อาจารย์ภายนอก)
@@ -155,6 +159,30 @@ export const MenuSettingPage = () => {
             </Text>
             <Form.Item
               name="labPayRateExternal"
+              rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+            >
+              <InputNumber className={style.inputNumber} />
+            </Form.Item>
+          </div>
+          <br />
+
+          <div className={style.subTopic2}>
+            <Text size="normal" bold>
+              นักศึกษา TA (หลักสูตรปกติ)
+            </Text>
+            <Form.Item
+              name="assistantPayRate"
+              rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
+            >
+              <InputNumber className={style.inputNumber} />
+            </Form.Item>
+          </div>
+          <div className={style.subTopic2}>
+            <Text size="normal" bold>
+              นักศึกษา TA (หลักสูตรนานาชาติ)
+            </Text>
+            <Form.Item
+              name="assistantPayRateInter"
               rules={[{ required: true, message: `กรุณากรอกข้อมูล` }]}
             >
               <InputNumber className={style.inputNumber} />
