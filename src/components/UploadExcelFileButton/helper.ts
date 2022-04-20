@@ -1,4 +1,4 @@
-import { get, isEqual } from 'lodash'
+import { get, isEqual, pick } from 'lodash'
 import { useRef } from 'react'
 import xlsx from 'xlsx'
 
@@ -65,7 +65,7 @@ export const useUploadFile = ({ headers, onUpload = () => {} }: IConfig) => {
         { defval: '', blankrows: false, raw: false }
       )
 
-      handleOnUpload(jsonData)
+      handleOnUpload(jsonData.map((each) => pick(each, headers)))
     }
     reader.readAsArrayBuffer(file)
   }
