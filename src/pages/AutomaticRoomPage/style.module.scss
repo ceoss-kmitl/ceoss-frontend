@@ -3,6 +3,17 @@
     flex-direction: column;
 }
 
+.reloadBtn {
+    font-size: 20px;
+    margin: 0 0 -3px 0.5rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.reloadBtn:hover {
+    transform: rotate(-100deg);
+}
+
 .monsterWrapper {
     user-select: none;
     pointer-events: none;
