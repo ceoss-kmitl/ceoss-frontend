@@ -1,6 +1,7 @@
 import css from 'classnames'
 import { Row } from 'antd'
 import { FiDownload, FiPlus } from 'react-icons/fi'
+import { FcSynchronize } from 'react-icons/fc'
 
 import monster from 'img/monster.png'
 import { TimeTable } from 'components/TimeTable'
@@ -32,6 +33,7 @@ export const WorkloadPage = () => {
     addWorkload,
     editWorkload,
     deleteWorkload,
+    reloadData,
   } = useWorkload(currentTeacher.id)
 
   const {
@@ -53,6 +55,10 @@ export const WorkloadPage = () => {
       <Row justify="space-between">
         <Text size="head" bold>
           จัดการภาระงาน
+          <FcSynchronize
+            className={style.reloadBtn}
+            onClick={() => reloadData()}
+          />
         </Text>
         {currentTeacher.id && (
           <Button

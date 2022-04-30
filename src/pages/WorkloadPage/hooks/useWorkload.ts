@@ -160,5 +160,6 @@ export const useWorkload = (teacherId: string) => {
     addWorkload,
     editWorkload,
     deleteWorkload,
+    reloadData: fetchWorkloadOfTeacher,
   }
 }

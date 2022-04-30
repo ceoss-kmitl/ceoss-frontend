@@ -1,4 +1,5 @@
 import { FiPlus } from 'react-icons/fi'
+import { FcSynchronize } from 'react-icons/fc'
 import { Skeleton } from 'antd'
 
 import monster from 'img/monster.png'
@@ -21,8 +22,13 @@ export const CompensationBookPage = () => {
     setCurrentSubject,
   } = useBigSearch()
 
-  const { isLoading, compensatedList, createCompensated, deleteCompensated } =
-    useCompensatedHistory(currentSubject.id)
+  const {
+    isLoading,
+    compensatedList,
+    createCompensated,
+    deleteCompensated,
+    reloadData,
+  } = useCompensatedHistory(currentSubject.id)
 
   const { formAdder, isOpenAdder, openAdderDrawer, closeAdderDrawer } =
     useAdderDrawerForm()
@@ -31,6 +37,10 @@ export const CompensationBookPage = () => {
     <div className={style.page}>
       <Text size="head" bold>
         หนังสือสอนชดเชย
+        <FcSynchronize
+          className={style.reloadBtn}
+          onClick={() => reloadData()}
+        />
       </Text>
 
       <BigSearch

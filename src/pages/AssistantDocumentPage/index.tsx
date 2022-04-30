@@ -1,5 +1,6 @@
 import { range } from 'lodash'
 import { Row } from 'antd'
+import { FcSynchronize } from 'react-icons/fc'
 
 import monster from 'img/monster.png'
 import { Text } from 'components/Text'
@@ -29,6 +30,7 @@ export const AssistantDocumentPage = () => {
     sectionList,
     editAssistantListOfSubject,
     importDataFromExcel,
+    reloadData,
   } = useSectionList(currentSubject.id)
 
   const { form, isOpen, openDrawer, closeDrawer } = useDrawerForm()
@@ -48,6 +50,10 @@ export const AssistantDocumentPage = () => {
       <Row justify="space-between">
         <Text size="head" bold>
           เอกสาร TA
+          <FcSynchronize
+            className={style.reloadBtn}
+            onClick={() => reloadData()}
+          />
         </Text>
         <UploadExcelFileButton
           headers={AssistantExcelFileHeaders}
