@@ -93,5 +93,6 @@ export function useCompensatedHistory(subjectId: string) {
     compensatedList,
     createCompensated,
     deleteCompensated,
+    reloadData: fetchCompensatedListOfSubject,
   }
 }

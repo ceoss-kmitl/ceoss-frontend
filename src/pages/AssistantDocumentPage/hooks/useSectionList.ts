@@ -89,5 +89,6 @@ export const useSectionList = (subjectId: string) => {
     sectionList,
     editAssistantListOfSubject,
     importDataFromExcel,
+    reloadData: fetchSectionListOfSubject,
   }
 }

@@ -167,5 +167,6 @@ export const useAutoRoom = (roomId: string) => {
     removeWorkloadFromRoom,
     triggerAutoRoom,
     triggerResetRoom,
+    reloadData: fetchWorkloadOfRoom,
   }
 }

@@ -1,6 +1,7 @@
 import { VscDebugRestart } from 'react-icons/vsc'
 import { FiDownload, FiPlus } from 'react-icons/fi'
 import { IoSparklesSharp } from 'react-icons/io5'
+import { FcSynchronize } from 'react-icons/fc'
 import { Row, Button as AntdButton } from 'antd'
 
 import monster from 'img/monster.png'
@@ -34,6 +35,7 @@ export const AutomaticRoomPage = () => {
     removeWorkloadFromRoom,
     triggerAutoRoom,
     triggerResetRoom,
+    reloadData,
   } = useAutoRoom(currentRoom.id)
 
   const { form, isOpen, openDrawer, closeDrawer } = useDrawerForm()
@@ -48,6 +50,10 @@ export const AutomaticRoomPage = () => {
       <Row>
         <Text size="head" bold>
           จัดห้องอัตโนมัติ
+          <FcSynchronize
+            className={style.reloadBtn}
+            onClick={() => reloadData()}
+          />
         </Text>
         <div className={style.headerRight}>
           <Button
